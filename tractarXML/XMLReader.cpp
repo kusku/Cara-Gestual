@@ -4,7 +4,8 @@
 char paraula [20];
 char atribut [20];
 
-XMLReader::XMLReader(char* path, ExpressionManager* EManager, MuscleManager* MManager) {
+XMLReader::XMLReader(char* path, ExpressionManager* EManager, MuscleManager* MManager, EditorManager* EditorM) 
+{
 	errno_t err;
 
 	if( (err  = fopen_s(&fitxer,path,"r")) !=0 )
@@ -13,6 +14,7 @@ XMLReader::XMLReader(char* path, ExpressionManager* EManager, MuscleManager* MMa
 	  printf( "The file %s was opened\n",path );
 	this->EManager = EManager;
 	this->MManager = MManager;
+	this->EditorM = EditorM;
 }
 
 XMLReader::~XMLReader() {
@@ -62,9 +64,9 @@ void XMLReader::Read() {
 		int muscles = MManager->getNumMuscles();
 		for (int i=0; i<muscles;++i)
 		{
-			MManager->deleteMuscle((TypeMuscle) i);
+			MManager->ClearMuscle((TypeMuscle) i);
 		}
-		
+		EditorM->ClearVertexs();
 		ReadMuscles();
 	}
 	fclose(fitxer);

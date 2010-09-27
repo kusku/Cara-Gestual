@@ -146,7 +146,7 @@ bool _stdcall COBJModel::LoadModel(const char szFileName[],unsigned int iDisplay
 		if (!strncmp(szString, TEXCOORD_ID, sizeof(TEXCOORD_ID)))
 		{
 			// Read two floats out of the file
-			nScanReturn = fscanf(hFile, "%f %f %f",
+			nScanReturn = fscanf(hFile, "%f %f",
 				&Model.pTexCoords[CurrentIndex.iTexCoordCount].fX,
 				&Model.pTexCoords[CurrentIndex.iTexCoordCount].fY);
 			// Next texture coordinate

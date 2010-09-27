@@ -21,7 +21,7 @@ void Objecte3D::Objecte3DDeOBJ(char* filename) {
 	int numpunts,numcares,i,j;
 	Punt p;
 
-	COBJModel *o = new COBJModel();
+	COBJModel* o = new COBJModel();
 	o->LoadModel(filename,NULL);
 	ModelOBJ ob = o->GetModel();
 

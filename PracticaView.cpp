@@ -23,6 +23,7 @@
 #include "SPoint3D.h"
 #include "Seleccions/Selection.h"
 #include "Seleccions/EditorManager.h"
+#include "Timer/Timer.h"
 #include "escena.h"
 #include <gl\gl.h>
 #include <gl\glu.h>
@@ -208,6 +209,8 @@ BEGIN_MESSAGE_MAP(CPracticaView, CView)
 	ON_COMMAND(ID_VSLOW, &CPracticaView::OnVSlow)
 	ON_UPDATE_COMMAND_UI(ID_VSLOW, &CPracticaView::OnUpdateVSlow)
 	ON_COMMAND(ID_PARLA,&CPracticaView::OnParla)
+	ON_COMMAND(ID_PARLABUCLE,&CPracticaView::OnParlaBucle)
+	
 
 END_MESSAGE_MAP()
 
@@ -299,6 +302,7 @@ CPracticaView::CPracticaView()
 	acumulativeTime = 0.f;
 	subtitles = false;
 	tempsParla = 0.02f; //Temps de temporitzador Normal
+	tParlaBucle = 10.0f;
 
 	select = NULL;
 	deform = NULL;
@@ -2724,7 +2728,7 @@ void CPracticaView::OnImportMuscles()
 
 	if (ObOBJ != NULL)
 	{
-		XMLReader* lector = new XMLReader(nomfitx, EManager, MManager);
+		XMLReader* lector = new XMLReader(nomfitx, EManager, MManager, editor);
 		lector->Read();
 		delete lector;
 	}
@@ -3038,7 +3042,7 @@ void CPracticaView::OnImportExpressions()
 	// La variable nomfitx conté tot el path del fitxer.
 	if (ObOBJ != NULL)
 	{
-		XMLReader* lector = new XMLReader(nomfitx, EManager, MManager);
+		XMLReader* lector = new XMLReader(nomfitx, EManager, MManager, editor);
 		lector->Read();
 		delete lector;
 	}
@@ -3346,6 +3350,7 @@ void CPracticaView::OnNormal()
 {
 	temporitzador = 0.5f;
 	tempsParla = 0.02f;
+	tParlaBucle = 10.0f;
 	parla->SetVelocity(1.f, 0.01f);
 }
 
@@ -3397,3 +3402,41 @@ void CPracticaView::OnParla()
 	Invalidate();
 }
 
+void CPracticaView::OnParlaBucle()
+{
+	//Fa parlar el personatge SENSE fer ús del Timer.
+
+	subtitles = true;
+	parla->SetVelocity(8.f, 0.1f);
+	parla->StartTalk();
+
+	acumulativeTime = 0.f;
+	
+
+	while ( parla->IsTalking() )
+	{
+		if (acumulativeTime < 0.8f)
+		{
+			Timer::GetInstance()->ResetTimer();
+			anima = true;
+			animate->NextStepAnimation();
+			animate->Render();
+			acumulativeTime += Timer::GetInstance()->GetElapsedTime();
+		}
+		else
+		{
+			animate->FinalizeAnimation();
+			acumulativeTime = 0.f;
+			parla->NextTalk();
+		}
+
+		OnPaint();
+	}
+
+	acumulativeTime = 0.f;
+	animate->FinalizeAnimation();
+	anima = false;
+	subtitles = false;
+
+	OnPaint();
+}

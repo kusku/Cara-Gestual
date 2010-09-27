@@ -1,6 +1,7 @@
 #include "../stdafx.h"
 #include "Timer.h"
 #include <time.h>
+#include <Windows.h>
 
 Timer::Timer()
 {
@@ -32,6 +33,8 @@ float Timer::GetElapsedTime()
 	float elapsedTime = ClockDiff(nowTime, lastTime);
 	lastTime = nowTime;
 
+
+
 	return elapsedTime;
 }
 
@@ -43,7 +46,7 @@ void Timer::ResetTimer()
 float Timer::ClockDiff(clock_t clock1, clock_t clock2)
 {
 	double diffticks=clock1-clock2;
-	double diffms=(diffticks*10)/CLOCKS_PER_SEC;
+	double diffms=(diffticks)/(CLOCKS_PER_SEC*100);
 
 	return (float)diffms;
 }

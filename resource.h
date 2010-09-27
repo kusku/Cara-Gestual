@@ -146,6 +146,8 @@
 #define ID_BOCA_DENTBAIX                32944
 #define ID_MBOCA_DENTDALT               32945
 #define ID_MBOCA_DENTBAIX               32946
+#define ID_ANIMACI32947                 32947
+#define ID_PARLABUCLE                   32948
 #define ID_INDICATOR_R                  59142
 #define ID_INDICATOR_ALFA               59143
 #define ID_INDICATOR_BETA               59144
@@ -162,7 +164,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        130
-#define _APS_NEXT_COMMAND_VALUE         32947
+#define _APS_NEXT_COMMAND_VALUE         32949
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

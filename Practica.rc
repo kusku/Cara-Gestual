@@ -175,6 +175,7 @@ BEGIN
             MENUITEM "Lent",                        ID_SLOW
             MENUITEM "Molt Lent",                   ID_VSLOW
         END
+        MENUITEM "Parla Bucle",                 ID_PARLABUCLE
     END
     POPUP "V&eure"
     BEGIN

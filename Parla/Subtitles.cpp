@@ -8,7 +8,7 @@ CSubtitles::CSubtitles()
 	green = 1.f;
 	blue = 1.f;
 	alpha = 1.f;
-	posX = 300.f;
+	posX = 100.f;
 	posY = 100.f;
 	subtitle = "Com que no em puc menjar una mandarina, em compro un pressec.";
 }
@@ -46,6 +46,7 @@ void CSubtitles::ParseSubtitles()
 void CSubtitles::RenderSubtitles()
 {
 	char* frase = subtitle;
+
 	SetProjection2D();
 	glColor4f(red,green,blue,alpha); 
 	glPushMatrix();
@@ -55,6 +56,7 @@ void CSubtitles::RenderSubtitles()
 			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *frase); 
 			++frase;
 		}
+		
 	glPopMatrix();
 	SetProjection3D();
 }

@@ -186,3 +186,15 @@ SPoint3D EditorManager::GetDominantVertex( void )
 {
 	return objecte->GetPoint(DominantVertex);
 }
+
+void EditorManager::ClearVertexs ( void )
+{
+	CurrentVertex = 0;
+	CurrentMuscle = NONE_MUSCLE;
+
+	int nVertex = objecte->GetNumVertexs();
+	for ( int i = 0; i < nVertex; ++i ) {
+		VertexList[i] = false;
+		DeltaList[i] = 0.0;
+	}
+}

@@ -2,6 +2,7 @@
 #define XMLREADER_H
 #include "../Expresions/ExpressionManager.h"
 #include "../Muscles/MuscleManager.h"
+#include "../Seleccions/EditorManager.h"
 #include "../SPoint3D.h"
 #include <stdio.h>
 #include <stdlib.h> 
@@ -10,7 +11,7 @@
 
 class XMLReader {
 public:
-	XMLReader(char* path, ExpressionManager* EManager, MuscleManager* MManager);
+	XMLReader(char* path, ExpressionManager* EManager, MuscleManager* MManager, EditorManager* EditorM);
 	~XMLReader();
 	void	Read();
 
@@ -18,6 +19,7 @@ private:
 	SPoint3D			punt;
 	ExpressionManager*	EManager;
 	MuscleManager*		MManager;
+	EditorManager*		EditorM;
 	FILE				*fitxer;
 	
 	char				num		[4];

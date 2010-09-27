@@ -184,6 +184,7 @@ public:
 
 // Variables de temps de parla
 	float tempsParla;
+	float tParlaBucle;
 
 	//XMLReader* lector;
 	//XMLWriter* escritor;
@@ -364,6 +365,8 @@ protected:
 	afx_msg void OnVSlow();
 	afx_msg void OnUpdateVSlow(CCmdUI *pCmdUI);
 	afx_msg void OnParla(); // Activa la parla del personatge
+	afx_msg void OnParlaBucle(); // Activa la parla del personatge
+
 
 
 	//}}AFX_MSG

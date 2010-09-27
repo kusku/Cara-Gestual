@@ -5,6 +5,8 @@
 
 Muscle::Muscle()
 {
+	vertexIndex = NULL;
+	vertexDelta = NULL;
 	size=0;
 }
 Muscle::~Muscle()
@@ -96,9 +98,12 @@ unsigned int* Muscle::getVertexIndex(void)
 int	Muscle::searchMuscle(unsigned int vertex)
 {
 	//Buscar on es troba el vertex
-	for (int i = 0; i < size; i++) {
-		if ( vertexIndex[i] == vertex ) {
-			return i;
+	if (vertexIndex != NULL)
+	{
+		for (int i = 0; i < size; i++) {
+			if ( vertexIndex[i] == vertex ) {
+				return i;
+			}
 		}
 	}
 	return -1;
@@ -121,5 +126,19 @@ void Muscle::RenderMuscle( Objecte3D* obj3D )
 			glTranslatef(vertex.x, vertex.y, vertex.z);
 			glutSolidSphere(0.1,5,5);
 		glPopMatrix();
+	}
+}
+
+void Muscle::ClearMuscle ()
+{
+	if (vertexIndex != NULL && vertexDelta != NULL)
+	{
+		delete [] vertexIndex;
+		delete [] vertexDelta;
+
+		vertexIndex = NULL;
+		vertexDelta = NULL;
+
+		size = 0;
 	}
 }

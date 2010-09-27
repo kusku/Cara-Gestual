@@ -54,3 +54,8 @@ void MuscleManager::SetModel( Objecte3D* ObOBJ )
 {
 	this->obj3D = ObOBJ;
 }
+
+void MuscleManager::ClearMuscle( TypeMuscle numMuscle )
+{
+	muscles[numMuscle]->ClearMuscle();
+}
