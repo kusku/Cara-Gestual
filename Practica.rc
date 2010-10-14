@@ -101,6 +101,7 @@ BEGIN
     BEGIN
         MENUITEM "Obrir Fitxer 3DS",            ID_FILE_OPEN_3DS
         MENUITEM "Obrir Fitxer OBJ",            ID_FILE_OPEN_OBJ
+        MENUITEM "Càrrega Automàtica",          ID_AUTOMATIC
         MENUITEM SEPARATOR
         MENUITEM "Importar Muscles",            ID_IMPORT_MUSCLES
         MENUITEM "Importar Expressions",        ID_IMPORT_EXPRESSIONS

@@ -281,6 +281,7 @@ protected:
 	afx_msg void OnUpdateIFixe(CCmdUI* pCmdUI);
 
 	// Creació de funcions sobre Muscles i Expressions
+	afx_msg void OnCarregaAutomatica();
 	afx_msg void OnImportMuscles();
 	afx_msg void OnExportMuscles();
 	afx_msg void OnImportExpressions();

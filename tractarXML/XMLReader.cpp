@@ -1,5 +1,7 @@
 #include "../stdafx.h"
 #include "XMLReader.h"
+#include <sstream>
+#include <fstream>
 
 char paraula [20];
 char atribut [20];

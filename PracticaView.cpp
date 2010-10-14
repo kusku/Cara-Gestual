@@ -131,6 +131,7 @@ BEGIN_MESSAGE_MAP(CPracticaView, CView)
 	ON_UPDATE_COMMAND_UI(ID_POLAR_X, &CPracticaView::OnUpdatePolarX)
 
 	//Vinculació de funcions de Muscles i Expressions amb el menú gràfic de l'aplicació.
+	ON_COMMAND(ID_AUTOMATIC, &CPracticaView::OnCarregaAutomatica)
 	ON_COMMAND(ID_IMPORT_MUSCLES, &CPracticaView::OnImportMuscles)
 	ON_COMMAND(ID_EXPORT_MUSCLES, &CPracticaView::OnExportMuscles)
 	ON_COMMAND(ID_IMPORT_EXPRESSIONS, &CPracticaView::OnImportExpressions)
@@ -139,6 +140,7 @@ BEGIN_MESSAGE_MAP(CPracticaView, CView)
 	ON_UPDATE_COMMAND_UI(ID_MUSCLE_EDIT, &CPracticaView::OnUpdateMuscleEdit)
 	ON_COMMAND(ID_EXPRESSION_EDIT, &CPracticaView::OnExpressionEdit)
 	ON_UPDATE_COMMAND_UI(ID_EXPRESSION_EDIT, &CPracticaView::OnUpdateExpressionEdit)
+
 
 	ON_COMMAND(ID_MCELLES_DRETA, &CPracticaView::OnMCellesDreta)
 	ON_UPDATE_COMMAND_UI(ID_MCELLES_DRETA, &CPracticaView::OnUpdateMCellesDreta)
@@ -1763,12 +1765,11 @@ GLfloat vdir[3]={0,0,0};
 // Obrir fitxer en format gràfic 3DS
 void CPracticaView::OnFileOpen3ds()
 {
-// TODO: Add your command handler code here
 	if(ObOBJ!=NULL) delete ObOBJ;
 
 	objecte=OBJOBJ;
 
-// Obrir diàleg de lectura de fitxer
+	// Obrir diàleg de lectura de fitxer
 		CFileDialog openOBJ (TRUE, NULL, NULL,
 			OFN_FILEMUSTEXIST | OFN_HIDEREADONLY ,
 			_T("3DS Files(*.3ds)|*.3ds|Error Files (*.err)|*err|All Files (*.*)|*.*||"));;
@@ -1776,7 +1777,7 @@ void CPracticaView::OnFileOpen3ds()
 			if (openOBJ.DoModal() != IDOK)	return;  // stay with old data file
 			else nom=openOBJ.GetPathName();
 	
-// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
+	// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
 	char * nomfitx = (char *)(LPCTSTR)nom;
 
 	/* i carreguem */	
@@ -1786,11 +1787,24 @@ void CPracticaView::OnFileOpen3ds()
 	wglMakeCurrent(m_hDC,NULL);	// Desactivem contexte OpenGL
 
 	MManager->SetModel(ObOBJ);
-//Resetejar la memòria de Selection
+	//Resetejar la memòria de Selection
 	if (select != NULL)
 		select->SetFlagsTriangles();
 
-// Crida a OnPaint() per redibuixar l'escena
+	//Borrem els muscles i expressions que hi pugui haver
+		int expressions = EManager->getNumExpressions();
+		for (int i=0; i<expressions; ++i)
+		{
+			EManager->resetExpression((TypeExpression) i);
+		}
+		int muscles = MManager->getNumMuscles();
+		for (int i=0; i<muscles;++i)
+		{
+			MManager->ClearMuscle((TypeMuscle) i);
+		}
+		editor->ClearVertexs();
+
+	// Crida a OnPaint() per redibuixar l'escena
 	Invalidate();
 }
 
@@ -1798,20 +1812,19 @@ void CPracticaView::OnFileOpen3ds()
 // OnFileOpenObj: Obrir fitxer en format gràfic OBJ
 void CPracticaView::OnFileOpenObj()
 {
-// TODO: Add your command handler code here
 	if(ObOBJ!=NULL) delete ObOBJ;
 
 	objecte=OBJOBJ;
 
-// Obrir diàleg de lectura de fitxer
+	// Obrir diàleg de lectura de fitxer
 		CFileDialog openOBJ (TRUE, NULL, NULL,
 			OFN_FILEMUSTEXIST | OFN_HIDEREADONLY ,
 			_T("OBJ Files(*.obj)|*.obj|All Files (*.*)|*.*||"));;
 
 			if (openOBJ.DoModal() != IDOK)	return;  // stay with old data file
 			else nom=openOBJ.GetPathName();
-	
-// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
+
+	// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
 	char * nomfitx = (char *)(LPCTSTR)nom;
 
 	/* i carreguem */	
@@ -1821,14 +1834,63 @@ void CPracticaView::OnFileOpenObj()
 	wglMakeCurrent(m_hDC,NULL);	// Desactivem contexte OpenGL
 
 	MManager->SetModel(ObOBJ);
-//Resetejar la memòria de Selection
+	//Resetejar la memòria de Selection
 	if (select != NULL)
 		select->SetFlagsTriangles();
+	//Borrem els muscles i expressions que hi pugui haver
+		int expressions = EManager->getNumExpressions();
+		for (int i=0; i<expressions; ++i)
+		{
+			EManager->resetExpression((TypeExpression) i);
+		}
+		int muscles = MManager->getNumMuscles();
+		for (int i=0; i<muscles;++i)
+		{
+			MManager->ClearMuscle((TypeMuscle) i);
+		}
+		editor->ClearVertexs();
 
-// Crida a OnPaint() per redibuixar l'escena
+	// Crida a OnPaint() per redibuixar l'escena
 	Invalidate();	
 }
 
+void CPracticaView::OnCarregaAutomatica()
+{
+	if(ObOBJ!=NULL) delete ObOBJ;
+	objecte=OBJOBJ;
+			
+	//TODO: Path
+	nom = "./Data/Models/heavytriangles/heavyweapons.obj";
+
+	// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
+	char * nomfitx = (char *)(LPCTSTR)nom;
+
+	/* i carreguem */	
+	wglMakeCurrent(m_hDC,m_hRC);	// Activem contexte OpenGL
+	ObOBJ = new Objecte3D(nomfitx,TIPUS_OBJ);
+	editor = new EditorManager(MManager,EManager,ObOBJ);
+	wglMakeCurrent(m_hDC,NULL);	// Desactivem contexte OpenGL
+
+	MManager->SetModel(ObOBJ);
+	//Resetejar la memòria de Selection
+	if (select != NULL)
+		select->SetFlagsTriangles();
+	//Borrem els muscles i expressions que hi pugui haver
+		int expressions = EManager->getNumExpressions();
+		for (int i=0; i<expressions; ++i)
+		{
+			EManager->resetExpression((TypeExpression) i);
+		}
+		int muscles = MManager->getNumMuscles();
+		for (int i=0; i<muscles;++i)
+		{
+			MManager->ClearMuscle((TypeMuscle) i);
+		}
+		editor->ClearVertexs();
+
+	// Crida a OnPaint() per redibuixar l'escena
+	Invalidate();	
+}
 
 // Escriure fitxer
 //void CPracticaView::OnFileSaveAs() 
@@ -3415,7 +3477,7 @@ void CPracticaView::OnParlaBucle()
 
 	while ( parla->IsTalking() )
 	{
-		if (acumulativeTime < 0.8f)
+		if (acumulativeTime < 1.f)
 		{
 			Timer::GetInstance()->ResetTimer();
 			anima = true;
