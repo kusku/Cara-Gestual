@@ -4,7 +4,7 @@
 #include <fstream>
 
 char paraula [20];
-char atribut [20];
+char atribut [200];
 
 XMLReader::XMLReader(char* path, ExpressionManager* EManager, MuscleManager* MManager, EditorManager* EditorM) 
 {
@@ -70,6 +70,25 @@ void XMLReader::Read() {
 		}
 		EditorM->ClearVertexs();
 		ReadMuscles();
+	}
+	else if (strncmp(paraula,"<Actors>",8) == 0)
+	{
+		// Elimina les expressions antigues i carrega el nou XML
+		int expressions = EManager->getNumExpressions();
+		for (int i=0; i<expressions; ++i)
+		{
+			EManager->resetExpression((TypeExpression) i);
+		}
+
+		// Elimina els muscles antics i carrega el nou XML
+		int muscles = MManager->getNumMuscles();
+		for (int i=0; i<muscles;++i)
+		{
+			MManager->ClearMuscle((TypeMuscle) i);
+		}
+		EditorM->ClearVertexs();
+	
+		ReadActors();
 	}
 	fclose(fitxer);
 }
@@ -233,4 +252,10 @@ void XMLReader::ReadMuscles() {
 		}
 	}
 	while(strncmp(paraula,"</muscles>",10)!=0);
+}
+
+void XMLReader::ReadActors()
+{
+	ReadAtribut();
+
 }

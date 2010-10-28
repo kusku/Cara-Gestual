@@ -35,6 +35,7 @@ private:
 	float				ConvertirNum();
 	void				ReadExpressions();
 	void				ReadMuscles();
+	void				ReadActors();
 };
 
 #endif

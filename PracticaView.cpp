@@ -416,49 +416,50 @@ int CPracticaView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	int nPixelFormat;					// Index del format de pixel
 	m_hDC = ::GetDC(m_hWnd);			// Agafa un contexte de dispositiu per la Finestra
 
-	static  PIXELFORMATDESCRIPTOR pfd= {
-		sizeof(PIXELFORMATDESCRIPTOR),
-			1,							// Version number
-			PFD_DRAW_TO_WINDOW |		// Dibuixa a la finestra(no en un mapa)
-			PFD_SUPPORT_OPENGL |        // Suport de crida a OpenGL a la finestra
-			PFD_DOUBLEBUFFER |			// Doble buffer
-			PFD_TYPE_RGBA,				// Requested An RGBA Format
-			24,							// Color 24 bits
-			0,0,0,0,0,0,				// Bits de color
-			0,							// No Alpha Buffer
-			0,							// Shift Bit Ignored
-			0,							// No Accumulation Buffer
-			0,0,0,0,					// Accumulation Bits Ignored
-			32,							// 32 Bits Z-Buffer (Depth Buffer)
-			0,							// No Stencil Buffer
-			0,							// No Auxiliary Buffer
-			PFD_MAIN_PLANE,				// Dibuix del pla principal
-			0,							// Reserved
-			0,0,0 };					// Layer masks Ignored
-		
-// Format del pixel que millor s'ajusti al descrit en pfd
-    nPixelFormat= ChoosePixelFormat(m_hDC, &pfd);
-	if (!nPixelFormat)
-		{::MessageBox(0,"Error en el PixelFormat","Error",MB_OK|MB_ICONERROR);
-			PostQuitMessage(0);		// This sends a message telling the program to quit
-			return false;
-		}
-
-// Activació format pixel per al contexte dispositiu
-//			SetPixelFormat(m_hDC,nPixelFormat,&pfd);
-	if (!SetPixelFormat(m_hDC,nPixelFormat,&pfd))
-		{	::MessageBox(0,"Error en el SetPixelFormat","Error",MB_OK|MB_ICONERROR);
-			PostQuitMessage(0);		// This sends a message telling the program to quit
-			return false;	
-		}
-
-// Creació contexte generació OpenGL
-	m_hRC=wglCreateContext(m_hDC);
-	if (!m_hRC)
-		{	::MessageBox(0,"Error en el GL Rendering Context","Error",MB_OK|MB_ICONERROR);
-			PostQuitMessage(0);		// This sends a message telling the program to quit
-			return false;
-		}
+	CDirectX::GetInstance()->InitDX(lpCreateStruct->hwndParent);
+//	static  PIXELFORMATDESCRIPTOR pfd= {
+//		sizeof(PIXELFORMATDESCRIPTOR),
+//			1,							// Version number
+//			PFD_DRAW_TO_WINDOW |		// Dibuixa a la finestra(no en un mapa)
+//			PFD_SUPPORT_OPENGL |        // Suport de crida a OpenGL a la finestra
+//			PFD_DOUBLEBUFFER |			// Doble buffer
+//			PFD_TYPE_RGBA,				// Requested An RGBA Format
+//			24,							// Color 24 bits
+//			0,0,0,0,0,0,				// Bits de color
+//			0,							// No Alpha Buffer
+//			0,							// Shift Bit Ignored
+//			0,							// No Accumulation Buffer
+//			0,0,0,0,					// Accumulation Bits Ignored
+//			32,							// 32 Bits Z-Buffer (Depth Buffer)
+//			0,							// No Stencil Buffer
+//			0,							// No Auxiliary Buffer
+//			PFD_MAIN_PLANE,				// Dibuix del pla principal
+//			0,							// Reserved
+//			0,0,0 };					// Layer masks Ignored
+//		
+//// Format del pixel que millor s'ajusti al descrit en pfd
+//    nPixelFormat= ChoosePixelFormat(m_hDC, &pfd);
+//	if (!nPixelFormat)
+//		{::MessageBox(0,"Error en el PixelFormat","Error",MB_OK|MB_ICONERROR);
+//			PostQuitMessage(0);		// This sends a message telling the program to quit
+//			return false;
+//		}
+//
+//// Activació format pixel per al contexte dispositiu
+////			SetPixelFormat(m_hDC,nPixelFormat,&pfd);
+//	if (!SetPixelFormat(m_hDC,nPixelFormat,&pfd))
+//		{	::MessageBox(0,"Error en el SetPixelFormat","Error",MB_OK|MB_ICONERROR);
+//			PostQuitMessage(0);		// This sends a message telling the program to quit
+//			return false;	
+//		}
+//
+//// Creació contexte generació OpenGL
+//	m_hRC=wglCreateContext(m_hDC);
+//	if (!m_hRC)
+//		{	::MessageBox(0,"Error en el GL Rendering Context","Error",MB_OK|MB_ICONERROR);
+//			PostQuitMessage(0);		// This sends a message telling the program to quit
+//			return false;
+//		}
 	 
 	return true;
 }
@@ -468,13 +469,16 @@ void CPracticaView::OnDestroy()
 
 
 // ATENCIÓ:MODIFICACIÓ OPENGL
-	 wglDeleteContext(m_hRC);
+	// wglDeleteContext(m_hRC);
+	CDirectX::GetInstance()->EndRenderDX();
+
 	 
 	 CView::OnDestroy();
 }
 
 void CPracticaView::OnPaint() 
 {
+	//TODO: Passar tota la funció a DIrectX
 	CPaintDC dc(this); // device context for painting
 
 	GLfloat vpv[3]={0.0,0.0,1.0};
@@ -484,7 +488,7 @@ void CPracticaView::OnPaint()
 // ATENCIÓ:MODIFICACIÓ OPENGL
 
 // Activació el contexte OpenGL
-    wglMakeCurrent(m_hDC,m_hRC);
+   // wglMakeCurrent(m_hDC,m_hRC);
 
 // Cridem a les funcions de l'escena i la projecció segons s'hagi 
 // seleccionat una projecció o un altra
@@ -555,7 +559,7 @@ void CPracticaView::OnPaint()
 	}
 
 // Permet la coexistencia d'altres contextes de generació
-	wglMakeCurrent(m_hDC,NULL);
+	//wglMakeCurrent(m_hDC,NULL);
 
 //  Actualitzar la barra d'estat de l'aplicació amb els valors R,A,B,PVx,PVy,PVz
 	Barra_Estat();

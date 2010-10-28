@@ -13,6 +13,7 @@
 #include "Seleccions/EditorManager.h"
 #include "Parla/Subtitles.h"
 #include "Parla/Parla.h"
+#include "CDirectX.h"
 
 /* ------------------------------------------------------------------------- */
 /*                                Funcions                                   */

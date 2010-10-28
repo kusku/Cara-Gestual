@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "Practica.h"
+#include "CDirectX.h"
 
 #include "MainFrm.h"
 
@@ -99,7 +100,6 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
-
 	return CFrameWnd::PreCreateWindow(cs);
 }
 

@@ -33,6 +33,9 @@
 #include <gl\glaux.h>
 #include <gl\glut.h>
 
+//Llibreries DirectX
+#include <d3dx9.h>
+
 // GC2: Llibreries DevIL/OpenIL per llegir imatges de diferents formats 
 //     (BMP,JPG,TIF,GIF,etc.) en la funció loadIMA (visualitzacio.cpp)
 //#include <il\il.h>

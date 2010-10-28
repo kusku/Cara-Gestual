@@ -321,7 +321,7 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,GLfloat t
 				 EditorManager* EdManager, Objecte3D* ObOBJ, MuscleManager* MManager, bool flags,
 				 CSubtitles* MSubtitles, bool subtitles, CParla* parla)
 {    
-	GLfloat cam[3],up[3];
+	//GLfloat cam[3],up[3];
 
 // Conversió angles radians -> graus
    	angley=angley*2*pi/360;
@@ -329,115 +329,118 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,GLfloat t
 //    R=300.0+zoom; 
 	if(R<1.0) R=1.0;
 
-// Neteja dels buffers de color i profunditat
-	Fons(col_fons);
+	CDirectX::GetInstance()->BeginRenderDX();
+//// Neteja dels buffers de color i profunditat
+//	//Fons(col_fons);
+//
+//// Posició càmera i vector cap amunt
+///*    cam[0]=R*cos(angley)*cos(anglex);
+//	cam[1]=R*sin(angley)*cos(anglex);
+//	cam[2]=R*sin(anglex);
+//    up[0]=-cos(angley)*sin(anglex);
+//	up[1]=-sin(angley)*sin(anglex);
+//	up[2]=cos(anglex);
+//*/
+//
+//	if (VPol==POLARZ) { cam[0]=R*cos(angley)*cos(anglex);
+//						cam[1]=R*sin(angley)*cos(anglex);
+//						cam[2]=R*sin(anglex);
+//						up[0]=-cos(angley)*sin(anglex);
+//						up[1]=-sin(angley)*sin(anglex);
+//						up[2]=cos(anglex);	}
+//		else if (VPol==POLARY) {	cam[0]=R*sin(angley)*cos(anglex);
+//									cam[1]=R*sin(anglex);
+//									cam[2]=R*cos(angley)*cos(anglex);
+//									up[0]=-sin(angley)*sin(anglex);
+//									up[1]=cos(anglex);
+//									up[2]=-cos(angley)*sin(anglex);	}
+//			else {	cam[0]=R*sin(anglex);
+//					cam[1]=R*cos(angley)*cos(anglex);
+//					cam[2]=R*sin(angley)*cos(anglex);
+//					up[0]=cos(anglex);
+//					up[1]=-cos(angley)*sin(anglex);
+//					up[2]=-sin(angley)*sin(anglex);	}
+//
+//// Iluminacio movent-se amb la camara (abans glLookAt)
+//	if (!ifix) Iluminacio(iluminacio,textur,objecte,bck_ln);
+//
+//// Opció pan: desplaçament del Centre de l'esfera (pant=1)
+//	if (pant) glTranslatef(tr[0],tr[1],tr[2]);
+//
+//// Especificació del punt de vista
+//   gluLookAt(cam[0],cam[1],cam[2],0.,0.,0.,
+//		 up[0],up[1],up[2]);
+//
+//// Iluminacio fixe respecte la camara (després glLookAt)
+//	if (ifix) Iluminacio(iluminacio,textur,objecte,bck_ln);
+//
+//// Test de Visibilitat
+//	if (testv) glEnable(GL_CULL_FACE);
+//		else glDisable(GL_CULL_FACE);
+//
+//// Ocultacions (Z-buffer)
+//	if (oculta) glEnable(GL_DEPTH_TEST);
+//		else glDisable(GL_DEPTH_TEST);
+//
+////  Dibuix dels eixos
+//	if (eix) glCallList(EIXOS);
+//
+//// Dibuixa l'objecte
+//    glPushMatrix();
+//
+//// Transformacions geomètriques sobre objecte (Traslació, Rotacions i Escalatge)
+//	if (TR) 
+//		{	glTranslatef(VTr.x,VTr.y,VTr.z);
+//			glRotatef(VRot.x,1,0,0);
+//			glRotatef(VRot.y,0,1,0);
+//			glRotatef(VRot.z,0,0,1);
+//			glScalef(VScl.x,VScl.y,VScl.z);
+//		}
+//
+//	switch (objecte)
+//	{
+//
+//		case TRUCK:
+//// Dibuix del Truck
+//			glDisable(GL_TEXTURE_2D);
+//			sea();
+//			truck(textur,textures);
+//			break;
+//
+//		case OBJ3DS:
+//		case OBJOBJ:
+//// Objecte OBJ: Dibuix de l'objecte OBJ
+//			//glCallList(OBJECTEOBJ);
+//			if (ObOBJ != NULL)
+//				ObOBJ->Render();
+//
+//			break;
+//
+//		default:
+//// Dibuix de la resta d'objectes
+//			dibuixa(objecte);
+//			break;
+//	}
+//	// RenderSelectedMuscle(muscle,MManager,ObOBJ);
+//	renderSphereSelection(EdManager, muscle);
+//
+//	drawSelectionBox(wx1,wy1,wx2,wy2);
+//
+//	// Dibuixar els subtítols
+//	if (subtitles && parla->IsTalking())
+//	{
+//		Iluminacio(FILFERROS,textur,objecte,bck_ln);
+//		MSubtitles->RenderSubtitles();
+//		Iluminacio(iluminacio,textur,objecte,bck_ln);
+//	}
+//
+//	glPopMatrix();
+//	
+//	glGetDoublev (GL_MODELVIEW_MATRIX, ModelViewMatrix);
+//// Enviar les comandes gràfiques a pantalla
+//	glFlush();
 
-// Posició càmera i vector cap amunt
-/*    cam[0]=R*cos(angley)*cos(anglex);
-	cam[1]=R*sin(angley)*cos(anglex);
-	cam[2]=R*sin(anglex);
-    up[0]=-cos(angley)*sin(anglex);
-	up[1]=-sin(angley)*sin(anglex);
-	up[2]=cos(anglex);
-*/
-
-	if (VPol==POLARZ) { cam[0]=R*cos(angley)*cos(anglex);
-						cam[1]=R*sin(angley)*cos(anglex);
-						cam[2]=R*sin(anglex);
-						up[0]=-cos(angley)*sin(anglex);
-						up[1]=-sin(angley)*sin(anglex);
-						up[2]=cos(anglex);	}
-		else if (VPol==POLARY) {	cam[0]=R*sin(angley)*cos(anglex);
-									cam[1]=R*sin(anglex);
-									cam[2]=R*cos(angley)*cos(anglex);
-									up[0]=-sin(angley)*sin(anglex);
-									up[1]=cos(anglex);
-									up[2]=-cos(angley)*sin(anglex);	}
-			else {	cam[0]=R*sin(anglex);
-					cam[1]=R*cos(angley)*cos(anglex);
-					cam[2]=R*sin(angley)*cos(anglex);
-					up[0]=cos(anglex);
-					up[1]=-cos(angley)*sin(anglex);
-					up[2]=-sin(angley)*sin(anglex);	}
-
-// Iluminacio movent-se amb la camara (abans glLookAt)
-	if (!ifix) Iluminacio(iluminacio,textur,objecte,bck_ln);
-
-// Opció pan: desplaçament del Centre de l'esfera (pant=1)
-	if (pant) glTranslatef(tr[0],tr[1],tr[2]);
-
-// Especificació del punt de vista
-   gluLookAt(cam[0],cam[1],cam[2],0.,0.,0.,
-		 up[0],up[1],up[2]);
-
-// Iluminacio fixe respecte la camara (després glLookAt)
-	if (ifix) Iluminacio(iluminacio,textur,objecte,bck_ln);
-
-// Test de Visibilitat
-	if (testv) glEnable(GL_CULL_FACE);
-		else glDisable(GL_CULL_FACE);
-
-// Ocultacions (Z-buffer)
-	if (oculta) glEnable(GL_DEPTH_TEST);
-		else glDisable(GL_DEPTH_TEST);
-
-//  Dibuix dels eixos
-	if (eix) glCallList(EIXOS);
-
-// Dibuixa l'objecte
-    glPushMatrix();
-
-// Transformacions geomètriques sobre objecte (Traslació, Rotacions i Escalatge)
-	if (TR) 
-		{	glTranslatef(VTr.x,VTr.y,VTr.z);
-			glRotatef(VRot.x,1,0,0);
-			glRotatef(VRot.y,0,1,0);
-			glRotatef(VRot.z,0,0,1);
-			glScalef(VScl.x,VScl.y,VScl.z);
-		}
-
-	switch (objecte)
-	{
-
-		case TRUCK:
-// Dibuix del Truck
-			glDisable(GL_TEXTURE_2D);
-			sea();
-			truck(textur,textures);
-			break;
-
-		case OBJ3DS:
-		case OBJOBJ:
-// Objecte OBJ: Dibuix de l'objecte OBJ
-			//glCallList(OBJECTEOBJ);
-			if (ObOBJ != NULL)
-				ObOBJ->Render();
-
-			break;
-
-		default:
-// Dibuix de la resta d'objectes
-			dibuixa(objecte);
-			break;
-	}
-	// RenderSelectedMuscle(muscle,MManager,ObOBJ);
-	renderSphereSelection(EdManager, muscle);
-
-	drawSelectionBox(wx1,wy1,wx2,wy2);
-
-	// Dibuixar els subtítols
-	if (subtitles && parla->IsTalking())
-	{
-		Iluminacio(FILFERROS,textur,objecte,bck_ln);
-		MSubtitles->RenderSubtitles();
-		Iluminacio(iluminacio,textur,objecte,bck_ln);
-	}
-
-	glPopMatrix();
-	
-	glGetDoublev (GL_MODELVIEW_MATRIX, ModelViewMatrix);
-// Enviar les comandes gràfiques a pantalla
-	glFlush();
+	CDirectX::GetInstance()->EndRenderDX();
 }
 
 

@@ -14,6 +14,7 @@
 #endif // _MSC_VER >= 1000
 
 #include "stdafx.h"
+#include "CDirectX.h"
 
 // OBJECTE 3DS: Include per la definició de l'objecte Obj_3DS
 #include "lectorsModels/Obj3DS.h"	
