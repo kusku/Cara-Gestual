@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "CDirectX.h"
-#include "defines.h"
+#include "../defines.h"
 #include <assert.h>
 
 
@@ -12,7 +12,11 @@ CDirectX::CDirectX()
 	m_hWnd = NULL;
 	m_paintInfoGame = true;
 	m_paintInfoInput = false;
-	m_drawAxisGrid = true;
+	m_ZBuffer = true;
+
+	l_Eye = D3DXVECTOR3(0.0f,5.0f,-5.0f);
+	l_LookAt = D3DXVECTOR3(0.0f,0.0f,0.0f);
+	l_VUP = D3DXVECTOR3(0.0f,1.0f,0.0f);
 }
 
 CDirectX::~CDirectX()
@@ -91,7 +95,7 @@ void CDirectX::SetupMatrices()
 
 	D3DXMATRIX m_matView;
 	D3DXMATRIX m_matProject;
-	D3DXVECTOR3 l_Eye(0.0f,5.0f,-5.0f), l_LookAt(0.0f,0.0f,0.0f), l_VUP(0.0f,1.0f,0.0f);
+	//D3DXVECTOR3 l_Eye(0.0f,5.0f,-5.0f), l_LookAt(0.0f,0.0f,0.0f), l_VUP(0.0f,1.0f,0.0f);
 
 	D3DXMatrixLookAtLH( &m_matView, &l_Eye, &l_LookAt, &l_VUP);
 	D3DXMatrixPerspectiveFovLH( &m_matProject, 
@@ -106,8 +110,8 @@ void CDirectX::SetupMatrices()
 
 void CDirectX::BeginRenderDX()
 {
-		#ifdef _DEBUG // Clear the backbuffer to a blue color in a Debug mode
-		m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,0xff), 1.0f, 0 );
+	#ifdef _DEBUG // Clear the backbuffer to a blue color in a Debug mode
+		m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,0), 1.0f, 0 );
 	#else // Clear the backbuffer to a black color in a Release mode
 		m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,0), 1.0f, 0 );
 	#endif
@@ -117,9 +121,20 @@ void CDirectX::BeginRenderDX()
     HRESULT hr=m_pD3DDevice->BeginScene();
 	assert( SUCCEEDED( hr ) );
 	m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW);
-	m_pD3DDevice->SetRenderState( D3DRS_ZENABLE,D3DZB_TRUE);
-	m_pD3DDevice->SetRenderState( D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	m_pD3DDevice->SetRenderState( D3DRS_ZWRITEENABLE, TRUE);
+
+	if (m_ZBuffer)
+	{
+		m_pD3DDevice->SetRenderState( D3DRS_ZENABLE,D3DZB_TRUE);
+		m_pD3DDevice->SetRenderState( D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+		m_pD3DDevice->SetRenderState( D3DRS_ZWRITEENABLE, TRUE);
+	}
+	else
+	{
+		m_pD3DDevice->SetRenderState( D3DRS_ZENABLE,D3DZB_FALSE);
+		m_pD3DDevice->SetRenderState( D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+		m_pD3DDevice->SetRenderState( D3DRS_ZWRITEENABLE, FALSE);
+	}
+	
 	m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
 	m_pD3DDevice->SetRenderState( D3DRS_DITHERENABLE, TRUE );
 	m_pD3DDevice->SetRenderState( D3DRS_SPECULARENABLE, FALSE );
@@ -139,3 +154,24 @@ void CDirectX::EndRenderDX()
     // Present the backbuffer contents to the display
     m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
 }
+
+void CDirectX::RenderAxis(float size)
+{
+	DrawLine(D3DXVECTOR3(0.0f,0.0f,0.0f),D3DXVECTOR3(size,0.0f,0.0f),0xffff0000);
+	DrawLine(D3DXVECTOR3(0.0f,0.0f,0.0f),D3DXVECTOR3(0.0f,size,0.0f),0xff00ff00);
+	DrawLine(D3DXVECTOR3(0.0f,0.0f,0.0f),D3DXVECTOR3(0.0f,0.0f,size),0xff0000ff);
+}
+
+void CDirectX::DrawLine(const D3DXVECTOR3 &PosA, const D3DXVECTOR3 &PosB, DWORD Color)
+{
+	CUSTOMVERTEX v[2] =
+	{
+		{PosA.x, PosA.y, PosA.z, Color},
+		{PosB.x, PosB.y, PosB.z, Color},
+	};
+
+	m_pD3DDevice->SetTexture(0,NULL);
+	m_pD3DDevice->SetFVF(CUSTOMVERTEX::getFlags());
+	m_pD3DDevice->DrawPrimitiveUP( D3DPT_LINELIST,1, v,sizeof(CUSTOMVERTEX));
+}
+

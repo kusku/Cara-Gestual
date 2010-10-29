@@ -4,14 +4,14 @@
 // escena.cpp : Aqui es on ha d'anar el codi de les funcions que 
 //              dibuixin les escenes.
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "escena.h"
-#include "PracticaView.h"
+#include "../PracticaView.h"
 #include "visualitzacio.h"
-#include "Seleccions/Selection.h"
-#include "lectorsModels/Objecte3D.h"
-#include "Muscles/MuscleManager.h"
-#include "SPoint3D.h"
+#include "../Seleccions/Selection.h"
+#include "../lectorsModels/Objecte3D.h"
+#include "../Muscles/MuscleManager.h"
+#include "../SPoint3D.h"
 
 void renderSphereSelection (EditorManager* EdManager, TypeMuscle muscle)
 {

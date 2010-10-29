@@ -3,7 +3,6 @@
 
 #include "stdafx.h"
 #include "Practica.h"
-#include "CDirectX.h"
 
 #include "MainFrm.h"
 

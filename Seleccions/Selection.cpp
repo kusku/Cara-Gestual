@@ -5,7 +5,7 @@
 #include "../lectorsModels/Objecte3D.h"
 #include "EditorManager.h"
 #include "intersection.h"
-#include "../visualitzacio.h"
+#include "../Render/visualitzacio.h"
 #include <gl/gl.h>
 #include <gl/glu.h>
 

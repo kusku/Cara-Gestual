@@ -13,10 +13,16 @@ private:
 	LPDIRECT3D9             m_pD3D;
 	LPDIRECT3DDEVICE9       m_pD3DDevice;
 
+	D3DXVECTOR3 l_Eye;
+	D3DXVECTOR3 l_LookAt;
+	D3DXVECTOR3 l_VUP;
+
 	bool		m_PaintSolid;		//Indica si pintem els elements sòlids o en wireframe
 	bool		m_paintInfoGame;	//Indica si pintem en text2d informació útil
 	bool		m_paintInfoInput;	//Indica si pintem en text2d les asociacions [input-accion]
-	bool		m_drawAxisGrid;		//Indica si pintem un eix de referència a la posició (0,0,0)
+	bool		m_ZBuffer;
+
+	void		DrawLine (const D3DXVECTOR3 &PosA, const D3DXVECTOR3 &PosB, DWORD Color=0xffffffff);
 
 public:
 
@@ -37,6 +43,13 @@ public:
 	//Finalitza la composició de l'escena amb Direct3D
 	void		EndRenderDX		( void );
 
+	//Render eixos
+	void		RenderAxis		( float size );
+
+	void		SetEye			( D3DXVECTOR3 eye ){ l_Eye = eye; } ;
+	void		SetLookAt		( D3DXVECTOR3 lookAt ) { l_LookAt = lookAt; };
+	void		SetUpVector		( D3DXVECTOR3 upVector ) { l_VUP = upVector; } ;
+	void		SetZBuffer		( bool active ) { m_ZBuffer = active; };
 };
 
 #endif

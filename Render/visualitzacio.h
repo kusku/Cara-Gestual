@@ -7,12 +7,12 @@
 #ifndef GLVIS_H
 #define GLVIS_H
 
-#include "stdafx.h"
-#include "Seleccions/Selection.h"
-#include "Muscles/MuscleManager.h"
-#include "Seleccions/EditorManager.h"
-#include "Parla/Subtitles.h"
-#include "Parla/Parla.h"
+#include "../stdafx.h"
+#include "../Seleccions/Selection.h"
+#include "../Muscles/MuscleManager.h"
+#include "../Seleccions/EditorManager.h"
+#include "../Parla/Subtitles.h"
+#include "../Parla/Parla.h"
 #include "CDirectX.h"
 
 /* ------------------------------------------------------------------------- */

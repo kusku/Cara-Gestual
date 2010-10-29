@@ -19,12 +19,12 @@
 #include "PracticaView.h"
 #include "Muscles/MuscleManager.h"
 #include "Expresions/ExpressionManager.h"
-#include "visualitzacio.h"
+#include "Render/visualitzacio.h"
 #include "SPoint3D.h"
 #include "Seleccions/Selection.h"
 #include "Seleccions/EditorManager.h"
 #include "Timer/Timer.h"
-#include "escena.h"
+#include "Render/escena.h"
 #include <gl\gl.h>
 #include <gl\glu.h>
 #include <gl\glaux.h>
@@ -479,7 +479,7 @@ void CPracticaView::OnDestroy()
 void CPracticaView::OnPaint() 
 {
 	//TODO: Passar tota la funció a DIrectX
-	CPaintDC dc(this); // device context for painting
+	//CPaintDC dc(this); // device context for painting
 
 	GLfloat vpv[3]={0.0,0.0,1.0};
 
@@ -546,7 +546,7 @@ void CPracticaView::OnPaint()
 			}
 
 // Intercanvia l'escena al front de la pantalla
-		SwapBuffers(m_hDC);
+		//SwapBuffers(m_hDC);
 
 		break;
 
@@ -563,7 +563,7 @@ void CPracticaView::OnPaint()
 
 //  Actualitzar la barra d'estat de l'aplicació amb els valors R,A,B,PVx,PVy,PVz
 	Barra_Estat();
-
+	
 // Do not call CView::OnPaint() for painting messages
 }
 

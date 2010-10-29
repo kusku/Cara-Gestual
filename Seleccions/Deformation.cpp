@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "Deformation.h"
-#include "../visualitzacio.h"
+#include "../Render/visualitzacio.h"
 #include "../lectorsModels/Objecte3D.h"
 #include "../Expresions/ExpressionManager.h"
 #include "../Muscles/MuscleManager.h"

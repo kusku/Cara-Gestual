@@ -12,12 +12,12 @@
 //				- Inicialitzar imatges textura per l'objecte Truck
 //
 
-#include "stdafx.h"
+#include "../stdafx.h"
 #include "visualitzacio.h"
 #include "escena.h"
-#include "constants.h"
-#include "Seleccions/Selection.h"
-#include "Muscles/MuscleManager.h"
+#include "../constants.h"
+#include "../Seleccions/Selection.h"
+#include "../Muscles/MuscleManager.h"
 
 // TEXTURES: Vector de noms de textura
 GLuint textures[NUM_MAX_TEXTURES]={0,1,2,3,4,5,6,7,8,9};
@@ -321,7 +321,7 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,GLfloat t
 				 EditorManager* EdManager, Objecte3D* ObOBJ, MuscleManager* MManager, bool flags,
 				 CSubtitles* MSubtitles, bool subtitles, CParla* parla)
 {    
-	//GLfloat cam[3],up[3];
+	D3DXVECTOR3 cam,up;
 
 // Conversió angles radians -> graus
    	angley=angley*2*pi/360;
@@ -329,38 +329,48 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,GLfloat t
 //    R=300.0+zoom; 
 	if(R<1.0) R=1.0;
 
+	// Posició càmera i vector cap amunt
+  /*  cam[0]=R*cos(angley)*cos(anglex);
+	cam[1]=R*sin(angley)*cos(anglex);
+	cam[2]=R*sin(anglex);
+    up[0]=-cos(angley)*sin(anglex);
+	up[1]=-sin(angley)*sin(anglex);
+	up[2]=cos(anglex);*/
+
+	if (VPol==POLARZ) { cam[0]=R*cos(angley)*cos(anglex);
+						cam[1]=R*sin(angley)*cos(anglex);
+						cam[2]=R*sin(anglex);
+						up[0]=-cos(angley)*sin(anglex);
+						up[1]=-sin(angley)*sin(anglex);
+						up[2]=cos(anglex);	}
+		else if (VPol==POLARY) {	cam[0]=R*sin(angley)*cos(anglex);
+									cam[1]=R*sin(anglex);
+									cam[2]=R*cos(angley)*cos(anglex);
+									up[0]=-sin(angley)*sin(anglex);
+									up[1]=cos(anglex);
+									up[2]=-cos(angley)*sin(anglex);	}
+			else {	cam[0]=R*sin(anglex);
+					cam[1]=R*cos(angley)*cos(anglex);
+					cam[2]=R*sin(angley)*cos(anglex);
+					up[0]=cos(anglex);
+					up[1]=-cos(angley)*sin(anglex);
+					up[2]=-sin(angley)*sin(anglex);	}
+
+	// Especificació del punt de vista
+	CDirectX::GetInstance()->SetEye(cam);
+	CDirectX::GetInstance()->SetUpVector(up);
+	CDirectX::GetInstance()->SetLookAt(D3DXVECTOR3(0.f, 0.f, 0.f));
+	
+	//Habilita o no el ZBuffer
+	CDirectX::GetInstance()->SetZBuffer(oculta);
+
+	//Activa el Render en DirectX
 	CDirectX::GetInstance()->BeginRenderDX();
-//// Neteja dels buffers de color i profunditat
-//	//Fons(col_fons);
-//
-//// Posició càmera i vector cap amunt
-///*    cam[0]=R*cos(angley)*cos(anglex);
-//	cam[1]=R*sin(angley)*cos(anglex);
-//	cam[2]=R*sin(anglex);
-//    up[0]=-cos(angley)*sin(anglex);
-//	up[1]=-sin(angley)*sin(anglex);
-//	up[2]=cos(anglex);
-//*/
-//
-//	if (VPol==POLARZ) { cam[0]=R*cos(angley)*cos(anglex);
-//						cam[1]=R*sin(angley)*cos(anglex);
-//						cam[2]=R*sin(anglex);
-//						up[0]=-cos(angley)*sin(anglex);
-//						up[1]=-sin(angley)*sin(anglex);
-//						up[2]=cos(anglex);	}
-//		else if (VPol==POLARY) {	cam[0]=R*sin(angley)*cos(anglex);
-//									cam[1]=R*sin(anglex);
-//									cam[2]=R*cos(angley)*cos(anglex);
-//									up[0]=-sin(angley)*sin(anglex);
-//									up[1]=cos(anglex);
-//									up[2]=-cos(angley)*sin(anglex);	}
-//			else {	cam[0]=R*sin(anglex);
-//					cam[1]=R*cos(angley)*cos(anglex);
-//					cam[2]=R*sin(angley)*cos(anglex);
-//					up[0]=cos(anglex);
-//					up[1]=-cos(angley)*sin(anglex);
-//					up[2]=-sin(angley)*sin(anglex);	}
-//
+	CDirectX::GetInstance()->SetupMatrices();
+
+	if (eix)
+		CDirectX::GetInstance()->RenderAxis(8.0f);
+
 //// Iluminacio movent-se amb la camara (abans glLookAt)
 //	if (!ifix) Iluminacio(iluminacio,textur,objecte,bck_ln);
 //

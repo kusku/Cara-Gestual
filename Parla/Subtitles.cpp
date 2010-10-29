@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "Subtitles.h"
-#include "../escena.h"
+#include "../Render/escena.h"
 
 CSubtitles::CSubtitles()
 {
