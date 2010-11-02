@@ -4,16 +4,30 @@
 #define TIPUS_OBJ 1
 #define TIPUS_3DS 2
 
-#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <gl/gl.h>
 #include <gl/glu.h>
+#include <d3dx9.h>
+#include <vector>
 
+#include "Windows.h"
 #include "../SPoint3D.h"
 #include "objLoader.h"
 #include "../Seleccions/intersection.h"
+#include "../Render/CDirectX.h"
+#include "TextureManager.h"
+
+struct VERTICEXYZ_T2_NORMAL
+{
+    D3DXVECTOR3    pos;
+    D3DXVECTOR3	normal;
+    FLOAT tu,tv;
+};
+
+#define D3DFVF_VERTICEXYZ_T2_NORMAL (D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX1)
+
 
 struct O3DMaterial
 {
@@ -63,12 +77,9 @@ class Objecte3D {
 		int			GetNumVertexs		( void );
 		int			GetNumTriangles		( void );
 		void		GetTriangle			( int index, SPoint3D* triangle );
-		void		GetFaceCoords		( int nFace, SPoint3D* coords );
-		
-		
-		
+		void		GetFaceCoords		( int nFace, SPoint3D* coords );	
 
-	private:
+private:
 		Cara		*cares;
 		Punt		*punts;
 		SPoint3D	*moviment;
@@ -77,6 +88,12 @@ class Objecte3D {
 		bool teNormals;
 		int nombrePunts, nombreMaterials;
 		int nombreCares;
+
+		//VertexBuffer i IndexBuffer
+		LPDIRECT3DVERTEXBUFFER9				m_pVB;
+		LPDIRECT3DINDEXBUFFER9				m_pIB;
+		std::vector<LPDIRECT3DTEXTURE9>		m_TextureList;
+		
 		
 		void		Objecte3DDeOBJ			( char* filename );
 		void		Objecte3DDe3DS			( char* filename );
@@ -84,6 +101,10 @@ class Objecte3D {
 		void		CalcularNormalsVertex	( void );
 
 		SPoint3D	GetFaceNormal			( const Cara* );
+
+		bool LoadVertexBuffer(LPDIRECT3DDEVICE9 Device);
+		void LoadTexture(LPDIRECT3DDEVICE9 Device);
+		void RenderBySoftware (LPDIRECT3DDEVICE9 Device);
 };
 
 #endif

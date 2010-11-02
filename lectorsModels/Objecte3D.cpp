@@ -3,6 +3,7 @@
 #include "objLoader.h"
 #include "Obj3DS.h"
 #include "../Seleccions/intersection.h"
+#include "../defines.h"
 
 Objecte3D::Objecte3D(char* filename, int tipus) {
 	this->materials = NULL;
@@ -15,6 +16,11 @@ Objecte3D::Objecte3D(char* filename, int tipus) {
 			break;
 		default: printf("Tipus invalid\n");
 	}
+
+	//Preparar per Renderitzar amb DirectX
+	LPDIRECT3DDEVICE9 device = CDirectX::GetInstance()->GetDevice();
+	LoadVertexBuffer(device);
+	LoadTexture(device);
 }
 
 void Objecte3D::Objecte3DDeOBJ(char* filename) {
@@ -139,6 +145,14 @@ Objecte3D::~Objecte3D()
 	delete [] punts;
 	delete [] materials;
 	delete [] cares;
+
+	for(size_t b=0;b<m_TextureList.size();++b)
+	{
+		m_TextureList[b]=NULL;
+	}
+	m_TextureList.clear();
+	CHECKED_RELEASE(m_pVB);
+	CHECKED_RELEASE(m_pIB);
 }
 
 int Objecte3D::PuntMesProxim(SPoint3D p)
@@ -293,4 +307,39 @@ void Objecte3D::CalcularNormalsVertex()
 	for (i = 0; i < this->nombrePunts; i++) {
 		this->punts[i].normal.normalizeVector();
 	}
+}
+
+
+///////////////////////////////////////
+//// RENDER WITH DIRECTX //////////////
+///////////////////////////////////////
+bool Objecte3D::LoadVertexBuffer(LPDIRECT3DDEVICE9 Device)
+{
+	// Create vertex buffer
+	if(FAILED(Device->CreateVertexBuffer(nombrePunts*sizeof(VERTICEXYZ_T2_NORMAL),
+	D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC, D3DFVF_VERTICEXYZ_T2_NORMAL, 
+	D3DPOOL_DEFAULT , &m_pVB, NULL
+	)))
+	return false;
+
+	// Create index buffer
+	if(FAILED(Device->CreateIndexBuffer(nombreCares*3*sizeof(int),
+			D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,D3DFMT_INDEX32,
+			D3DPOOL_DEFAULT ,&m_pIB, NULL)))
+			return false;
+}
+
+void Objecte3D::LoadTexture(LPDIRECT3DDEVICE9 Device)
+{
+	CTextureManager *l_TM=CTextureManager::GetInstance();
+
+	for (int i = 0; i < nombreMaterials; ++i)
+	{
+		m_TextureList.push_back(l_TM->LoadTexture(materials[i].szTexture,Device));
+	}
+}
+
+void Objecte3D::RenderBySoftware (LPDIRECT3DDEVICE9 Device)
+{
+	
 }

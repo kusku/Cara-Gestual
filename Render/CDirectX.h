@@ -50,6 +50,8 @@ public:
 	void		SetLookAt		( D3DXVECTOR3 lookAt ) { l_LookAt = lookAt; };
 	void		SetUpVector		( D3DXVECTOR3 upVector ) { l_VUP = upVector; } ;
 	void		SetZBuffer		( bool active ) { m_ZBuffer = active; };
+
+	LPDIRECT3DDEVICE9 GetDevice	() { return m_pD3DDevice; };
 };
 
 #endif
