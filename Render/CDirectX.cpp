@@ -102,7 +102,7 @@ void CDirectX::SetupMatrices()
 							   45.0f * D3DX_PI / 180.0f, 
                                1.0f, 
 							   1.0f, 
-							   100.0f );
+							   1000.0f );
 
 	m_pD3DDevice->SetTransform( D3DTS_VIEW, &m_matView );
 	m_pD3DDevice->SetTransform( D3DTS_PROJECTION, &m_matProject );
@@ -158,7 +158,7 @@ void CDirectX::EndRenderDX()
 void CDirectX::RenderAxis(float size)
 {
 	DrawLine(D3DXVECTOR3(0.0f,0.0f,0.0f),D3DXVECTOR3(size,0.0f,0.0f),0xffff0000);
-	DrawLine(D3DXVECTOR3(0.0f,0.0f,0.0f),D3DXVECTOR3(0.0f,size,0.0f),0xff00ff00);
+	DrawLine(D3DXVECTOR3(0.0f,0.0f,0.0f),D3DXVECTOR3(0.0f,-size,0.0f),0xff00ff00);
 	DrawLine(D3DXVECTOR3(0.0f,0.0f,0.0f),D3DXVECTOR3(0.0f,0.0f,size),0xff0000ff);
 }
 

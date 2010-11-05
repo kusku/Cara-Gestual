@@ -368,8 +368,19 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,GLfloat t
 	CDirectX::GetInstance()->BeginRenderDX();
 	CDirectX::GetInstance()->SetupMatrices();
 
+	D3DXMATRIX l_Matrix;
+	D3DXMatrixIdentity(&l_Matrix);
+	CDirectX::GetInstance()->GetDevice()->SetTransform(D3DTS_WORLD, &l_Matrix);
+
 	if (eix)
 		CDirectX::GetInstance()->RenderAxis(8.0f);
+	
+	if (ObOBJ != NULL)
+		ObOBJ->RenderByASE(CDirectX::GetInstance()->GetDevice());
+
+	D3DXMatrixIdentity(&l_Matrix);
+	CDirectX::GetInstance()->GetDevice()->SetTransform(D3DTS_WORLD, &l_Matrix);
+	
 
 //// Iluminacio movent-se amb la camara (abans glLookAt)
 //	if (!ifix) Iluminacio(iluminacio,textur,objecte,bck_ln);

@@ -66,8 +66,11 @@ class Objecte3D {
 
 		void		mourePunt			( int punt , SPoint3D vectorMoviment );
 		int			buscarPunt			( SPoint3D punt );
+		int			buscarTex			( Point2D tex );
 		void		Render				( void );
 		void		resetMoviments		( void );
+
+		void RenderByASE  (LPDIRECT3DDEVICE9 Device);	
 
 		// Mètodes GET
 		int			PuntMesProxim		( SPoint3D );
@@ -84,15 +87,29 @@ private:
 		Punt		*punts;
 		SPoint3D	*moviment;
 		O3DMaterial *materials;
+		Point2D		*cordTex;
 
 		bool teNormals;
 		int nombrePunts, nombreMaterials;
 		int nombreCares;
+		int nombreTexturesVertexs;
 
 		//VertexBuffer i IndexBuffer
 		LPDIRECT3DVERTEXBUFFER9				m_pVB;
 		LPDIRECT3DINDEXBUFFER9				m_pIB;
 		std::vector<LPDIRECT3DTEXTURE9>		m_TextureList;
+
+		//Dades per al RenderByAse
+		std::vector< LPDIRECT3DVERTEXBUFFER9 >	vec_pVBMeshByMat;
+		std::vector< LPDIRECT3DINDEXBUFFER9 >	vec_pIBMeshByMat;
+		std::vector< LPDIRECT3DVERTEXBUFFER9 >	vec_pVBGeomTexturaByMat;
+		std::vector< LPDIRECT3DTEXTURE9 >		vec_textures;
+		std::vector< D3DMATERIAL9 >				vec_materials;
+		std::vector< int >						vec_numCaresByMat;
+		std::vector <std::string>				listaTexturas;
+
+		VERTICEXYZ_T2_NORMAL *l_pV;
+		int* l_pMF;
 		
 		
 		void		Objecte3DDeOBJ			( char* filename );
@@ -104,7 +121,7 @@ private:
 
 		bool LoadVertexBuffer(LPDIRECT3DDEVICE9 Device);
 		void LoadTexture(LPDIRECT3DDEVICE9 Device);
-		void RenderBySoftware (LPDIRECT3DDEVICE9 Device);
+		bool		LoadInfoInVectors	( LPDIRECT3DDEVICE9 g_pd3dDevice );
 };
 
 #endif
