@@ -119,8 +119,6 @@ private:
 
 		SPoint3D	GetFaceNormal			( const Cara* );
 
-		bool LoadVertexBuffer(LPDIRECT3DDEVICE9 Device);
-		void LoadTexture(LPDIRECT3DDEVICE9 Device);
 		bool		LoadInfoInVectors	( LPDIRECT3DDEVICE9 g_pd3dDevice );
 };
 

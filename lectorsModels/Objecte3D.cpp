@@ -16,11 +16,6 @@ Objecte3D::Objecte3D(char* filename, int tipus) {
 			break;
 		default: printf("Tipus invalid\n");
 	}
-
-	//Preparar per Renderitzar amb DirectX
-	LPDIRECT3DDEVICE9 device = CDirectX::GetInstance()->GetDevice();
-	/*LoadVertexBuffer(device);
-	LoadTexture(device);*/
 }
 
 void Objecte3D::Objecte3DDeOBJ(char* filename) {
@@ -152,9 +147,19 @@ int Objecte3D::buscarPunt(SPoint3D punt) {
 
 int	Objecte3D::buscarTex( Point2D tex )
 {
-	int i;
-	for (i = 0; this->cordTex[i].x != tex.x && this->cordTex[i].y != tex.y; ++i);
-	return i;
+	int i,j;
+	for (j=0; j<nombreCares; ++j)
+	{
+		for(int i=0; i<3; ++i)
+		{
+			if (cares[j].cordTex[i].x == tex.x && cares[j].cordTex[i].y == tex.y)
+			{
+				return 3*j+i;
+			}
+		}
+	}
+
+	return 3*j+i;
 }
 
 Objecte3D::~Objecte3D()
@@ -345,35 +350,9 @@ void Objecte3D::CalcularNormalsVertex()
 ///////////////////////////////////////
 //// RENDER WITH DIRECTX //////////////
 ///////////////////////////////////////
-bool Objecte3D::LoadVertexBuffer(LPDIRECT3DDEVICE9 Device)
-{
-	// Create vertex buffer
-	if(FAILED(Device->CreateVertexBuffer(nombrePunts*sizeof(VERTICEXYZ_T2_NORMAL),
-	D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC, D3DFVF_VERTICEXYZ_T2_NORMAL, 
-	D3DPOOL_DEFAULT , &m_pVB, NULL
-	)))
-	return false;
-
-	// Create index buffer
-	if(FAILED(Device->CreateIndexBuffer(nombreCares*3*sizeof(int),
-			D3DUSAGE_WRITEONLY|D3DUSAGE_DYNAMIC,D3DFMT_INDEX32,
-			D3DPOOL_DEFAULT ,&m_pIB, NULL)))
-			return false;
-}
-
-void Objecte3D::LoadTexture(LPDIRECT3DDEVICE9 Device)
-{
-	CTextureManager *l_TM=CTextureManager::GetInstance();
-
-	for (int i = 0; i < nombreMaterials; ++i)
-	{
-		m_TextureList.push_back(l_TM->LoadTexture(materials[i].szTexture,Device));
-	}
-}
-
 void Objecte3D::RenderByASE(LPDIRECT3DDEVICE9 Device)
 {
-	for(int cont = 0; cont < vec_textures.size(); cont++)
+	for(int cont = 0; cont < (int)vec_textures.size(); cont++)
 	{
 		if(vec_numCaresByMat[cont] != 0)
 		{
@@ -467,13 +446,13 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 		CIndexBufferByMat.push_back( new_CindexBuffer );
 	}
 
-	//Llegeix els vèrtexs
+	//Construeix el VertexBuffer de cares
 	for (int i = 0; i < nombrePunts; ++i)
 	{
 		VertexBuffer.push_back(D3DXVECTOR3(punts[i].cordenades.x, punts[i].cordenades.y, punts[i].cordenades.z));
 	}
 
-	//Llegeix les cares
+	//Construeix el IndexBuffer de cares
 	for (int i = 0; i < nombreCares; ++i)
 	{
 		unsigned short material =(unsigned short)cares[i].materialTextura;
@@ -487,11 +466,15 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 		IndexMaterial.push_back( material );
 	}
 
-	for (int i = 0; i < nombreTexturesVertexs; ++i)
+	//Construeix el VertexBuffer de textures
+	for (int i=0; i < nombreCares; ++i)
 	{
-		CVertexBuffer.push_back(D3DXVECTOR3(cordTex[i].x, -cordTex[i].y, 0.f));
+		CVertexBuffer.push_back(D3DXVECTOR3(cares[i].cordTex[0].x, -cares[i].cordTex[0].y, 0.0f));
+		CVertexBuffer.push_back(D3DXVECTOR3(cares[i].cordTex[1].x, -cares[i].cordTex[1].y, 0.0f));
+		CVertexBuffer.push_back(D3DXVECTOR3(cares[i].cordTex[2].x, -cares[i].cordTex[2].y, 0.0f));
 	}
 
+	//Construeix el IndexBuffer de textures
 	for (int i = 0; i < nombreCares; ++i)
 	{
 		D3DXVECTOR3 index_tFace;
@@ -516,7 +499,7 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 		VertexIndexOldNew.clear();
 		CVertexIndexOldNew.clear();
 		//Recorremos todas las caras geometricas y de textura
-		for(int cont_face = 0; cont_face < IndexBufferByMat[cont_texture].size(); cont_face++) //Recorre totes les cares d'un material
+		for(int cont_face = 0; cont_face < (int)IndexBufferByMat[cont_texture].size(); cont_face++) //Recorre totes les cares d'un material
 		{
 			D3DXVECTOR3 face_geom = IndexBufferByMat[cont_texture][cont_face];
 			for(int j=0;j<3;j++) //Recorre la cara d'un material
@@ -563,17 +546,17 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 	//Creamos una mesh para cada textura
 	for(int cont_texture = 0; cont_texture < nombreMaterials; cont_texture++)
 	{
-		int numVertices = VertexBufferByMat[cont_texture].size();
-		int numCaras = IndexBufferByMat[cont_texture].size();
-		int numTVertices = CVertexBufferByMat[cont_texture].size();
-		int numTCaras = CIndexBufferByMat[cont_texture].size();
+		int numVertices = (int)VertexBufferByMat[cont_texture].size();
+		int numCaras = (int)IndexBufferByMat[cont_texture].size();
+		int numTVertices = (int)CVertexBufferByMat[cont_texture].size();
+		int numTCaras = (int)CIndexBufferByMat[cont_texture].size();
         
 		vec_numCaresByMat.push_back(numCaras);
 		
 		//inicilizamos en memoria la matriz de vertices e indices
 		g_VerticesMesh=new CUSTOMVERTEX[numVertices];
 		g_IndicesMesh=new unsigned short[numCaras*3];
-		for(size_t iv=0;iv<numVertices;iv++)
+		for(size_t iv=0;iv<(size_t)numVertices;iv++)
 		{
 			D3DXVECTOR3 vertex = VertexBufferByMat[cont_texture][iv];
 			switch(iv%3)
@@ -592,7 +575,7 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 			g_VerticesMesh[iv].y=vertex.y;
 			g_VerticesMesh[iv].z=vertex.z;
 		}
-		for(size_t ic=0;ic<numCaras;ic++)
+		for(size_t ic=0;ic<(size_t)numCaras;ic++)
 		{
 			D3DXVECTOR3 face = IndexBufferByMat[cont_texture][ic];
 			g_IndicesMesh[ic*3]=(int)face.x;
@@ -715,5 +698,4 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 	}
 
 	return true;
-
 }
