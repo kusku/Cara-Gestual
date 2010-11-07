@@ -47,7 +47,7 @@ void CSubtitles::RenderSubtitles()
 {
 	char* frase = subtitle;
 
-	SetProjection2D();
+	//SetProjection2D();
 	glColor4f(red,green,blue,alpha); 
 	glPushMatrix();
 		glRasterPos2f(posX,posY);
@@ -58,5 +58,5 @@ void CSubtitles::RenderSubtitles()
 		}
 		
 	glPopMatrix();
-	SetProjection3D();
+	//SetProjection3D();
 }

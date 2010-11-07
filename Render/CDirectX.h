@@ -21,6 +21,7 @@ private:
 	bool		m_paintInfoGame;	//Indica si pintem en text2d informació útil
 	bool		m_paintInfoInput;	//Indica si pintem en text2d les asociacions [input-accion]
 	bool		m_ZBuffer;
+	bool		m_CullingFace;
 
 	void		DrawLine (const D3DXVECTOR3 &PosA, const D3DXVECTOR3 &PosB, DWORD Color=0xffffffff);
 
@@ -46,10 +47,14 @@ public:
 	//Render eixos
 	void		RenderAxis		( float size );
 
+	void		PointLight		( D3DXVECTOR3 position, D3DXVECTOR3 direction );
+
 	void		SetEye			( D3DXVECTOR3 eye ){ l_Eye = eye; } ;
 	void		SetLookAt		( D3DXVECTOR3 lookAt ) { l_LookAt = lookAt; };
 	void		SetUpVector		( D3DXVECTOR3 upVector ) { l_VUP = upVector; } ;
 	void		SetZBuffer		( bool active ) { m_ZBuffer = active; };
+	void		SetPaintSolid	( bool solid ) { m_PaintSolid = solid; };
+	void		SetCullingFace	( bool cull ) { m_CullingFace = cull; };
 
 	LPDIRECT3DDEVICE9 GetDevice	() { return m_pD3DDevice; };
 };

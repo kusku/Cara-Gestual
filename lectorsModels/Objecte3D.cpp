@@ -350,7 +350,7 @@ void Objecte3D::CalcularNormalsVertex()
 ///////////////////////////////////////
 //// RENDER WITH DIRECTX //////////////
 ///////////////////////////////////////
-void Objecte3D::RenderByASE(LPDIRECT3DDEVICE9 Device)
+void Objecte3D::Render(LPDIRECT3DDEVICE9 Device)
 {
 	for(int cont = 0; cont < (int)vec_textures.size(); cont++)
 	{

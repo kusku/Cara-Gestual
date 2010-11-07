@@ -102,7 +102,7 @@ public:
 
 // GC2: Variables de l'opció Vista->Pan
 	float fact_pan;		    // Factor de desplaçament de la càmara (opció pan).
-	GLfloat tr_cpv[3];      // vector de Traslació del Centre del Punt de Vista (opció pan)
+	D3DXVECTOR3 tr_cpv;      // vector de Traslació del Centre del Punt de Vista (opció pan)
 
 // GC2: Variables de control de l'opció Vista->Navega?
 	GLfloat n[3];   // Punt cap on mira.
@@ -134,7 +134,7 @@ public:
 // GC2: Variables de control del menú Iluminació	
 	bool ifixe;          // Iluminació fixe independent del PV (ifixe=1) 
 						// o depenent (mobil) respecte el PV (casc miner) (ifixe=0)
-	char ilumina;		// Tipus d'il.luminació [FILFERROS 'f',PLANA 'c',SUAU 'c']
+	bool filferros;		// Tipus d'il.luminació [FILFERROS 'f',PLANA 'c',SUAU 'c']
     bool textura;       // Control de textures desactivades [0:NO] o activades [1:SI]
 	char t_textura;		// Tipus de textures (predefinides o per fitxer)
 
@@ -233,7 +233,6 @@ protected:
 	afx_msg void OnUpdateEixos(CCmdUI* pCmdUI);
 	afx_msg void OnFilferros();
 	afx_msg void OnUpdateFilferros(CCmdUI* pCmdUI);
-	afx_msg void OnPlana();
 	afx_msg void OnSuau();
 	afx_msg void OnUpdateSuau(CCmdUI* pCmdUI);
 	afx_msg void OnUpdatePinsa(CCmdUI* pCmdUI);
@@ -268,7 +267,6 @@ protected:
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	afx_msg void OnInipan();
 	/*afx_msg void OnIniescal();*/
-	afx_msg void OnUpdatePlana(CCmdUI* pCmdUI);
 	//afx_msg void OnTruck();
 	//afx_msg void OnUpdateTruck(CCmdUI* pCmdUI);
 	afx_msg void OnNavega();

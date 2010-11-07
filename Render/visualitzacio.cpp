@@ -53,271 +53,13 @@ void RenderBox (float x1, float y1, float x2, float y2)
 	wx1 = x1; wy1 = y1; wx2 = x2;wy2 = y2;
 }
 
-// Iluminació: Configurar iluminació de l'escena
-void Iluminacio(char ilumin,bool textur,char obj,bool bc_lin)
-{   
-	
-// Configuració de la font de llum LIGHT0
-	GLfloat position[]={ 0.0,0.0,1.0,0.0};
-	GLfloat especular[]={0.0,0.0,0.0,1.0};
-    GLfloat ambientg[]={.5,.5,.5,1.0};
-	glLightfv(GL_LIGHT0,GL_SPECULAR,especular);
-    glLightfv(GL_LIGHT0,GL_POSITION,position);
-     
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT,ambientg);
-
-// Selecció del model d'iluminació segons variable ilumin
-	switch(ilumin)
-	{
-	case FILFERROS:
-		glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-		glDisable(GL_COLOR_MATERIAL);
-
-// Desactivació de l'ocultació de cares
-		glDisable(GL_DEPTH_TEST);
-
-// Desactivació de la il-luminació
-		glDisable(GL_LIGHTING);
-		glDisable(GL_LIGHT0);
-		break;
-
-    case PLANA:
-// Càlcul de les normals a les cares si l'objecte és un fractal
-		glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-// Dibuix de les cares back com a línies en Il.luminacio PLANA i SUAU
-		if (bc_lin) glPolygonMode(GL_BACK,GL_LINE);
-		
-		glEnable(GL_COLOR_MATERIAL);
-
-// Ocultació de cares
-		glEnable(GL_DEPTH_TEST);
-
-		glEnable(GL_NORMALIZE);    
-// Il.luminació per cares planes
-		glShadeModel(GL_FLAT); 
-
-// Activació de la llum
-		glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
-		break;
-	case SUAU:
-
-// Càlcul de les normals als vertexs si l'objecte és un fractal
-		glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-// Dibuix de les cares back com a línies en Il.luminacio PLANA i SUAU
-		if (bc_lin) glPolygonMode(GL_BACK,GL_LINE);
-		
-		glEnable(GL_COLOR_MATERIAL);
-
-// Ocultació de cares
-    	glEnable(GL_DEPTH_TEST);
-
-		glEnable(GL_NORMALIZE); 
-		
-// Il.luminació suau 
-        glShadeModel(GL_SMOOTH); 
-
-// Activació de la llum
-    	glEnable(GL_LIGHTING);
-		glEnable(GL_LIGHT0);
-		break;
-	
-	}
-
-// Configuració de les textures.
-if (textur)
-	{
-
-// Activació de la textura 0.
-	  glBindTexture(GL_TEXTURE_2D,textures[0]) ;
-
-// Pregunta 8 enunciat
-//	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);	
-//	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
-
-	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);	
-	 
-	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	
-  	  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
-
-// Pregunta 9 enunciat
-	  glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE) ;
-//	  glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_DECAL);
-
-// Pregunta 7 enunciat
-//	  glTexGeni(GL_S,GL_TEXTURE_GEN_MODE,GL_EYE_LINEAR);
-//	  glTexGeni(GL_T,GL_TEXTURE_GEN_MODE,GL_EYE_LINEAR);
-
-	  glTexGeni(GL_S,GL_TEXTURE_GEN_MODE,GL_OBJECT_LINEAR);
-	  glTexGeni(GL_T,GL_TEXTURE_GEN_MODE,GL_OBJECT_LINEAR);
-
-// Generació coordenades textura.
-	  GLfloat sPlane[4] = { -1.0f, 1.0f, 0.0f, 1.0f };
-	  GLfloat tPlane[4] = { -1.0f, 0.0f, 1.0f, 1.0f };
-
-	  glTexGenfv(GL_S, GL_OBJECT_PLANE, sPlane);
-	  glTexGenfv(GL_T, GL_OBJECT_PLANE, tPlane);
-				
-	  glEnable(GL_TEXTURE_GEN_S);
-	  glEnable(GL_TEXTURE_GEN_T);
-	  glEnable(GL_TEXTURE_2D) ;
-	}
-	else { glDisable(GL_TEXTURE_2D);
-	       glDisable(GL_TEXTURE_GEN_S);
-	       glDisable(GL_TEXTURE_GEN_T);
-		}
-
-// Creació de la llista que dibuixarà els eixos
-//   funció on està codi per dibuixar eixos
-	glNewList(EIXOS,GL_COMPILE);
-// Dibuix dels eixos sense il.luminació
-//	if (ilumin!=FILFERROS) 
-		glDisable(GL_LIGHTING);           	
-// Dibuixar eixos sense textures
-//	if (textura) 
-		glDisable(GL_TEXTURE_2D);
-	deixos();
-	if (ilumin!=FILFERROS) glEnable(GL_LIGHTING);   
-	if (textur) glEnable(GL_TEXTURE_2D);
-	glEndList();
-
-}
-
-// PROJECCIÓ ORTOGRÀFICA (Funcions Projeccio_Orto i Ortografica)
-
-// Projeccio_Orto: Definició Viewport i glOrtho
-void Projeccio_Orto()
-{   
-//	----GC2: ESPECIFICACIO DELS PARÀMETRES DE PROJECCIÓ ORTOGRÀFICA
-//			QUE ES CARREGUEN A LA MATRIU DE PROJECCIÓ GL_PROJECTION
-}
-
-
-// Ortografica: Crida a la funció gluLookAt segons la variable prj 
-//				(planta, alçat, perfil o axonometrica), 
-//              Ilumina i dibuixa l'escena
-void Ortografica(int prj,CColor col_fons,char objecte,bool TR, 
-				 CPunt3D VScl,CPunt3D VTr,CPunt3D VRot,bool oculta,bool testv,
-				 bool bck_ln,char iluminacio,bool textur,bool ifix,bool eix)
-{
-//	int i,j;
-
-// Iluminacio movent-se amb la camara (abans gluLookAt)
-	if (!ifix) Iluminacio(iluminacio,textur,objecte,bck_ln);
-
-// ESPECIFICACIO DEL PUNT DE VISTA
-// Cal definir el punt de vista (gluLookAt) en funció del
-//     tipus de projecció definit a la variable prj.
-
-// Neteja dels buffers de color i profunditat
-	Fons(col_fons);
-
-	glEnable(GL_COLOR_MATERIAL);
-
-// Iluminacio fixe respecte la camara (després gluLookAt)
-	if (ifix) Iluminacio(iluminacio,textur,objecte,bck_ln);	
-
-// Test de Visibilitat
-	if (testv) glEnable(GL_CULL_FACE);
-		else glDisable(GL_CULL_FACE);
-
-// Ocultacions (Z-buffer)
-	if (oculta) glEnable(GL_DEPTH_TEST);
-		else glDisable(GL_DEPTH_TEST);
-
-// Dibuix dels eixos
-	if (eix) glCallList(EIXOS);
-
-// Dibuixa l'objecte
-    glPushMatrix();
-// Transformacions geomètriques sobre objecte (Traslació, Rotacions i Escalatge)
-	if (TR) 
-		{	glTranslatef(VTr.x,VTr.y,VTr.z);
-			glRotatef(VRot.x,1,0,0);
-			glRotatef(VRot.y,0,1,0);
-			glRotatef(VRot.z,0,0,1);
-			glScalef(VScl.x,VScl.y,VScl.z);
-		}
-
-	switch (objecte)
-	{
-
-		case TRUCK:
-// Dibuix del Truck
-		glDisable(GL_TEXTURE_2D);
-		sea();
-		truck(textur,textures);
-		break;
-
-		case OBJ3DS:
-// Objecte 3DS: Dibuix de l'objecte 3DS
-			glCallList(OBJECTE3DS);
-			break;
-
-		case OBJOBJ:
-// Objecte OBJ: Dibuix de l'objecte OBJ
-			glCallList(OBJECTEOBJ);
-			break;
-
-		default:
-// Dibuix de la resta d'objectes
-		dibuixa(objecte);
-		break;
-	}
-
-	glPopMatrix();
-
-// Enviar les comandes gràfiques a pantalla
-    glFlush();
-
-}
-
-// PROJECCIO PERSPECTIVA
-// Projeccio_Perspectiva: Definició Viewport i gluPerspective
-void Projeccio_Perspectiva(int minx,int miny,GLsizei w,GLsizei h,float zoom)
-{   
-
-	GLfloat rang=1.0;
-// Desactivació del retall de pantalla
-    glDisable(GL_SCISSOR_TEST);
-
-// Definició Viewport
-	glViewport(minx,miny,w,h);
-	if (h==0) h=1;
-
-// Activació i inicialització matriu PROJECTION
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-// PROJECCIO PERSPECTIVA.Definim volum de visualització adaptant-lo 
-//	 a les mides actuals de la finestra windows	
-
-// Amb gluPerspective
-	if (w>=h) 
-	gluPerspective(60.0,1.0*w/h,p_near,p_far+zoom);
-	else gluPerspective(60.0*h/w,1.0*w/h,p_near,p_far+zoom);
-
-// Amb glFrustum (no actualitzar R)
-//	if (w>=h) glFrustum(-rang*w/h,rang*w/h,-rang,rang,p_near,p_far+zoom);
-//	else glFrustum(-rang,rang,-rang*h/w,rang*h/w,p_near,p_far+zoom);
-
-// Activació matriu MODELVIEW (tancar matriu PROJECTION)
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-
-	glGetIntegerv (GL_VIEWPORT, viewportMatrix);
-	glGetDoublev (GL_PROJECTION_MATRIX, projectionMatrix);
-}
-
 // Perspectiva: Definició gluLookAt amb possibilitat de moure 
 //				el punt de vista interactivament amb el ratolí, 
 //				ilumina i dibuixa l'escena
-void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,GLfloat tr[3],
+void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTOR3 tr,
 				 CColor col_fons,char objecte,bool TR, 
 				 CPunt3D VScl,CPunt3D VTr, CPunt3D VRot,bool oculta,bool testv,
-				 bool bck_ln,char iluminacio,bool textur,bool ifix,bool eix,
+				 bool bck_ln,bool filferros,bool textur,bool ifix,bool eix,
 				 EditorManager* EdManager, Objecte3D* ObOBJ, MuscleManager* MManager, bool flags,
 				 CSubtitles* MSubtitles, bool subtitles, CParla* parla)
 {    
@@ -364,51 +106,41 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,GLfloat t
 	//Habilita o no el ZBuffer
 	CDirectX::GetInstance()->SetZBuffer(oculta);
 
+	//Estableix la visiualització del mode del model (FILFERROS o SOLID)
+	CDirectX::GetInstance()->SetPaintSolid(!filferros);
+
+	//Estableix el test de visibilitat (Culling Face)
+	CDirectX::GetInstance()->SetCullingFace(testv);
+
+	//Activa la il·luminació
+	if (ifix)
+		CDirectX::GetInstance()->PointLight(D3DXVECTOR3(15.f, 0.f, 0.f), D3DXVECTOR3(0.f, 0.f, 0.f));
+	else
+		CDirectX::GetInstance()->PointLight(cam, D3DXVECTOR3(0.f, 0.f, 0.f));
+
 	//Activa el Render en DirectX
 	CDirectX::GetInstance()->BeginRenderDX();
 	CDirectX::GetInstance()->SetupMatrices();
 
-	D3DXMATRIX l_Matrix;
-	D3DXMatrixIdentity(&l_Matrix);
-	CDirectX::GetInstance()->GetDevice()->SetTransform(D3DTS_WORLD, &l_Matrix);
+	//Establim matrius de transformacions
+	{
+		D3DXMATRIX l_Matrix;
+		D3DXMatrixIdentity(&l_Matrix);
+				
+		if (pant)	//Fa una translació si el PAN està activat
+			D3DXMatrixTranslation (&l_Matrix, tr.x, tr.y, tr.z);
 
+		CDirectX::GetInstance()->GetDevice()->SetTransform(D3DTS_WORLD, &l_Matrix);
+	}
+
+	//Dibuixa els eixos de coordenades
 	if (eix)
 		CDirectX::GetInstance()->RenderAxis(8.0f);
-	
+
+	//Dibuixa el model
 	if (ObOBJ != NULL)
-		ObOBJ->RenderByASE(CDirectX::GetInstance()->GetDevice());
+		ObOBJ->Render(CDirectX::GetInstance()->GetDevice());	
 
-	D3DXMatrixIdentity(&l_Matrix);
-	CDirectX::GetInstance()->GetDevice()->SetTransform(D3DTS_WORLD, &l_Matrix);
-	
-
-//// Iluminacio movent-se amb la camara (abans glLookAt)
-//	if (!ifix) Iluminacio(iluminacio,textur,objecte,bck_ln);
-//
-//// Opció pan: desplaçament del Centre de l'esfera (pant=1)
-//	if (pant) glTranslatef(tr[0],tr[1],tr[2]);
-//
-//// Especificació del punt de vista
-//   gluLookAt(cam[0],cam[1],cam[2],0.,0.,0.,
-//		 up[0],up[1],up[2]);
-//
-//// Iluminacio fixe respecte la camara (després glLookAt)
-//	if (ifix) Iluminacio(iluminacio,textur,objecte,bck_ln);
-//
-//// Test de Visibilitat
-//	if (testv) glEnable(GL_CULL_FACE);
-//		else glDisable(GL_CULL_FACE);
-//
-//// Ocultacions (Z-buffer)
-//	if (oculta) glEnable(GL_DEPTH_TEST);
-//		else glDisable(GL_DEPTH_TEST);
-//
-////  Dibuix dels eixos
-//	if (eix) glCallList(EIXOS);
-//
-//// Dibuixa l'objecte
-//    glPushMatrix();
-//
 //// Transformacions geomètriques sobre objecte (Traslació, Rotacions i Escalatge)
 //	if (TR) 
 //		{	glTranslatef(VTr.x,VTr.y,VTr.z);
@@ -417,31 +149,6 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,GLfloat t
 //			glRotatef(VRot.z,0,0,1);
 //			glScalef(VScl.x,VScl.y,VScl.z);
 //		}
-//
-//	switch (objecte)
-//	{
-//
-//		case TRUCK:
-//// Dibuix del Truck
-//			glDisable(GL_TEXTURE_2D);
-//			sea();
-//			truck(textur,textures);
-//			break;
-//
-//		case OBJ3DS:
-//		case OBJOBJ:
-//// Objecte OBJ: Dibuix de l'objecte OBJ
-//			//glCallList(OBJECTEOBJ);
-//			if (ObOBJ != NULL)
-//				ObOBJ->Render();
-//
-//			break;
-//
-//		default:
-//// Dibuix de la resta d'objectes
-//			dibuixa(objecte);
-//			break;
-//	}
 //	// RenderSelectedMuscle(muscle,MManager,ObOBJ);
 //	renderSphereSelection(EdManager, muscle);
 //
@@ -454,126 +161,9 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,GLfloat t
 //		MSubtitles->RenderSubtitles();
 //		Iluminacio(iluminacio,textur,objecte,bck_ln);
 //	}
-//
-//	glPopMatrix();
-//	
-//	glGetDoublev (GL_MODELVIEW_MATRIX, ModelViewMatrix);
-//// Enviar les comandes gràfiques a pantalla
-//	glFlush();
+
 
 	CDirectX::GetInstance()->EndRenderDX();
-}
-
-
-//PerspectivaN: Definició gluLookAt directament per paràmetre, sense esfèriques.
-//              amb possibilitat de moure el punt de vista interactivament amb les
-//				tecles de cursor per poder navegar.
-void PerspectivaN(CPunt3D pv,bool pvb,GLfloat n[3],GLfloat v[3],
-				 bool pant,GLfloat tr[3],CColor col_fons,char objecte,bool color,
-				 bool TR,CPunt3D VScl,CPunt3D VTr,CPunt3D VRot,
-				 bool oculta,bool testv,bool bck_ln,char iluminacio,
-				 bool textur,bool ifix,bool eix)
-{    
-//    int i,j;
-	double altfar=0;
-//	GLfloat pvZ=0.0;
-
-// Neteja dels buffers de color i profunditat
-	Fons(col_fons);
-
-// Test de Visibilitat
-	if (testv) glEnable(GL_CULL_FACE);
-		else glDisable(GL_CULL_FACE);
-
-// Ocultacions (Z-buffer)
-	if (oculta) glEnable(GL_DEPTH_TEST);
-		else glDisable(GL_DEPTH_TEST);
-
-
-// Iluminacio movent-se amb la camara (abans glLookAt)
-	if (!ifix) Iluminacio(iluminacio,textur,objecte,bck_ln);
-
-// Opció pan: desplaçament del Centre de l'esfera (pant=true)
-	if (pant) glTranslatef(tr[0],tr[1],tr[2]);
-
-// Especificació del punt de vista
-	gluLookAt(pv.x,pv.y,pv.z,n[0],n[1],n[2],v[0],v[1],v[2]);
-
-// Iluminacio fixe respecte la camara (després glLookAt)
-	if (ifix) Iluminacio(iluminacio,textur,objecte,bck_ln);
-
-// Dibuix dels eixos
-	if (eix) glCallList(EIXOS);
-
-// Dibuixa l'objecte
-    glPushMatrix();
-// Transformacions geomètriques sobre objecte (Traslació, Rotacions i Escalatge)
-	if (TR) 
-		{	glTranslatef(VTr.x,VTr.y,VTr.z);
-			glRotatef(VRot.x,1,0,0);
-			glRotatef(VRot.y,0,1,0);
-			glRotatef(VRot.z,0,0,1);
-			glScalef(VScl.x,VScl.y,VScl.z);
-		}
-
-	switch (objecte)
-	{
-
-// Dibuix del Truck
-	case TRUCK:
-		glDisable(GL_TEXTURE_2D);
-		sea();
-		truck(textur,textures);
-		break;
-
-		case OBJ3DS:
-// Objecte 3DS: Dibuix de l'objecte 3DS
-			glCallList(OBJECTE3DS);
-			break;
-
-		case OBJOBJ:
-// Objecte OBJ: Dibuix de l'objecte OBJ
-			glCallList(OBJECTEOBJ);
-			break;
-
-	default:
-// Dibuix de la resta d'objectes
-		dibuixa(objecte);
-		break;
-	}
-	glPopMatrix();
-	
-// Enviar les comandes gràfiques a pantalla
-	glFlush();
-
-}
-
-
-// deixos: Dibuix dels eixos coordenats
-void deixos()
-{
-
-// Eix X (vermell)
-	glColor3f(1.0,0.0,0.0);
-	glBegin(GL_LINES);
-	 glVertex3f(0.0,0.0,0.0);
-	 glVertex3f(300.0,0.0,0.0);
-	glEnd();
-
-// Eix Y (verd)
-    glColor3f(0.0,1.0,0.0);
-	glBegin(GL_LINES);
-	 glVertex3f(0.0,0.0,0.0);
-	 glVertex3f(0.0,300.0,0.0);
-	glEnd();
-
-// Eix Z (blau) 
-	glColor3f(0.0,1.0,1.0);
-	glBegin(GL_LINES);
-	 glVertex3f(0.0,0.0,0.0);
-	 glVertex3f(0.0,0.0,300.0);
-	glEnd();
-
 }
 
 // Fons: Dibuixa el fons variable sefons el color int_fons
@@ -606,69 +196,6 @@ void FonsB()
    glFlush();
 
 }
-
-// TEXTURES------------------------------------------------------
-// loadBMP: This function receives as input the image filename and an 
-// integer identifier (0 for the first texture) and creates an OpenGL 
-// texture which is stored in the global array 'textures'
-// Paràmetres:
-//		- filename: Fitxer que conté la imatge BMP quadrada
-//		- texID: Identificador dins la taula textures on volem
-//                assignar la imatge BMP
-bool loadBMP(CString filename, int texID)				
-{
-	FILE *file=NULL;	
-	
-// Create some space to store indermediate image data	
-   AUX_RGBImageRec *localTexture[1];
-   int errno;
-	
-// Open the image file for reading
-// file=fopen(filename,"r");					// Funció Visual Studio 6.0
-   errno=fopen_s(&file,filename,"r");			// Funció Visual 2005
-
-// If the file is empty (or non existent) print an error and return false
-// if (file == NULL)
-   if (errno!=0)
- {
-//  printf("Could not open file '%s'.\n",filename) ;
-
-	 return false ;
- }
-
-//    printf("Texture file:'%s' opened\n",filename) ;
-
-// Load the image into the temporary storage
- localTexture[0] = auxDIBImageLoad(filename);
-
-// Close the image file
- fclose(file);
-	
-// Generate space for one texture
- glGenTextures(1, &textures[texID]);
-
-// Tell OpenGL that your texture is 2D (ie, has x and y values)
- glBindTexture(GL_TEXTURE_2D, textures[texID]);
-
-// Create the texture
- glTexImage2D(GL_TEXTURE_2D, 0, 3, localTexture[0]->sizeX, localTexture[0]->sizeY,
-		      0, GL_RGB, GL_UNSIGNED_BYTE, localTexture[0]->data);
-
-// If the local storage area is not empry, empty it!
- if (localTexture[0])
- {
- 	if (localTexture[0]->data)
- 		free(localTexture[0]->data);
- 	
- 	free(localTexture[0]);					
- }
-
-// If execution arrives here it means that all went well. Return true
- return true;
-
-}
-
-
 // TEXTURES------------------------------------------------------
 // loadIMA: This function receives as input the image filename and an 
 // integer identifier (0 for the first texture) and creates an OpenGL 
@@ -710,78 +237,3 @@ textures[texID] = ilutGLLoadImage(filename.GetBuffer(3));
  return true;
 
 }
-
-
-// Inicialitzar imatges textures pel Truck
-void Init_Textures()
-{
-	
-//	loadBMP("vent.bmp",1);
-	loadIMA("vent.bmp",1);
-	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);	
- 
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
-
-	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE) ;
-
-//	loadBMP("plat.bmp",2);
-	loadIMA("plat.bmp",2);
-	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);	
- 
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
-	
-	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE) ;
-
-//	loadBMP("reixeta.bmp",3);
-	loadIMA("reixeta.bmp",3);
-	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);	
- 
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
-	
-	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE) ;
-
-//	loadBMP("fars.bmp",4);
-	loadIMA("fars.bmp",4);
-	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);	
-
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
-
-	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE) ;
-
-//	loadBMP("txapa.bmp",5);
-	loadIMA("txapa.bmp",5);
-	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);	
- 
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
-	
-	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE) ;
-
-//	loadBMP("metall.bmp",6); 
-	loadIMA("metall.bmp",6); 
-
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);	
-	 
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);	
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);	
-	
-	glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE) ;
-	
-
-}
-

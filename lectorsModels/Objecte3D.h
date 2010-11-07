@@ -70,7 +70,7 @@ class Objecte3D {
 		void		Render				( void );
 		void		resetMoviments		( void );
 
-		void RenderByASE  (LPDIRECT3DDEVICE9 Device);	
+		void		Render				(LPDIRECT3DDEVICE9 Device);	
 
 		// Mètodes GET
 		int			PuntMesProxim		( SPoint3D );

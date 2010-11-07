@@ -13,6 +13,7 @@ CDirectX::CDirectX()
 	m_paintInfoGame = true;
 	m_paintInfoInput = false;
 	m_ZBuffer = true;
+	m_CullingFace = true;
 
 	l_Eye = D3DXVECTOR3(0.0f,5.0f,-5.0f);
 	l_LookAt = D3DXVECTOR3(0.0f,0.0f,0.0f);
@@ -138,14 +139,18 @@ void CDirectX::BeginRenderDX()
 	m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
 	m_pD3DDevice->SetRenderState( D3DRS_DITHERENABLE, TRUE );
 	m_pD3DDevice->SetRenderState( D3DRS_SPECULARENABLE, FALSE );
+
+	m_pD3DDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
+
 	if(m_PaintSolid)
-	{
 		m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID  );
-	}
 	else
-	{
 		m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME  );
-	}
+
+	if (m_CullingFace)
+		m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
+	else
+		m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
 }
 
 void CDirectX::EndRenderDX()
@@ -175,3 +180,27 @@ void CDirectX::DrawLine(const D3DXVECTOR3 &PosA, const D3DXVECTOR3 &PosB, DWORD 
 	m_pD3DDevice->DrawPrimitiveUP( D3DPT_LINELIST,1, v,sizeof(CUSTOMVERTEX));
 }
 
+void CDirectX::PointLight( D3DXVECTOR3 position, D3DXVECTOR3 direction )
+{
+	D3DLIGHT9 light;
+	ZeroMemory( &light, sizeof(D3DLIGHT9) );
+	light.Type       = D3DLIGHT_SPOT;
+	light.Diffuse.r  = 1.0f;
+	light.Diffuse.g  = 1.0f;
+	light.Diffuse.b  = 1.0f;
+	light.Diffuse.a  = 1.0f;
+	   
+	  // Spot lights have direction and a position
+	light.Position = position;
+	light.Direction = direction;
+
+	// Tell the device about the light and turn it on
+	light.Range=1.0f;
+	light.Theta=0.5f;
+	light.Phi=1.0f;
+	light.Falloff=1.0f;
+	light.Attenuation0= 1.0f;
+
+	m_pD3DDevice->SetLight( 1, &light );
+	m_pD3DDevice->LightEnable( 1, TRUE );
+}

@@ -211,7 +211,6 @@ BEGIN
         MENUITEM "Fixe?",                       ID_I_FIXE, CHECKED
         MENUITEM SEPARATOR
         MENUITEM "&Filferros",                  ID_FILFERROS, CHECKED
-        MENUITEM "&Plana",                      ID_PLANA, CHECKED
         MENUITEM "&Suau",                       ID_SUAU, CHECKED
     END
     POPUP "Aj&uda"

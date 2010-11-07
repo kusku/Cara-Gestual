@@ -69,7 +69,6 @@ BEGIN_MESSAGE_MAP(CPracticaView, CView)
 	ON_UPDATE_COMMAND_UI(ID_EIXOS, OnUpdateEixos)
 	ON_COMMAND(ID_FILFERROS, OnFilferros)
 	ON_UPDATE_COMMAND_UI(ID_FILFERROS, OnUpdateFilferros)
-	ON_COMMAND(ID_PLANA, OnPlana)
 	ON_COMMAND(ID_SUAU, OnSuau)
 	ON_UPDATE_COMMAND_UI(ID_SUAU, OnUpdateSuau)
 	ON_COMMAND(ID_I_FIXE, OnIFixe)
@@ -102,7 +101,6 @@ BEGIN_MESSAGE_MAP(CPracticaView, CView)
 	ON_WM_MOUSEWHEEL()
 	ON_COMMAND(ID_INIPAN, OnInipan)
 	/*ON_COMMAND(ID_INIESCAL, OnIniescal)*/
-	ON_UPDATE_COMMAND_UI(ID_PLANA, OnUpdatePlana)
 	//ON_COMMAND(ID_TRUCK, OnTruck)
 	//ON_UPDATE_COMMAND_UI(ID_TRUCK, OnUpdateTruck)
 	ON_COMMAND(ID_NAVEGA, OnNavega)
@@ -233,7 +231,7 @@ CPracticaView::CPracticaView()
 
 // GC2: Variables opció Vista->Pan
 	fact_pan=1;
-	tr_cpv[0]=0;	tr_cpv[1]=0;	tr_cpv[2]=0;
+	tr_cpv = D3DXVECTOR3(0.f, 0.f, 0.f);
 
 // GC2: Variables de control de l'opció Vista->Navega?
 	n[0]=0.0;		n[1]=0.0;		n[2]=0.0;
@@ -255,7 +253,7 @@ CPracticaView::CPracticaView()
 	oculta=true;			test_vis=false;			back_line=false;
 
 // GC2: Variables de control del menú Iluminació		
-	ilumina=SUAU;		ifixe=true;	textura=false;	t_textura=CAP;
+	filferros=false;		ifixe=true;	textura=false;	t_textura=CAP;
 
 // GC2: Variables de control dels botons de mouse
 	m_PosEAvall=(0,0);		m_PosDAvall=(0,0);
@@ -478,93 +476,13 @@ void CPracticaView::OnDestroy()
 
 void CPracticaView::OnPaint() 
 {
-	//TODO: Passar tota la funció a DIrectX
-	//CPaintDC dc(this); // device context for painting
-
-	GLfloat vpv[3]={0.0,0.0,1.0};
-
-// TODO: Add your message handler code here
-	
-// ATENCIÓ:MODIFICACIÓ OPENGL
-
-// Activació el contexte OpenGL
-   // wglMakeCurrent(m_hDC,m_hRC);
-
-// Cridem a les funcions de l'escena i la projecció segons s'hagi 
-// seleccionat una projecció o un altra
-	switch(projeccio)
-	{
-	case ORTO:
-// Aquí farem les quatre crides a ProjeccioOrto i Ortografica per obtenir 
-// les quatre vistes ortogràfiques
-
-// Activació del retall de pantalla
-	    glEnable(GL_SCISSOR_TEST);
-
-// Retall
-		glScissor(0,0,w,h);
-	    glViewport(0,0,w,h);
-
-// Fons condicionat al color de fons
-		if ((c_fons.r < 0.5) || (c_fons.g < 0.5) || (c_fons.b<0.5))
-			FonsB(); 
-		else 
-			FonsN();
-
-// PLANTA
-//		Projeccio_Orto();
-//		Ortografica(0,c_fons,objecte,transf,VScal,VTras,VRota,oculta,
-//			test_vis,back_line,ilumina,textura,ifixe,eixos);
-// ALÇAT 
-//		Projeccio_Orto(0,0,(w-1)/2,(h-1)/2);
-//		Ortografica(1,c_fons,objecte,transf,VScal,VTras,VRota,oculta,
-//			test_vis,back_line,ilumina,textura,ifixe,eixos);
-// PERFIL
-//		Projeccio_Orto(0,(h+1)/2,(w-1)/2,h/2);
-//		Ortografica(2,c_fons,objecte,transf,VScal,VTras,VRota,oculta,
-//			test_vis,back_line,ilumina,textura,ifixe,eixos);
-// ISOMÈTRICA
-//		Projeccio_Orto((w+1)/2,0,w/2,(h-1)/2);
-//		Ortografica(3,c_fons,objecte,transf,VScal,VTras,VRota,oculta,
-//			test_vis,back_line,ilumina,textura,ifixe,eixos); 
-
-// Intercanvia l'escena al front de la pantalla (buffer OpenGL --> buffer pantalla)
-		SwapBuffers(m_hDC);
-		break;
-
-	case PERSPECT:
-// Aquí es cridarem a ProjeccioPerspectiva i Perspectiva
-		Projeccio_Perspectiva(0,0,w,h,R);
-		if (navega) 
-			{	PerspectivaN(opv,false,n,vpv,pan,tr_cpv,c_fons,objecte,true,transf,VScal,VTras,
-					VRota,oculta,test_vis,back_line,ilumina,textura,ifixe,eixos);
-			}
-		else {	n[0]=0;		n[1]=0;		n[2]=0;
-			Perspectiva(anglev,angleh,R,Vis_Polar,pan,tr_cpv,c_fons,objecte,transf,
-				VScal,VTras,VRota,oculta,test_vis,back_line,ilumina,textura,ifixe,eixos, editor, ObOBJ, MManager, editMuscle, 
+	Perspectiva(anglev,angleh,R,Vis_Polar,pan,tr_cpv,c_fons,objecte,transf,
+				VScal,VTras,VRota,oculta,test_vis,back_line,filferros,textura,ifixe,eixos, editor, ObOBJ, MManager, editMuscle, 
 				MSubtitles, subtitles, parla);
-			}
 
-// Intercanvia l'escena al front de la pantalla
-		//SwapBuffers(m_hDC);
-
-		break;
-
-	default:
-// Crida a la funció Fons Blanc
-		FonsB();
-// Intercanvia l'escena al front de la pantalla (buffer OpenGL --> buffer pantalla)
-		SwapBuffers(m_hDC);
-		break;
-	}
-
-// Permet la coexistencia d'altres contextes de generació
-	//wglMakeCurrent(m_hDC,NULL);
 
 //  Actualitzar la barra d'estat de l'aplicació amb els valors R,A,B,PVx,PVy,PVz
 	Barra_Estat();
-	
-// Do not call CView::OnPaint() for painting messages
 }
 
 // Barra_Estat: Actualitza la barra d'estat (Status Bar) de l'aplicació amb els
@@ -1191,14 +1109,14 @@ void CPracticaView::OnMouseMove(UINT nFlags, CPoint point)
 				long int incry=zoomincr.cy;
 
 				// Desplaçament pan vertical
-				tr_cpv[1]-=incry*fact_pan;
-				if(tr_cpv[1]>100000) tr_cpv[1]=100000;
-				else if(tr_cpv[1]<-100000) tr_cpv[1]=-100000;
+				tr_cpv.y-=incry*fact_pan;
+				if(tr_cpv.y>100000) tr_cpv.y=100000;
+				else if(tr_cpv.y<-100000) tr_cpv.y=-100000;
 
 				// Desplaçament pan horitzontal
-				tr_cpv[0]+=incrx*fact_pan;
-				if(tr_cpv[0]>100000) tr_cpv[0]=100000;
-				else if(tr_cpv[0]<-100000) tr_cpv[0]=-100000;
+				tr_cpv.x+=incrx*fact_pan;
+				if(tr_cpv.x>100000) tr_cpv.x=100000;
+				else if(tr_cpv.x<-100000) tr_cpv.x=-100000;
 
 				m_PosDAvall=point;
 				InvalidateRect(NULL,false);
@@ -1603,26 +1521,26 @@ GLfloat vdir[3]={0,0,0};
 						{
 							// Tecla cursor amunt
 							case VK_UP:
-								tr_cpv[1]-=nRepCnt*fact_pan;
-								if(tr_cpv[1]<-100000) tr_cpv[1]=100000;
+								tr_cpv.y-=nRepCnt*fact_pan;
+								if(tr_cpv.y<-100000) tr_cpv.y=100000;
 								break;
 
 							// Tecla cursor avall
 							case VK_DOWN:
-								tr_cpv[1]+=nRepCnt*fact_pan;
-								if(tr_cpv[1]>100000) tr_cpv[1]=100000;
+								tr_cpv.y+=nRepCnt*fact_pan;
+								if(tr_cpv.y>100000) tr_cpv.y=100000;
 								break;
 
 							// Tecla cursor esquerra
 							case VK_LEFT:
-								tr_cpv[0]+=nRepCnt*fact_pan;
-								if(tr_cpv[0]>100000) tr_cpv[0]=100000;
+								tr_cpv.x+=nRepCnt*fact_pan;
+								if(tr_cpv.x>100000) tr_cpv.x=100000;
 								break;
 					
 							// Tecla cursor dret
 							case VK_RIGHT:
-								tr_cpv[0]-=nRepCnt*fact_pan;
-								if(tr_cpv[0]<-100000) tr_cpv[0]=100000;
+								tr_cpv.x-=nRepCnt*fact_pan;
+								if(tr_cpv.x<-100000) tr_cpv.x=100000;
 								break;
 
 							// Tecla PgUp
@@ -2085,7 +2003,7 @@ void CPracticaView::OnInipan()
 {
 // TODO: Add your command handler code here
 	if (pan) {	fact_pan=1;
-				tr_cpv[0]=0;	tr_cpv[1]=0;	tr_cpv[2]=0;
+				tr_cpv = D3DXVECTOR3(0.f, 0.f, 0.f);
 				}
 // Crida a OnPaint() per redibuixar l'escena
 	Invalidate();	
@@ -2632,8 +2550,8 @@ void CPracticaView::OnUpdateIFixe(CCmdUI* pCmdUI)
 void CPracticaView::OnFilferros() 
 {
 // TODO: Add your command handler code here
-	ilumina=FILFERROS;
-	test_vis=false;		oculta=false;
+	filferros = true;
+	test_vis=false;
 
 // Crida a OnPaint() per redibuixar l'escena
 	Invalidate();
@@ -2642,27 +2560,7 @@ void CPracticaView::OnFilferros()
 void CPracticaView::OnUpdateFilferros(CCmdUI* pCmdUI) 
 {
 // TODO: Add your command update UI handler code here
-	if(ilumina==FILFERROS)
-		 pCmdUI->SetCheck(1);
-	else
-		 pCmdUI->SetCheck(0);
-}
-
-// IL.LUMINACIÓ plana
-void CPracticaView::OnPlana() 
-{
-// TODO: Add your command handler code here
-	ilumina=PLANA;
-	test_vis=false;		oculta=true;
-
-	// Crida a OnPaint() per redibuixar l'escena
-	Invalidate();
-}
-
-void CPracticaView::OnUpdatePlana(CCmdUI* pCmdUI) 
-{
-// TODO: Add your command update UI handler code here
-	if(ilumina==PLANA)
+	if(filferros)
 		 pCmdUI->SetCheck(1);
 	else
 		 pCmdUI->SetCheck(0);
@@ -2672,8 +2570,8 @@ void CPracticaView::OnUpdatePlana(CCmdUI* pCmdUI)
 void CPracticaView::OnSuau() 
 {
 // TODO: Add your command handler code here
-	ilumina=SUAU;
-	test_vis=false;		oculta=true;
+	filferros=false;
+	test_vis=false;
 
 	// Crida a OnPaint() per redibuixar l'escena
 	Invalidate();
@@ -2682,7 +2580,7 @@ void CPracticaView::OnSuau()
 void CPracticaView::OnUpdateSuau(CCmdUI* pCmdUI) 
 {
 // TODO: Add your command update UI handler code here
-	if(ilumina==SUAU)
+	if(!filferros)
 		 pCmdUI->SetCheck(1);
 	else
 		 pCmdUI->SetCheck(0);
