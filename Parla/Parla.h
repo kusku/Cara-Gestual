@@ -5,6 +5,7 @@
 #include "Subtitles.h"
 #include "../Animacio/Animation.h"
 #include "../Expresions/Expression.h"
+#include "../lectorsModels/Objecte3D.h"
 
 class CParla
 {
@@ -31,11 +32,11 @@ public:
 
 	void		SetVelocity			( float transitionT, float totalT );
 	void		SetTextToTalk		( char* text );
-	void		StartTalk			();
-	void		NextTalk			();
+	void		StartTalk			(Objecte3D* obj);
+	void		NextTalk			(Objecte3D* obj);
 	void		FinalizeTalk		();
 	bool		IsTalking			();
-	void		TalkElapsed			();
+	void		TalkElapsed			(Objecte3D* obj);
 	
 };
 

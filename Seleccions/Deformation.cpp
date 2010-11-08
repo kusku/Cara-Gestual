@@ -41,7 +41,7 @@ void Deformation::ButtonDown(float mouseX, float mouseY, SPoint3D opv)
 		{
 			vecDir = HitP - dominant;
 			editorM->DefineMovement(expression,muscle,vecDir);
-			EManager->RenderExpression(expression);
+			EManager->RenderExpression(expression, ObOBJ);
 		}
 		
 	}
@@ -67,7 +67,7 @@ void Deformation::ButtonMove(float mouseX, float mouseY)
 void Deformation::ButtonUp()
 {
 	editorM->DefineMovement(expression, muscle, vecDir);
-	EManager->RenderExpression(expression);
+	EManager->RenderExpression(expression, ObOBJ);
 }
 
 void Deformation::GetLine( SPoint3D &L1, SPoint3D &L2, float mouseX, float mouseY )

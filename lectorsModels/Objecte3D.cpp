@@ -191,6 +191,8 @@ Objecte3D::~Objecte3D()
 	vec_textures.clear();
 	vec_numCaresByMat.clear();
 	vec_materials.clear();
+	vec_VerticesMesh.clear();
+	vec_Geom.clear();
 }
 
 int Objecte3D::PuntMesProxim(SPoint3D p)
@@ -375,10 +377,12 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 
 	CoordsText *g_VerticesTextura=NULL;
 	VOID *pMesh, *pMeshIndices;
+	unsigned long numBytes;
+
+
 	CUSTOMVERTEX *g_VerticesMesh;
 	CUSTOMVERTEXTEXTURA *Geom;
 	unsigned short *g_IndicesMesh, *g_TIndicesMesh;
-	unsigned long numBytes;
 
 	std::vector<int>				IndexMaterial;
 
@@ -395,8 +399,19 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 	std::map< int, int >					CVertexIndexOldNew;
 
 	LPDIRECT3DTEXTURE9 texture=NULL;
-
-	this->CalcularNormalsVertex();
+	
+	if (!vec_numCaresByMat.empty())
+	{
+		vec_numCaresByMat.clear();
+		vec_pVBMeshByMat.clear();
+		vec_pIBMeshByMat.clear();
+		vec_pVBGeomTexturaByMat.clear();
+		vec_textures.clear();
+		vec_materials.clear();
+		listaTexturas.clear();
+		vec_VerticesMesh.clear();
+		vec_Geom.clear();
+	}
 
 	//Llegeix les textures
 	for(int i = 0; i < nombreMaterials; ++i)
@@ -449,7 +464,9 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 	//Construeix el VertexBuffer de cares
 	for (int i = 0; i < nombrePunts; ++i)
 	{
-		VertexBuffer.push_back(D3DXVECTOR3(punts[i].cordenades.x, punts[i].cordenades.y, punts[i].cordenades.z));
+		VertexBuffer.push_back(D3DXVECTOR3(	punts[i].cordenades.x + punts[i].moviment.x,
+											punts[i].cordenades.y + punts[i].moviment.y,
+											punts[i].cordenades.z + punts[i].moviment.z ));
 	}
 
 	//Construeix el IndexBuffer de cares
@@ -521,7 +538,6 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 			D3DXVECTOR3 face_texture = CIndexBufferByMat[cont_texture][cont_face];
 			for(int j=0;j<3;j++)
 			{
-				
 				it_VertexIndexOldNew = CVertexIndexOldNew.find((int)face_texture[j]);
 				if(it_VertexIndexOldNew != CVertexIndexOldNew.end())
 				{
@@ -556,6 +572,7 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 		//inicilizamos en memoria la matriz de vertices e indices
 		g_VerticesMesh=new CUSTOMVERTEX[numVertices];
 		g_IndicesMesh=new unsigned short[numCaras*3];
+		std::vector <CUSTOMVERTEX> verVector;
 		for(size_t iv=0;iv<(size_t)numVertices;iv++)
 		{
 			D3DXVECTOR3 vertex = VertexBufferByMat[cont_texture][iv];
@@ -574,7 +591,11 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 			g_VerticesMesh[iv].x=vertex.x;
 			g_VerticesMesh[iv].y=vertex.y;
 			g_VerticesMesh[iv].z=vertex.z;
+			verVector.push_back(*g_VerticesMesh);
 		}
+		vec_VerticesMesh.push_back(verVector);
+		verVector.clear();
+
 		for(size_t ic=0;ic<(size_t)numCaras;ic++)
 		{
 			D3DXVECTOR3 face = IndexBufferByMat[cont_texture][ic];
@@ -635,6 +656,7 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 		}
 
 		Geom=new CUSTOMVERTEXTEXTURA [numCaras*3];
+		std::vector <CUSTOMVERTEXTEXTURA> vecGeom;
 		for(int iv=0;iv<numCaras;iv++)
 		{
 			int vid1, vid2, vid3,tvid1, tvid2, tvid3;
@@ -672,7 +694,15 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 			Geom[iv*3].color=0xffffffff;
 			Geom[iv*3+1].color=0xffffffff;
 			Geom[iv*3+2].color=0xffffffff;
+		
+			vecGeom.push_back(Geom[iv*3]);
+			vecGeom.push_back(Geom[iv*3+1]);
+			vecGeom.push_back(Geom[iv*3+2]);
 		}
+		vec_Geom.push_back(vecGeom);
+		vecGeom.clear();
+
+
 		LPDIRECT3DVERTEXBUFFER9 pVBGeomTextura=NULL;
 		if(numCaras != 0)
 		{
@@ -689,13 +719,83 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 			pVBGeomTextura->Unlock();
 		}
 		vec_pVBGeomTexturaByMat.push_back(pVBGeomTextura);
-
-		delete g_IndicesMesh;
-		delete g_VerticesMesh;
-		delete g_TIndicesMesh;
-		delete g_VerticesTextura;
-		delete Geom;
 	}
 
+	delete g_IndicesMesh;
+	delete g_VerticesMesh;
+	delete g_TIndicesMesh;
+	delete g_VerticesTextura;
+	delete Geom;
+
+	return true;
+}
+
+bool Objecte3D::LoadVertexsBuffers( LPDIRECT3DDEVICE9 g_pd3dDevice )
+{
+	VOID *pMesh;
+
+	vec_pVBMeshByMat.clear();
+	vec_pVBGeomTexturaByMat.clear();
+
+	for (int mat = 0; mat < nombreMaterials; ++mat)
+	{
+		int numVertexs = (int)vec_VerticesMesh[mat].size();
+		int numFaces = (int)vec_Geom[mat].size();
+
+		CUSTOMVERTEX* tempVerticesVector = new CUSTOMVERTEX[numVertexs];
+		CUSTOMVERTEXTEXTURA* tempVertexTextures = new CUSTOMVERTEXTEXTURA[numFaces];
+		CUSTOMVERTEX vertice;
+		CUSTOMVERTEXTEXTURA textureVertice;
+
+		for (int i=0; i < numVertexs; ++i)
+		{
+			vertice = vec_VerticesMesh[mat].at(i);
+			vertice.x += punts[i].moviment.x;
+			vertice.y += punts[i].moviment.y;
+			vertice.z += punts[i].moviment.z;
+
+			tempVerticesVector[i]=vertice;
+		}
+
+		for(int i=0; i <numFaces; ++i)
+		{
+			textureVertice = vec_Geom[mat].at(i);
+			int num = buscarPunt(SPoint3D(textureVertice.x, textureVertice.y, textureVertice.z));
+			textureVertice.x += punts[num].moviment.x;
+			textureVertice.y += punts[num].moviment.y;
+			textureVertice.z += punts[num].moviment.z;
+
+			tempVertexTextures[i] = textureVertice;
+		}
+
+		//Enviar dades a la gràfica
+		LPDIRECT3DVERTEXBUFFER9 pVBMesh=NULL;
+		if( FAILED( g_pd3dDevice->CreateVertexBuffer( sizeof(CUSTOMVERTEX)*numVertexs,0, D3DFVF_CUSTOMVERTEX,D3DPOOL_DEFAULT, &pVBMesh, NULL ) ) )
+		{
+			return E_FAIL;
+		}
+		
+		if( FAILED( pVBMesh->Lock( 0, sizeof(CUSTOMVERTEX)*numVertexs, (void**)&pMesh, 0 ) ) )
+		{
+			return E_FAIL; 
+		}
+		memcpy( pMesh, tempVerticesVector, sizeof(CUSTOMVERTEX)*numVertexs );
+		pVBMesh->Unlock();
+		vec_pVBMeshByMat.push_back(pVBMesh);
+
+		LPDIRECT3DVERTEXBUFFER9 pVBGeomTextura=NULL;
+		if( FAILED( g_pd3dDevice->CreateVertexBuffer( sizeof(CUSTOMVERTEXTEXTURA)*numFaces,0, D3DFVF_CUSTOMVERTEXTEXTURA, D3DPOOL_DEFAULT, &pVBGeomTextura, NULL ) ) )
+			return E_FAIL;
+
+		if( FAILED( pVBGeomTextura->Lock( 0, sizeof(CUSTOMVERTEXTEXTURA)*numFaces, (void**)&pMesh, 0 ) ) )
+			return E_FAIL; 
+
+		memcpy( pMesh, tempVertexTextures, sizeof(CUSTOMVERTEXTEXTURA)*numFaces );
+		pVBGeomTextura->Unlock();
+		vec_pVBGeomTexturaByMat.push_back(pVBGeomTextura);
+
+		delete [] tempVerticesVector;
+		delete [] tempVertexTextures;
+	}
 	return true;
 }

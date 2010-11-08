@@ -83,8 +83,6 @@ char* XMLWriter::ConvertirMuscle(int i)	{		// TypeMuscle(0) retorna 0 i no pas E
 	else if (i==11)	return "LATDBOCA";
 	else if (i==12)	return "DENTDALT";
 	else if (i==13)	return "DENTBAIX";
-
-
 }
 
 TypeMuscle XMLWriter::ConvertirTypeMuscle(int i)	{		// TypeMuscle(0) retorna 0 i no pas ECELLA

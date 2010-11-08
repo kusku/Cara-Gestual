@@ -4,6 +4,7 @@
 #include "../Expresions/ExpressionManager.h"
 #include "../Muscles/MuscleManager.h"
 #include "../SPoint3D.h"
+#include "../lectorsModels/Objecte3D.h"
 
 class Animation
 {
@@ -34,11 +35,11 @@ public:
 	void		SetTime				( int transitionTime, float totalTime );
 	bool		IsActiveAnimation	( void );
 
-	void		StartAnimation		( TypeExpression expression );
+	void		StartAnimation		( TypeExpression expression, Objecte3D* obj );
 	void		NextStepAnimation	( void );
 	void		FinalizeAnimation	( void );
 
-	void		Render				( void );
+	void		Render				( Objecte3D* obj );
 };
 
 #endif

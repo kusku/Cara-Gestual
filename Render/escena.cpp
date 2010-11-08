@@ -13,22 +13,29 @@
 #include "../Muscles/MuscleManager.h"
 #include "../SPoint3D.h"
 
-Escena::Escena()
+void renderSphereSelection (LPDIRECT3DDEVICE9 Device, CDirectX* DX, EditorManager* EdManager, TypeMuscle muscle)
 {
-}
+	int tamany, dominant;
+	SPoint3D* llista;
 
-Escena::~Escena()
-{
-}
+	if (EdManager != NULL && muscle != NONE_MUSCLE)
+	{
+		llista = EdManager->GetPointList(&tamany, &dominant);
+		for (int i = 0; i < tamany; ++i)
+		{
+			D3DXMATRIX l_Matrix;
+			D3DXMatrixIdentity(&l_Matrix);
+			D3DXMatrixTranslation (&l_Matrix, llista[i].x, llista[i].y, llista[i].z);
+			DX->GetDevice()->SetTransform(D3DTS_WORLD, &l_Matrix);
 
-Escena* Escena::m_Escena = NULL;
+			if (i == dominant)
+				DX->RenderSphere(0.05,0xffff0000,8);
+			else
+				DX->RenderSphere(0.05,0xffffffff,8);	
+		}
 
-Escena* Escena::GetInstance()
-{
-	if ( m_Escena == NULL )
-		m_Escena = new Escena();
-
-	return m_Escena;
+		delete[] llista;
+	}
 }
 //
 //void renderSphereSelection (EditorManager* EdManager, TypeMuscle muscle)

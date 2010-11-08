@@ -42,4 +42,7 @@ struct VERTEX_TEXTURED
 #define CHECKED_DELETE(x) if(x!=NULL) {delete x; x=NULL;}
 #define CHECKED_RELEASE(x) if(x!=NULL) {x->Release(); x=NULL;}
 
+#define DEG2RAD(x) x*D3DX_PI/180.0f
+#define RAD2DEG(x) x*180.0f/D3DX_PI
+
 #endif

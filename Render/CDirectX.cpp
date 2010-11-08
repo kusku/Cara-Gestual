@@ -2,6 +2,7 @@
 #include "CDirectX.h"
 #include "../defines.h"
 #include <assert.h>
+#include "math.h"
 
 
 CDirectX::CDirectX()
@@ -117,11 +118,14 @@ void CDirectX::BeginRenderDX()
 		m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,0), 1.0f, 0 );
 	#endif
 
-
     // Begin the scene
     HRESULT hr=m_pD3DDevice->BeginScene();
 	assert( SUCCEEDED( hr ) );
-	m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW);
+	
+	if (m_CullingFace)
+		m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
+	else
+		m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
 
 	if (m_ZBuffer)
 	{
@@ -146,11 +150,6 @@ void CDirectX::BeginRenderDX()
 		m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID  );
 	else
 		m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME  );
-
-	if (m_CullingFace)
-		m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
-	else
-		m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
 }
 
 void CDirectX::EndRenderDX()
@@ -165,6 +164,26 @@ void CDirectX::RenderAxis(float size)
 	DrawLine(D3DXVECTOR3(0.0f,0.0f,0.0f),D3DXVECTOR3(size,0.0f,0.0f),0xffff0000);
 	DrawLine(D3DXVECTOR3(0.0f,0.0f,0.0f),D3DXVECTOR3(0.0f,-size,0.0f),0xff00ff00);
 	DrawLine(D3DXVECTOR3(0.0f,0.0f,0.0f),D3DXVECTOR3(0.0f,0.0f,size),0xff0000ff);
+}
+
+void CDirectX::RenderSphere( float Radius, DWORD Color, int Aristas )
+{
+	for(int t=0;t<Aristas;++t)
+	{
+		float l_RadiusRing=Radius*sin(DEG2RAD(180.0f*((float)t))/((float)Aristas));
+		for(int b=0;b<Aristas;++b)
+		{
+			D3DXVECTOR3 l_PosA(l_RadiusRing*cos(DEG2RAD((float)(360.0f*(float)b)/((float)Aristas))),Radius*cos(DEG2RAD(180.0f*((float)t))/((float)Aristas)),l_RadiusRing*sin(DEG2RAD((float)(360.0f*(float)b)/((float)Aristas))));
+			D3DXVECTOR3 l_PosB(l_RadiusRing*cos(DEG2RAD((float)(360.0f*(float)(b+1))/((float)Aristas))),Radius*cos(DEG2RAD(180.0f*((float)t))/((float)Aristas)),l_RadiusRing*sin(DEG2RAD((float)(360.0f*(float)(b+1))/((float)Aristas))));
+			DrawLine(l_PosA,l_PosB,Color);
+			
+			float l_RadiusNextRing=Radius*sin(DEG2RAD(180.0f*((float)(t+1)))/((float)Aristas));
+			
+			D3DXVECTOR3 l_PosC(l_RadiusRing*cos(DEG2RAD((float)(360.0f*(float)b)/((float)Aristas))),Radius*cos(DEG2RAD(180.0f*((float)t))/((float)Aristas)),l_RadiusRing*sin(DEG2RAD((float)(360.0f*(float)b)/((float)Aristas))));
+			D3DXVECTOR3 l_PosD(l_RadiusNextRing*cos(DEG2RAD((float)(360.0f*(float)b)/((float)Aristas))),Radius*cos(DEG2RAD(180.0f*((float)(t+1)))/((float)Aristas)),l_RadiusNextRing*sin(DEG2RAD((float)(360.0f*(float)b)/((float)Aristas))));
+			DrawLine(l_PosC,l_PosD,Color);
+		}
+	}
 }
 
 void CDirectX::DrawLine(const D3DXVECTOR3 &PosA, const D3DXVECTOR3 &PosB, DWORD Color)
@@ -203,4 +222,42 @@ void CDirectX::PointLight( D3DXVECTOR3 position, D3DXVECTOR3 direction )
 
 	m_pD3DDevice->SetLight( 1, &light );
 	m_pD3DDevice->LightEnable( 1, TRUE );
+}
+
+void CDirectX::RenderSquare( D3DXVECTOR2 TopLeft, D3DXVECTOR2 BottomRight )
+{
+	struct Vertex
+	{
+		float x,y,z,rhw;
+		D3DCOLOR color;
+	};
+	Vertex vertices[5];
+	vertices[0].x = TopLeft.x; // top left
+	vertices[0].y = TopLeft.y;
+	vertices[0].z = 1.0f;
+	vertices[0].rhw = 1.0f;
+	vertices[0].color = D3DCOLOR_XRGB(0,255,0);
+	vertices[1].x = BottomRight.x; // top right
+	vertices[1].y = TopLeft.y;
+	vertices[1].z = 1.0f;
+	vertices[1].rhw = 1.0f;
+	vertices[1].color = D3DCOLOR_XRGB(0,255,0);
+	vertices[2].x = BottomRight.x; // right bottom
+	vertices[2].y = BottomRight.y;
+	vertices[2].z = 1.0f;
+	vertices[2].rhw = 1.0f;
+	vertices[2].color = D3DCOLOR_XRGB(0,255,0);
+	vertices[3].x = TopLeft.x; // left bottom
+	vertices[3].y = BottomRight.y;
+	vertices[3].z = 1.0f;
+	vertices[3].rhw = 1.0f;
+	vertices[3].color = D3DCOLOR_XRGB(0,255,0);
+	vertices[4].x = TopLeft.x; // top left again
+	vertices[4].y = TopLeft.y;
+	vertices[4].z = 1.0f;
+	vertices[4].rhw = 1.0f;
+	vertices[4].color = D3DCOLOR_XRGB(0,255,0);
+
+	m_pD3DDevice->DrawPrimitiveUP( D3DPT_LINESTRIP, 4, (void*) vertices, sizeof( Vertex ) ); 
+
 }

@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "Animation.h"
-
+#include "../lectorsModels/Objecte3D.h"
 
 Animation::Animation(ExpressionManager* manager, MuscleManager* muscle)
 {
@@ -43,7 +43,7 @@ void Animation::SetTime(int transitionTime, float totalTime)
 	this->totalTime = totalTime;
 }
 
-void Animation::StartAnimation(TypeExpression expression)
+void Animation::StartAnimation(TypeExpression expression, Objecte3D* obj)
 {
 	step = 0;
 	if (expression != NONE_EXPRESSION)
@@ -59,7 +59,7 @@ void Animation::StartAnimation(TypeExpression expression)
 			partialMovement[i] /= divisionTime;
 			portionMovement[i] = partialMovement[i];
 		}
-		Render();
+		Render(obj);
 	}
 	
 	animationActive = true;
@@ -91,7 +91,7 @@ bool Animation::IsActiveAnimation( void )
 	return animationActive;
 }
 
-void Animation::Render()
+void Animation::Render(Objecte3D* obj)
 {
 	SPoint3D* actualMovement = new SPoint3D [sizeExpression];
 
@@ -102,7 +102,7 @@ void Animation::Render()
 
 	if (divisionTime > (float) step)
 	{
-		EManager->ExternalRender(expression,actualMovement);
+		EManager->ExternalRender(expression,actualMovement, obj);
 	}
 	
 	delete []actualMovement;

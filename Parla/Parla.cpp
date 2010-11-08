@@ -31,7 +31,7 @@ void CParla::SetVelocity(float transitionT, float totalT)
 	totalTime = totalT;
 }
 
-void CParla::StartTalk()
+void CParla::StartTalk(Objecte3D* obj)
 {
 	TypeExpression expressio;
 	index = 0;
@@ -41,7 +41,7 @@ void CParla::StartTalk()
 
 	//Posa una expressió inicial
 	animacio->SetTime(transitionTime, totalTime);
-	animacio->StartAnimation(NEUTRE);
+	animacio->StartAnimation(NEUTRE, obj);
 	animacio->FinalizeAnimation();
 
 	if (text != NULL)
@@ -55,13 +55,13 @@ void CParla::StartTalk()
 		if (text[index] != NULL)
 		{
 			animacio->SetTime(transitionTime, totalTime);
-			animacio->StartAnimation(expressio);
+			animacio->StartAnimation(expressio, obj);
 			lastExpression = expressio;
 		}
 	}
 }
 
-void CParla::NextTalk()
+void CParla::NextTalk(Objecte3D* obj)
 {
 	TypeExpression expressio;
 
@@ -79,14 +79,14 @@ void CParla::NextTalk()
 			if (lastExpression == expressio)
 			{
 				animacio->SetTime(transitionTime, totalTime);
-				animacio->StartAnimation(NEUTRE);	//Si es repeteix una mateix lletra, es posa entremig la neutre.
+				animacio->StartAnimation(NEUTRE, obj);	//Si es repeteix una mateix lletra, es posa entremig la neutre.
 				lastExpression = NONE_EXPRESSION;
 				--index;
 			}
 			else
 			{
 				animacio->SetTime(transitionTime, totalTime);
-				animacio->StartAnimation(expressio);
+				animacio->StartAnimation(expressio, obj);
 				lastExpression = expressio;
 			}
 		}
@@ -95,7 +95,7 @@ void CParla::NextTalk()
 			if (text[index] == NULL && text[index -1] != NULL)
 			{
 				animacio->SetTime(transitionTime, totalTime);
-				animacio->StartAnimation(NEUTRE);
+				animacio->StartAnimation(NEUTRE, obj);
 			}
 			else
 			{
@@ -159,7 +159,7 @@ bool CParla::IsTalking()
 	return parlant;
 }
 
-void CParla::TalkElapsed()
+void CParla::TalkElapsed(Objecte3D* obj)
 {
 	TypeExpression expressio;
 	index = 0;
@@ -188,7 +188,7 @@ void CParla::TalkElapsed()
 				else
 					animacio->SetTime(transitionTime, totalTime);
 
-				animacio->StartAnimation(expressio);
+				animacio->StartAnimation(expressio, obj);
 			}
 			while (time < StopTime)
 			{

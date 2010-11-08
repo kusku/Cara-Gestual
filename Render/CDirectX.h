@@ -46,6 +46,8 @@ public:
 
 	//Render eixos
 	void		RenderAxis		( float size );
+	void		RenderSphere	( float Radius, DWORD Color=0x00000000, int Aristas=10 );
+	void		RenderSquare	( D3DXVECTOR2 TopLeft, D3DXVECTOR2 BottomRight );
 
 	void		PointLight		( D3DXVECTOR3 position, D3DXVECTOR3 direction );
 

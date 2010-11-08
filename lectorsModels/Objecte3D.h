@@ -18,6 +18,7 @@
 #include "../Seleccions/intersection.h"
 #include "../Render/CDirectX.h"
 #include "TextureManager.h"
+#include "../defines.h"
 
 struct VERTICEXYZ_T2_NORMAL
 {
@@ -80,7 +81,10 @@ class Objecte3D {
 		int			GetNumVertexs		( void );
 		int			GetNumTriangles		( void );
 		void		GetTriangle			( int index, SPoint3D* triangle );
-		void		GetFaceCoords		( int nFace, SPoint3D* coords );	
+		void		GetFaceCoords		( int nFace, SPoint3D* coords );
+
+		bool		LoadInfoInVectors	( LPDIRECT3DDEVICE9 g_pd3dDevice );
+		bool		LoadVertexsBuffers	( LPDIRECT3DDEVICE9 g_pd3dDevice );
 
 private:
 		Cara		*cares;
@@ -108,9 +112,12 @@ private:
 		std::vector< int >						vec_numCaresByMat;
 		std::vector <std::string>				listaTexturas;
 
+		std::vector < std::vector <CUSTOMVERTEX> >			vec_VerticesMesh;
+		std::vector < std::vector <CUSTOMVERTEXTEXTURA> >	vec_Geom;
+		
+
 		VERTICEXYZ_T2_NORMAL *l_pV;
 		int* l_pMF;
-		
 		
 		void		Objecte3DDeOBJ			( char* filename );
 		void		Objecte3DDe3DS			( char* filename );
@@ -118,8 +125,6 @@ private:
 		void		CalcularNormalsVertex	( void );
 
 		SPoint3D	GetFaceNormal			( const Cara* );
-
-		bool		LoadInfoInVectors	( LPDIRECT3DDEVICE9 g_pd3dDevice );
 };
 
 #endif

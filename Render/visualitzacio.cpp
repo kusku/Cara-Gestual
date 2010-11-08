@@ -64,6 +64,8 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 				 CSubtitles* MSubtitles, bool subtitles, CParla* parla)
 {    
 	D3DXVECTOR3 cam,up;
+	CDirectX* l_DX = CDirectX::GetInstance();
+	LPDIRECT3DDEVICE9 Device = CDirectX::GetInstance()->GetDevice();
 
 // Conversió angles radians -> graus
    	angley=angley*2*pi/360;
@@ -99,28 +101,28 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 					up[2]=-sin(angley)*sin(anglex);	}
 
 	// Especificació del punt de vista
-	CDirectX::GetInstance()->SetEye(cam);
-	CDirectX::GetInstance()->SetUpVector(up);
-	CDirectX::GetInstance()->SetLookAt(D3DXVECTOR3(0.f, 0.f, 0.f));
+	l_DX->SetEye(cam);
+	l_DX->SetUpVector(up);
+	l_DX->SetLookAt(D3DXVECTOR3(0.f, 0.f, 0.f));
 	
 	//Habilita o no el ZBuffer
-	CDirectX::GetInstance()->SetZBuffer(oculta);
+	l_DX->SetZBuffer(oculta);
 
 	//Estableix la visiualització del mode del model (FILFERROS o SOLID)
-	CDirectX::GetInstance()->SetPaintSolid(!filferros);
+	l_DX->SetPaintSolid(!filferros);
 
 	//Estableix el test de visibilitat (Culling Face)
-	CDirectX::GetInstance()->SetCullingFace(testv);
+	l_DX->SetCullingFace(testv);
 
 	//Activa la il·luminació
 	if (ifix)
-		CDirectX::GetInstance()->PointLight(D3DXVECTOR3(15.f, 0.f, 0.f), D3DXVECTOR3(0.f, 0.f, 0.f));
+		l_DX->PointLight(D3DXVECTOR3(15.f, 0.f, 0.f), D3DXVECTOR3(0.f, 0.f, 0.f));
 	else
-		CDirectX::GetInstance()->PointLight(cam, D3DXVECTOR3(0.f, 0.f, 0.f));
+		l_DX->PointLight(cam, D3DXVECTOR3(0.f, 0.f, 0.f));
 
 	//Activa el Render en DirectX
-	CDirectX::GetInstance()->BeginRenderDX();
-	CDirectX::GetInstance()->SetupMatrices();
+	l_DX->BeginRenderDX();
+	l_DX->SetupMatrices();
 
 	//Establim matrius de transformacions
 	{
@@ -130,17 +132,21 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 		if (pant)	//Fa una translació si el PAN està activat
 			D3DXMatrixTranslation (&l_Matrix, tr.x, tr.y, tr.z);
 
-		CDirectX::GetInstance()->GetDevice()->SetTransform(D3DTS_WORLD, &l_Matrix);
+		l_DX->GetDevice()->SetTransform(D3DTS_WORLD, &l_Matrix);
 	}
 
 	//Dibuixa els eixos de coordenades
 	if (eix)
-		CDirectX::GetInstance()->RenderAxis(8.0f);
+		l_DX->RenderAxis(8.0f);
 
 	//Dibuixa el model
 	if (ObOBJ != NULL)
-		ObOBJ->Render(CDirectX::GetInstance()->GetDevice());	
+		ObOBJ->Render(Device);	
 
+	renderSphereSelection(Device, l_DX, EdManager, muscle);
+
+	l_DX->RenderSquare(D3DXVECTOR2(wx1, wy1), D3DXVECTOR2(wx2, wy2));
+	
 //// Transformacions geomètriques sobre objecte (Traslació, Rotacions i Escalatge)
 //	if (TR) 
 //		{	glTranslatef(VTr.x,VTr.y,VTr.z);

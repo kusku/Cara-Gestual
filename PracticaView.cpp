@@ -1783,6 +1783,8 @@ void CPracticaView::OnCarregaAutomatica()
 			
 	//TODO: Path
 	nom = "./Data/Models/heavytriangles/heavyweapons.obj";
+	CString musclesP = "./Data/Models/heavytriangles/m8.xml";
+	CString expressionsP = "./Data/Models/heavytriangles/e12.xml";
 
 	// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
 	char * nomfitx = (char *)(LPCTSTR)nom;
@@ -1809,6 +1811,26 @@ void CPracticaView::OnCarregaAutomatica()
 			MManager->ClearMuscle((TypeMuscle) i);
 		}
 		editor->ClearVertexs();
+
+	// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
+	char * nomMuscles = (char *)(LPCTSTR)musclesP;
+
+	if (ObOBJ != NULL)
+	{
+		XMLReader* lector = new XMLReader(nomMuscles, EManager, MManager, editor);
+		lector->Read();
+		delete lector;
+	}
+
+		// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
+	char * nomExpressions = (char *)(LPCTSTR)expressionsP;
+
+	if (ObOBJ != NULL)
+	{
+		XMLReader* lector = new XMLReader(nomExpressions, EManager, MManager, editor);
+		lector->Read();
+		delete lector;
+	}
 
 	// Crida a OnPaint() per redibuixar l'escena
 	Invalidate();	
@@ -2603,7 +2625,7 @@ void CPracticaView::OnTimer(UINT nIDEvent)
 			{
 				anima = true;
 				animate->NextStepAnimation();
-				animate->Render();
+				animate->Render(ObOBJ);
 				acumulativeTime += 0.004;
 			}
 			else
@@ -2626,14 +2648,14 @@ void CPracticaView::OnTimer(UINT nIDEvent)
 			{
 				anima = true;
 				animate->NextStepAnimation();
-				animate->Render();
+				animate->Render(ObOBJ);
 				acumulativeTime += 0.004;
 			}
 			else
 			{
 				animate->FinalizeAnimation();
 				acumulativeTime = 0.f;
-				parla->NextTalk();
+				parla->NextTalk(ObOBJ);
 			}
 		}
 		else
@@ -3079,7 +3101,7 @@ void CPracticaView::SwitchExpression(TypeExpression e)
 			{
 				ChangeExpressionState(e);
 				if (!this->animacio)
-					EManager->RenderExpression(selectedExpression);
+					EManager->RenderExpression(selectedExpression,ObOBJ);
 				else
 					SetAndStartAnimation(selectedExpression);
 			}
@@ -3260,7 +3282,7 @@ void CPracticaView::ChangeExpressionState ( TypeExpression expression )
 void CPracticaView::SetAndStartAnimation( TypeExpression expression )
 {
 	animate->SetTime(4, temporitzador);
-	animate->StartAnimation(expression);
+	animate->StartAnimation(expression, ObOBJ);
 	SetTimer(WM_TIMER,4,NULL);	
 }
 
@@ -3360,7 +3382,7 @@ void CPracticaView::OnParla()
 {
 	subtitles = true;
 	SetTimer(WM_TIMER,4,NULL);
-	parla->StartTalk();
+	parla->StartTalk(ObOBJ);
 
 	// Crida el OnPaint() per a redibuixar l'escena
 	Invalidate();
@@ -3372,7 +3394,7 @@ void CPracticaView::OnParlaBucle()
 
 	subtitles = true;
 	parla->SetVelocity(8.f, 0.1f);
-	parla->StartTalk();
+	parla->StartTalk(ObOBJ);
 
 	acumulativeTime = 0.f;
 	
@@ -3384,14 +3406,14 @@ void CPracticaView::OnParlaBucle()
 			Timer::GetInstance()->ResetTimer();
 			anima = true;
 			animate->NextStepAnimation();
-			animate->Render();
+			animate->Render(ObOBJ);
 			acumulativeTime += Timer::GetInstance()->GetElapsedTime();
 		}
 		else
 		{
 			animate->FinalizeAnimation();
 			acumulativeTime = 0.f;
-			parla->NextTalk();
+			parla->NextTalk(ObOBJ);
 		}
 
 		OnPaint();

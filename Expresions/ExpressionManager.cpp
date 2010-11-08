@@ -2,6 +2,7 @@
 #include "ExpressionManager.h"
 #include "../Muscles/MuscleManager.h"
 #include "Expression.h"
+#include "../Render/CDirectX.h"
 #include "../SPoint3D.h"
 
 ExpressionManager::ExpressionManager(MuscleManager* MMan)
@@ -30,10 +31,13 @@ void ExpressionManager::modifyMuscleExpression(TypeExpression nameExpression, Ty
 		Expressions[nameExpression]->modifyMuscle(nameMuscle, movement);
 }
 
-void ExpressionManager::RenderExpression( TypeExpression nameExpression )
+void ExpressionManager::RenderExpression( TypeExpression nameExpression, Objecte3D* obj  )
 {
 	if (nameExpression != NONE_EXPRESSION)
+	{
 		Expressions[nameExpression]->RenderExpression();
+		obj->LoadVertexsBuffers(CDirectX::GetInstance()->GetDevice());
+	}
 }
 
 Expression** ExpressionManager::getExpressionList(void)
@@ -46,8 +50,11 @@ int ExpressionManager::getNumExpressions ()
 	return NEXPRESSIONS;
 }
 
-void ExpressionManager::ExternalRender(TypeExpression nameExpression, SPoint3D *newMovements)
+void ExpressionManager::ExternalRender(TypeExpression nameExpression, SPoint3D *newMovements, Objecte3D* obj)
 {
 	if (nameExpression != NONE_EXPRESSION)
+	{
 		Expressions[nameExpression]->ExternalRender(newMovements);
+		obj->LoadVertexsBuffers(CDirectX::GetInstance()->GetDevice());
+	}
 }

@@ -12,28 +12,13 @@
 #include "../lectorsModels/Objecte3D.h"
 #include "../Muscles/MuscleManager.h"
 #include "../Seleccions/EditorManager.h"
+#include "../Render/CDirectX.h"
 
-class Escena
-{
-private:
-
-	static Escena*		m_Escena;
-
-	void		DrawLine(const D3DXVECTOR3 &PosA, const D3DXVECTOR3 &PosB, DWORD Color=0xffffffff);
-
-public:
-	
-	Escena();
-	~Escena();
-
-	static Escena*		GetInstance			();
-
-};
 
 /* ------------------------------------------------------------------------- */
 /*                            Funcions de les escenes                        */
 /* ------------------------------------------------------------------------- */
-//void renderSphereSelection (EditorManager* EdManager, TypeMuscle muscle);
+void renderSphereSelection (LPDIRECT3DDEVICE9 Device, CDirectX* DX,EditorManager* EdManager, TypeMuscle muscle);
 //void drawSelectionBox	(float x1, float y1, float x2, float y2);
 //void WireRect( float x1, float y1, float x2, float y2 );
 //void SetProjection3D();

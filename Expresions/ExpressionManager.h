@@ -4,6 +4,7 @@
 #include "Expression.h"
 #include "../Muscles/MuscleManager.h"
 #include "../SPoint3D.h"
+#include "../lectorsModels/Objecte3D.h"
 
 #define NEXPRESSIONS 12
 //NONE és l'últim element ja que l'array arriba a l'element N-1.
@@ -32,8 +33,8 @@ public:
 	void			modifyMuscleExpression	( TypeExpression nameExpression, TypeMuscle nameMuscle, SPoint3D movement );
 	
 	// Mou els muscles de l'expressió desitjada
-	void			RenderExpression		( TypeExpression nameExpression );
-	void			ExternalRender			( TypeExpression nameExpression, SPoint3D* newMovements);
+	void			RenderExpression		( TypeExpression nameExpression, Objecte3D* obj );
+	void			ExternalRender			( TypeExpression nameExpression, SPoint3D* newMovements, Objecte3D* obj);
 
 	Expression**	getExpressionList		( void );
 	int				getNumExpressions		( void );
