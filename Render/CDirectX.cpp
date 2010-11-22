@@ -94,17 +94,26 @@ HRESULT CDirectX::InitDX ( HWND hWnd )
 void CDirectX::SetupMatrices()
 {
 	//TODO: S'ha de canviar ja que es pot moure la càmera amb el ratolí
-
 	D3DXMATRIX m_matView;
 	D3DXMATRIX m_matProject;
+
 	//D3DXVECTOR3 l_Eye(0.0f,5.0f,-5.0f), l_LookAt(0.0f,0.0f,0.0f), l_VUP(0.0f,1.0f,0.0f);
 
 	D3DXMatrixLookAtLH( &m_matView, &l_Eye, &l_LookAt, &l_VUP);
+	//D3DXMatrixPerspectiveFovLH( &m_matProject, 
+	//						   45.0f * D3DX_PI / 180.0f, 
+ //                              1.0f, 
+	//						   1.0f, 
+	//						   1000.0f );
+
+	D3DVIEWPORT9 ViewPortMatrix;
+	m_pD3DDevice->GetViewport(&ViewPortMatrix);
+
 	D3DXMatrixPerspectiveFovLH( &m_matProject, 
 							   45.0f * D3DX_PI / 180.0f, 
-                               1.0f, 
+							   1.0f*ViewPortMatrix.Width/ViewPortMatrix.Height, 
 							   1.0f, 
-							   1000.0f );
+							   5000.0f );
 
 	m_pD3DDevice->SetTransform( D3DTS_VIEW, &m_matView );
 	m_pD3DDevice->SetTransform( D3DTS_PROJECTION, &m_matProject );

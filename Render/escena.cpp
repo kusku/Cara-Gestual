@@ -38,27 +38,6 @@ void renderSphereSelection (LPDIRECT3DDEVICE9 Device, CDirectX* DX, EditorManage
 	}
 }
 //
-//void renderSphereSelection (EditorManager* EdManager, TypeMuscle muscle)
-//{
-//	int tamany,dominant;
-//	SPoint3D *llista;
-//	if (EdManager != NULL && muscle != NONE_MUSCLE) {
-//		llista = EdManager->GetPointList(&tamany,&dominant);
-//		for (int i = 0; i < tamany; i++) {
-//			if (i == dominant) {
-//				glColor3f(1.0,0.0,0.0);
-//			} else {
-//				glColor3f(1.0,1.0,1.0);
-//			}
-//			glPushMatrix();
-//				glTranslatef(llista[i].x,llista[i].y,llista[i].z);
-//				glutSolidSphere(0.1,5,5);
-//			glPopMatrix();
-//		}
-//		delete [] llista;
-//	}
-//}
-//
 //void drawSelectionBox (float x1, float y1, float x2, float y2)
 //{
 //	float m_nHeight = GetViewportMatrix()[3];

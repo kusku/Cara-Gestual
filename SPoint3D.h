@@ -43,13 +43,25 @@ public:
 	bool operator == (const SPoint3D& ) const;
 	bool operator != (const SPoint3D& ) const;
 	bool operator > (const SPoint3D& ) const;
-	bool operator < (const SPoint3D& ) const;
+	bool operator < (const SPoint3D& ) const; 
 
 	//Functions
 	void		SPoint3D::normalizeVector	( void );
 	double		SPoint3D::calcularDistancia	( const SPoint3D& ) const;
 	SPoint3D	SPoint3D::CrossProduct		( const SPoint3D& );
 	float		SPoint3D::Dot				( const SPoint3D& );
+
+};
+
+
+struct Spoint3D_LessThan
+{
+	bool operator()(SPoint3D lhs, SPoint3D rhs) const
+	{
+		return lhs.x < rhs.x ||
+		(lhs.x==rhs.x && lhs.y<rhs.y) ||
+		(lhs.x==rhs.x && lhs.y==rhs.y && lhs.z<rhs.z);
+	}
 };
 
 #endif

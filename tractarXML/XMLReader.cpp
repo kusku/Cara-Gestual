@@ -206,7 +206,8 @@ void XMLReader::ReadExpressions() {
 
 				EManager->modifyMuscleExpression(numExpressio, numMuscle, punt);
 
-				ReadWord(); //Llegim final del tag (/>)
+				fscanf_s(fitxer, "%c", &c);
+				fscanf_s(fitxer, "%c", &c);//Llegim final del tag (/>)
 
 				ReadWord(); //Llegim el següent atribut o bé el final de l'expressió
 			}

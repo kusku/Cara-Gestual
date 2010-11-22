@@ -11,6 +11,7 @@
 #include <gl/glu.h>
 #include <d3dx9.h>
 #include <vector>
+#include <map>
 
 #include "Windows.h"
 #include "../SPoint3D.h"
@@ -19,6 +20,7 @@
 #include "../Render/CDirectX.h"
 #include "TextureManager.h"
 #include "../defines.h"
+#include "../Timer/Timer.h"
 
 struct VERTICEXYZ_T2_NORMAL
 {
@@ -104,21 +106,18 @@ private:
 		std::vector<LPDIRECT3DTEXTURE9>		m_TextureList;
 
 		//Dades per al RenderByAse
-		std::vector< LPDIRECT3DVERTEXBUFFER9 >	vec_pVBMeshByMat;
+		//std::vector< LPDIRECT3DVERTEXBUFFER9 >	vec_pVBMeshByMat;
 		std::vector< LPDIRECT3DINDEXBUFFER9 >	vec_pIBMeshByMat;
 		std::vector< LPDIRECT3DVERTEXBUFFER9 >	vec_pVBGeomTexturaByMat;
 		std::vector< LPDIRECT3DTEXTURE9 >		vec_textures;
 		std::vector< D3DMATERIAL9 >				vec_materials;
 		std::vector< int >						vec_numCaresByMat;
 		std::vector <std::string>				listaTexturas;
+		std::map<SPoint3D, int, Spoint3D_LessThan>			g_PuntsMap;
 
 		std::vector < std::vector <CUSTOMVERTEX> >			vec_VerticesMesh;
 		std::vector < std::vector <CUSTOMVERTEXTEXTURA> >	vec_Geom;
-		
-
-		VERTICEXYZ_T2_NORMAL *l_pV;
-		int* l_pMF;
-		
+	
 		void		Objecte3DDeOBJ			( char* filename );
 		void		Objecte3DDe3DS			( char* filename );
 		void		UseMaterial				( O3DMaterial pMaterial );

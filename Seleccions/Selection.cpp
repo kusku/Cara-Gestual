@@ -8,6 +8,7 @@
 #include "../Render/visualitzacio.h"
 #include <gl/gl.h>
 #include <gl/glu.h>
+#include "../Render/CDirectX.h"
 
 void inline swapFloat( float &x, float &y )
 {
@@ -32,7 +33,7 @@ Selection::~Selection()
 	delete[] m_pTriFlags;
 }
 
-//Al premer el bot� esquerre
+//Al prémer el botó esquerre
 void Selection::ButtonDown( float mouseX, float mouseY, int flag )
 {
 	nStartX = mouseX;
@@ -115,22 +116,44 @@ void Selection::ButtonRDown( float mouseX, float mouseY )
 //Obt� una l�nia d'all� on s'ha apretat en coordenades m�n
 void Selection::GetLine( SPoint3D &L1, SPoint3D &L2, float mouseX, float mouseY )
 {
-	double* mvmatrix;
-	double* projmatrix;
-	int* Viewport;
-	//int Viewport[4];
-	double dX, dY, dZ, dClickY; // glUnProject uses doubles, but I'm using floats for these 3D vectors
+	D3DVIEWPORT9 ViewPortMatrix;
+	D3DXMATRIX ViewMatrix;
+	D3DXMATRIX ProjectionMatrix;
+	D3DXMATRIX	WorldMatrix;
+	D3DXVECTOR3 result;
+	D3DXVECTOR3 screenPoint;
 
-	Viewport = GetViewportMatrix();
-	mvmatrix = GetModelviewMatrix();
-	projmatrix = GetProjectionMatrix();
-	dClickY = double (Viewport[3] - mouseY); 
+	LPDIRECT3DDEVICE9 Device = CDirectX::GetInstance()->GetDevice();
+
+	//double* mvmatrix;
+	//double* projmatrix;
+	//int* viewport;
+	////int Viewport[4];
+	//double dX, dY, dZ, dClickY; // glUnProject uses doubles, but I'm using floats for these 3D vector
+	Device->GetViewport(&ViewPortMatrix);
+	Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
+	Device->GetTransform(D3DTS_PROJECTION, &ProjectionMatrix);
+	Device->GetTransform(D3DTS_WORLD, &WorldMatrix);
+
+	screenPoint = D3DXVECTOR3(mouseX, ViewPortMatrix.Height - mouseY, ViewPortMatrix.MinZ);
+
+	D3DXVec3Unproject( &result, &screenPoint, &ViewPortMatrix, &ProjectionMatrix, &ViewMatrix, &WorldMatrix );
+	L1 = SPoint3D(result.x,  result.y, result.z);
+
+	screenPoint = D3DXVECTOR3(mouseX,ViewPortMatrix.Height - mouseY, ViewPortMatrix.MaxZ);
+	D3DXVec3Unproject( &result, &screenPoint, &ViewPortMatrix, &ProjectionMatrix, &ViewMatrix, &WorldMatrix );
+	L2 = SPoint3D(result.x, result.y, result.z);
+
+	//Viewport = GetViewportMatrix();
+	/*mvmatrix = GetModelviewMatrix();
+	projmatrix = GetProjectionMatrix();*/
+	//dClickY = double (Viewport[3] - mouseY); 
 	// OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
 
-	gluUnProject ((double) mouseX, dClickY, 0.0, mvmatrix, projmatrix, Viewport, &dX, &dY, &dZ);
+	/*gluUnProject ((double) mouseX, dClickY, 0.0, mvmatrix, projmatrix, Viewport, &dX, &dY, &dZ);
 	L1 = SPoint3D( (float) dX, (float) dY, (float) dZ );
 	gluUnProject ((double) mouseX, dClickY, 1.0, mvmatrix, projmatrix, Viewport, &dX, &dY, &dZ);
-	L2 = SPoint3D( (float) dX, (float) dY, (float) dZ );
+	L2 = SPoint3D( (float) dX, (float) dY, (float) dZ );*/
 }
 
 void Selection::GetFrustum( SPoint3D Normals[4], SPoint3D P[8])

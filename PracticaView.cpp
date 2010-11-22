@@ -482,7 +482,7 @@ void CPracticaView::OnPaint()
 
 
 //  Actualitzar la barra d'estat de l'aplicació amb els valors R,A,B,PVx,PVy,PVz
-	Barra_Estat();
+	//Barra_Estat();
 }
 
 // Barra_Estat: Actualitza la barra d'estat (Status Bar) de l'aplicació amb els

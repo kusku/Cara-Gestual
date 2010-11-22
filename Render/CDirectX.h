@@ -58,7 +58,7 @@ public:
 	void		SetPaintSolid	( bool solid ) { m_PaintSolid = solid; };
 	void		SetCullingFace	( bool cull ) { m_CullingFace = cull; };
 
-	LPDIRECT3DDEVICE9 GetDevice	() { return m_pD3DDevice; };
+	LPDIRECT3DDEVICE9	GetDevice			() { return m_pD3DDevice; };
 };
 
 #endif
