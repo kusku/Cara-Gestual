@@ -86,8 +86,6 @@ HRESULT CDirectX::InitDX ( HWND hWnd )
     m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
 
 	
-	//Inicializamos los objetos de DirectInput (Keyboard y Mouse)
-	
     return S_OK;
 }
 
@@ -121,11 +119,7 @@ void CDirectX::SetupMatrices()
 
 void CDirectX::BeginRenderDX()
 {
-	#ifdef _DEBUG // Clear the backbuffer to a blue color in a Debug mode
-		m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,0), 1.0f, 0 );
-	#else // Clear the backbuffer to a black color in a Release mode
-		m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,0), 1.0f, 0 );
-	#endif
+	m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,0), 1.0f, 0 );
 
     // Begin the scene
     HRESULT hr=m_pD3DDevice->BeginScene();

@@ -115,6 +115,7 @@ private:
 		std::vector <std::string>				listaTexturas;
 		std::map<SPoint3D, int, Spoint3D_LessThan>			g_PuntsMap;
 
+		//std::vector<unsigned short*>				m_IndicesMesh;
 		std::vector < std::vector <CUSTOMVERTEX> >			vec_VerticesMesh;
 		std::vector < std::vector <CUSTOMVERTEXTEXTURA> >	vec_Geom;
 	

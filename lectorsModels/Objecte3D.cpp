@@ -363,6 +363,10 @@ void Objecte3D::CalcularNormalsVertex()
 ///////////////////////////////////////
 void Objecte3D::Render(LPDIRECT3DDEVICE9 Device)
 {
+	VOID* pMesh=NULL;
+	unsigned short* indexs=NULL;
+	CUSTOMVERTEXTEXTURA* text=NULL;
+
 	for(int cont = 0; cont < (int)vec_textures.size(); cont++)
 	{
 		if(vec_numCaresByMat[cont] != 0)
@@ -372,7 +376,17 @@ void Objecte3D::Render(LPDIRECT3DDEVICE9 Device)
 			Device->SetTexture (0, vec_textures[cont]);
 			Device->SetMaterial(&vec_materials[cont]);
 			Device->DrawPrimitive(D3DPT_TRIANGLELIST,0,vec_numCaresByMat[cont]);
-			//Device->DrawIndexedPrimitiveUp(
+			//Recuperar els índexs
+			/*vec_pIBMeshByMat[cont]->Lock( 0, sizeof(unsigned short)*vec_numCaresByMat[cont]*3, (void**)&pMesh, 0 );
+				indexs = (unsigned short*)pMesh;
+			vec_pIBMeshByMat[cont]->Unlock();
+
+			vec_pVBGeomTexturaByMat[cont]->Lock( 0, sizeof(CUSTOMVERTEXTEXTURA)*vec_numCaresByMat[cont]*3, (void**)&pMesh, 0 );
+				text = (CUSTOMVERTEXTEXTURA*)pMesh;
+			vec_pVBGeomTexturaByMat[cont]->Unlock();
+
+			Device->DrawIndexedPrimitiveUP(D3DPT_TRIANGLELIST,0,vec_Geom[cont].size(),1,
+							indexs,D3DFMT_INDEX16,text, sizeof(CUSTOMVERTEXTEXTURA));*/
 		}
 	}
 	Device->SetTexture (0, NULL);
@@ -634,7 +648,9 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 		LPDIRECT3DINDEXBUFFER9 pIBMesh=NULL;
 		if(numCaras != 0)
 		{
-			if( FAILED( g_pd3dDevice->CreateIndexBuffer( numBytes,0, D3DFMT_INDEX16,D3DPOOL_DEFAULT, &pIBMesh, NULL ) ) )
+			
+				//D3DFMT_INDEX16 
+			if( FAILED( g_pd3dDevice->CreateIndexBuffer( numBytes,0,D3DFMT_INDEX16,D3DPOOL_DEFAULT, &pIBMesh, NULL ) ) )
 			{
 				return E_FAIL;
 			}
@@ -643,6 +659,7 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 				return E_FAIL; 
 			}
 			memcpy( pMeshIndices, g_IndicesMesh, numBytes);
+			//m_IndicesMesh.push_back(g_IndicesMesh);
 			pIBMesh->Unlock();
 		}
 		vec_pIBMeshByMat.push_back(pIBMesh);
@@ -716,6 +733,7 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 		LPDIRECT3DVERTEXBUFFER9 pVBGeomTextura=NULL;
 		if(numCaras != 0)
 		{
+			DWORD usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
 			if( FAILED( g_pd3dDevice->CreateVertexBuffer( sizeof(CUSTOMVERTEXTEXTURA)*numCaras*3,
 													0, D3DFVF_CUSTOMVERTEXTEXTURA,
 													D3DPOOL_DEFAULT, &pVBGeomTextura, NULL ) ) )
@@ -743,105 +761,43 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 bool Objecte3D::LoadVertexsBuffers( LPDIRECT3DDEVICE9 g_pd3dDevice )
 {
 	VOID *pMesh;
-
-	//vec_pVBMeshByMat.clear();
-	//vec_pVBGeomTexturaByMat.clear();
-
-	bool EsModifica;
-	SPoint3D puntZero = SPoint3D(0.f,0.f,0.f);
-
-	LPDIRECT3DVERTEXBUFFER9 pVBGeomTextura;
-	LPDIRECT3DVERTEXBUFFER9 pVBMesh;
-
-	CUSTOMVERTEX vertice;
-	CUSTOMVERTEXTEXTURA textureVertice;
+	//CUSTOMVERTEXTEXTURA textureVertice;
 	CUSTOMVERTEXTEXTURA *l_VTMesh=NULL;
 
 	int numFaces;
 	int num = 0;
-	int i = 0;
 
 	for (int mat = 0; mat < nombreMaterials; ++mat)
 	{
-		//std::vector <CUSTOMVERTEX> &l_VMesh = vec_VerticesMesh[mat];
-		//std::vector <CUSTOMVERTEXTEXTURA> &l_VTMesh= vec_Geom[mat];
-		//CUSTOMVERTEX *l_VMesh = 
-
-		//int numVertexs = (int)l_VMesh.size();
+		if (mat == 1)
+		{
 		numFaces = (int)vec_Geom[mat].size();
-		
-		//EsModifica = false; //Xivato que ens diu si aquella malla té moviment o no
-		
-		//UINT tamany = sizeof(CUSTOMVERTEX)*numVertexs;
 
 		if( FAILED( vec_pVBGeomTexturaByMat[mat]->Lock( 0, sizeof(CUSTOMVERTEXTEXTURA)*numFaces, (void**)&pMesh, 0 ) ) )
 			return E_FAIL; 
 
-		//memcpy( pMesh, tempVertexTextures, tamany );
 		l_VTMesh=(CUSTOMVERTEXTEXTURA *)pMesh;
 
-	/*	for (int i=0; i < numVertexs; ++i)
-		{
-			vertice = l_VMesh.at(i);
-			movimentFet = punts[i].moviment;
-			if (movimentFet != puntZero)
+			for(int i=0; i <numFaces; ++i)
 			{
-				vertice.x += movimentFet.x;
-				vertice.y += movimentFet.y;
-				vertice.z += movimentFet.z;
-				EsModifica = true;
-			}
-			tempVerticesVector[i]=vertice;
-		}*/
-		if (mat == 1)
-		{
-			for(i=0; i <numFaces; ++i)
-			{
-				textureVertice = vec_Geom[mat][i];
-				//num = buscarPunt(SPoint3D(textureVertice.x, textureVertice.y, textureVertice.z));
-				num = g_PuntsMap[SPoint3D(textureVertice.x, textureVertice.y, textureVertice.z)];
-				textureVertice.x += punts[num].moviment.x;
-				textureVertice.y += punts[num].moviment.y;
-				textureVertice.z += punts[num].moviment.z;
+				//textureVertice = vec_Geom[mat][i];
+				//
+				////num = buscarPunt(SPoint3D(textureVertice.x, textureVertice.y, textureVertice.z));
+				//num = g_PuntsMap[SPoint3D(textureVertice.x, textureVertice.y, textureVertice.z)];
+				//textureVertice.x += punts[num].moviment.x;
+				//textureVertice.y += punts[num].moviment.y;
+				//textureVertice.z += punts[num].moviment.z;
 
-				l_VTMesh[i] = textureVertice;
-			}	
-		}
-		
+				//l_VTMesh[i] = textureVertice;
 
-		//Enviar dades a la gràfica
-		//pVBMesh=NULL;
-		
-		/*if( FAILED( pd3dDevice->CreateVertexBuffer(tamany ,0, D3DFVF_CUSTOMVERTEX,D3DPOOL_DEFAULT, &pVBMesh, NULL ) ) )
-		{
-			return E_FAIL;
-		}
-		
-		if( FAILED( pVBMesh->Lock( 0, tamany, (void**)&pMesh, 0 ) ) )
-		{
-			return E_FAIL; 
-		}
-		memcpy( pMesh, tempVerticesVector, tamany );
-		pVBMesh->Unlock();*/
-		//vec_pVBMeshByMat.push_back(pVBMesh);
-
-		//pVBGeomTextura=NULL;
-		//tamany = sizeof(CUSTOMVERTEXTEXTURA)*numFaces;
-		/*if( FAILED( g_pd3dDevice->CreateVertexBuffer( tamany,0, D3DFVF_CUSTOMVERTEXTEXTURA, D3DPOOL_DEFAULT, &pVBGeomTextura, NULL ) ) )
-			return E_FAIL;*/
-
-		/*tamany = sizeof(CUSTOMVERTEXTEXTURA)*numFaces;
-		if( FAILED( vec_pVBGeomTexturaByMat[mat]->Lock( 0, tamany, (void**)&pMesh, 0 ) ) )
-			return E_FAIL; 
-
-		memcpy( pMesh, tempVertexTextures, tamany );*/
-		
+				l_VTMesh[i] =vec_Geom[mat][i]; 
+				num = g_PuntsMap[SPoint3D(l_VTMesh[i].x, l_VTMesh[i].y, l_VTMesh[i].z)];
+				l_VTMesh[i].x += punts[num].moviment.x;
+				l_VTMesh[i].y += punts[num].moviment.y;
+				l_VTMesh[i].z += punts[num].moviment.z;
+			}		
 		vec_pVBGeomTexturaByMat[mat]->Unlock();
-		//vec_pVBGeomTexturaByMat.push_back(pVBGeomTextura);
-
-		//delete [] tempVerticesVector;
-		//delete [] tempVertexTextures;
+		}
 	}
-
 	return true;
 }

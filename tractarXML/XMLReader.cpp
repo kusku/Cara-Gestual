@@ -3,8 +3,8 @@
 #include <sstream>
 #include <fstream>
 
-char paraula [20];
-char atribut [200];
+char paraula [20]="";
+char atribut [200]="";
 
 XMLReader::XMLReader(char* path, ExpressionManager* EManager, MuscleManager* MManager, EditorManager* EditorM) 
 {
@@ -24,9 +24,10 @@ XMLReader::~XMLReader() {
 }
 
 void XMLReader::ReadWord() {
-	char c;
+	char c=NULL;
 	int i=0;
-	
+	memcpy(paraula,"\0",1);
+
 	fscanf(fitxer, "%c", &c);
 	while(((int) c <47)||((int) c > 122))
 	{
@@ -150,18 +151,19 @@ void XMLReader::GuardarNums() {
 	punt = SPoint3D(convertit[0], convertit[1], convertit[2]);
 }
 
-void XMLReader::ReadChar() {
-	
+void XMLReader::ReadChar()
+{
+	c1 = NULL;	
 	fscanf_s(fitxer, "%c", &c1);
 }
 
 void XMLReader::ReadAtribut() {
-	char c;
+	char c=NULL;
 	int i=0;
 
 	//Trobar on comença l'atribut
 	fscanf_s(fitxer, "%c", &c);
-	while(c!='"')
+	while(c != '"')
 		fscanf_s(fitxer, "%c", &c);
 	fscanf_s(fitxer, "%c", &c);
 	while(c!='"')
@@ -179,9 +181,9 @@ float XMLReader::ConvertirNum() {
 
 void XMLReader::ReadExpressions() {
 
-	char c;
-	TypeMuscle numMuscle;
-	TypeExpression numExpressio;
+	char c=NULL;
+	TypeMuscle numMuscle = NONE_MUSCLE;
+	TypeExpression numExpressio = NONE_EXPRESSION;
 
 	do
 	{

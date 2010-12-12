@@ -407,14 +407,11 @@ int CPracticaView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {	
 	if(CView::OnCreate(lpCreateStruct) == -1)
 		return -1;
-	
-// TODO: Add your specialized creation code here
-
-// ATENCIÓ:MODIFICACIÓ OPENGL
-	int nPixelFormat;					// Index del format de pixel
-	m_hDC = ::GetDC(m_hWnd);			// Agafa un contexte de dispositiu per la Finestra
 
 	CDirectX::GetInstance()->InitDX(lpCreateStruct->hwndParent);
+
+	//Carrega el model amb els muscles i expressions
+	OnCarregaAutomatica();
 //	static  PIXELFORMATDESCRIPTOR pfd= {
 //		sizeof(PIXELFORMATDESCRIPTOR),
 //			1,							// Version number
@@ -458,19 +455,13 @@ int CPracticaView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 //			PostQuitMessage(0);		// This sends a message telling the program to quit
 //			return false;
 //		}
-	 
+
 	return true;
 }
 
 void CPracticaView::OnDestroy() 
 {
-
-
-// ATENCIÓ:MODIFICACIÓ OPENGL
-	// wglDeleteContext(m_hRC);
 	CDirectX::GetInstance()->EndRenderDX();
-
-	 
 	 CView::OnDestroy();
 }
 
@@ -1813,21 +1804,21 @@ void CPracticaView::OnCarregaAutomatica()
 		editor->ClearVertexs();
 
 	// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
-	char * nomMuscles = (char *)(LPCTSTR)musclesP;
-
-	if (ObOBJ != NULL)
-	{
-		XMLReader* lector = new XMLReader(nomMuscles, EManager, MManager, editor);
-		lector->Read();
-		delete lector;
-	}
-
-		// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
 	char * nomExpressions = (char *)(LPCTSTR)expressionsP;
 
 	if (ObOBJ != NULL)
 	{
 		XMLReader* lector = new XMLReader(nomExpressions, EManager, MManager, editor);
+		lector->Read();
+		delete lector;
+	}
+
+	// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
+	char * nomMuscles = (char *)(LPCTSTR)musclesP;
+
+	if (ObOBJ != NULL)
+	{
+		XMLReader* lector = new XMLReader(nomMuscles, EManager, MManager, editor);
 		lector->Read();
 		delete lector;
 	}
@@ -3393,7 +3384,8 @@ void CPracticaView::OnParlaBucle()
 	//Fa parlar el personatge SENSE fer ús del Timer.
 
 	subtitles = true;
-	parla->SetVelocity(8.f, 0.1f);
+	/*parla->SetVelocity(8.f, 0.1f);*/
+	parla->SetVelocity(11.f, 0.04f);
 	parla->StartTalk(ObOBJ);
 
 	acumulativeTime = 0.f;
@@ -3401,7 +3393,7 @@ void CPracticaView::OnParlaBucle()
 
 	while ( parla->IsTalking() )
 	{
-		if (acumulativeTime < 1.f)
+		if (acumulativeTime < 0.3f)
 		{
 			Timer::GetInstance()->ResetTimer();
 			anima = true;
