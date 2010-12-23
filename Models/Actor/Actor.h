@@ -1,5 +1,5 @@
-#ifndef OBJECTE3D_H
-#define OBJECTE3D_H
+#ifndef Actor_H
+#define Actor_H
 
 #define TIPUS_OBJ 1
 #define TIPUS_3DS 2
@@ -14,13 +14,13 @@
 #include <map>
 
 #include "Windows.h"
-#include "../SPoint3D.h"
-#include "Lectors/objLoader.h"
-#include "../Seleccions/intersection.h"
-#include "../Render/CDirectX.h"
-#include "TextureManager.h"
-#include "../defines.h"
-#include "../Common/Timer/Timer.h"
+#include "../../SPoint3D.h"
+#include "../Readers/objLoader.h"
+#include "../../Logic/Rigging/intersection.h"
+#include "../../Render/CDirectX.h"
+#include "../TextureManager/TextureManager.h"
+#include "../../defines.h"
+#include "../../Common/Timer/Timer.h"
 
 struct VERTICEXYZ_T2_NORMAL
 {
@@ -62,10 +62,10 @@ struct Cara {
 	Point2D cordTex[3];
 };
 
-class Objecte3D {
+class Actor {
 	public:
-		Objecte3D(char* file,int tipus);
-		~Objecte3D();
+		Actor(char* file,int tipus);
+		~Actor();
 
 		void		mourePunt			( int punt , SPoint3D vectorMoviment );
 		int			buscarPunt			( SPoint3D punt );
@@ -119,8 +119,8 @@ private:
 		std::vector < std::vector <CUSTOMVERTEX> >			vec_VerticesMesh;
 		std::vector < std::vector <CUSTOMVERTEXTEXTURA> >	vec_Geom;
 	
-		void		Objecte3DDeOBJ			( char* filename );
-		void		Objecte3DDe3DS			( char* filename );
+		void		ModelDeOBJ			( char* filename );
+		void		ModelDe3DS			( char* filename );
 		void		UseMaterial				( O3DMaterial pMaterial );
 		void		CalcularNormalsVertex	( void );
 

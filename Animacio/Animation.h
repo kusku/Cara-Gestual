@@ -1,10 +1,10 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
-#include "../Expressions/ExpressionManager.h"
-#include "../Muscles/MuscleManager.h"
+#include "../Logic/Expressions/ExpressionManager.h"
+#include "../Logic/Muscles/MuscleManager.h"
 #include "../SPoint3D.h"
-#include "../Models/Objecte3D.h"
+#include "../Models/Actor/Actor.h"
 
 class Animation
 {
@@ -35,11 +35,11 @@ public:
 	void		SetTime				( int transitionTime, float totalTime );
 	bool		IsActiveAnimation	( void );
 
-	void		StartAnimation		( TypeExpression expression, Objecte3D* obj );
+	void		StartAnimation		( TypeExpression expression, Actor* obj );
 	void		NextStepAnimation	( void );
 	void		FinalizeAnimation	( void );
 
-	void		Render				( Objecte3D* obj );
+	void		Render				( Actor* obj );
 };
 
 #endif

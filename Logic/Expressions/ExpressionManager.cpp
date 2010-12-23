@@ -1,9 +1,9 @@
-#include "../stdafx.h"
+#include "../../stdafx.h"
 #include "ExpressionManager.h"
 #include "../Muscles/MuscleManager.h"
 #include "Expression.h"
-#include "../Render/CDirectX.h"
-#include "../SPoint3D.h"
+#include "../../Render/CDirectX.h"
+#include "../../SPoint3D.h"
 
 ExpressionManager::ExpressionManager(MuscleManager* MMan)
 {
@@ -31,7 +31,7 @@ void ExpressionManager::modifyMuscleExpression(TypeExpression nameExpression, Ty
 		Expressions[nameExpression]->modifyMuscle(nameMuscle, movement);
 }
 
-void ExpressionManager::RenderExpression( TypeExpression nameExpression, Objecte3D* obj  )
+void ExpressionManager::RenderExpression( TypeExpression nameExpression, Actor* obj  )
 {
 	if (nameExpression != NONE_EXPRESSION)
 	{
@@ -50,7 +50,7 @@ int ExpressionManager::getNumExpressions ()
 	return NEXPRESSIONS;
 }
 
-void ExpressionManager::ExternalRender(TypeExpression nameExpression, SPoint3D *newMovements, Objecte3D* obj)
+void ExpressionManager::ExternalRender(TypeExpression nameExpression, SPoint3D *newMovements, Actor* obj)
 {
 	if (nameExpression != NONE_EXPRESSION)
 	{

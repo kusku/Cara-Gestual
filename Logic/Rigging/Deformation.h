@@ -1,8 +1,8 @@
 #ifndef DEFORMATION_H
 #define DEFORMATION_H
 
-#include "../SPoint3D.h"
-#include "../Models/Objecte3D.h"
+#include "../../SPoint3D.h"
+#include "../../Models/Actor/Actor.h"
 #include "../Expressions/ExpressionManager.h"
 #include "../Muscles/MuscleManager.h"
 #include "EditorManager.h"
@@ -10,7 +10,7 @@
 class Deformation
 {
 private:
-	Objecte3D* ObOBJ;
+	Actor* ObOBJ;
 	ExpressionManager* EManager;
 	EditorManager* editorM;
 	TypeMuscle muscle;
@@ -22,7 +22,7 @@ private:
 	void		GetLine				( SPoint3D &L1, SPoint3D &L2, float mouseX, float mouseY );
 
 public:
-	Deformation( ExpressionManager* manager, Objecte3D* obj, EditorManager *editor );
+	Deformation( ExpressionManager* manager, Actor* obj, EditorManager *editor );
 	~Deformation();
 
 	void	ButtonDown			( float mouseX, float mouseY, SPoint3D opv );
@@ -31,7 +31,7 @@ public:
 
 	void	SetMuscle			( TypeMuscle muscle );
 	void	SetExpression		( TypeExpression expression );
-	void	SetObjecte			( Objecte3D* Obj );
+	void	SetObjecte			( Actor* Obj );
 
 	
 

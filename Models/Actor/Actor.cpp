@@ -1,27 +1,27 @@
-#include "../stdafx.h"
-#include "Objecte3D.h"
-#include "Lectors/objLoader.h"
-#include "Lectors/Obj3DS.h"
-#include "../Seleccions/intersection.h"
-#include "../defines.h"
+#include "../../stdafx.h"
+#include "Actor.h"
+#include "../Readers/objLoader.h"
+#include "../Readers/Obj3DS.h"
+#include "../../Logic/Rigging/intersection.h"
+#include "../../defines.h"
 
 CUSTOMVERTEX* tempVerticesVector = new CUSTOMVERTEX[100000];
 CUSTOMVERTEXTEXTURA* tempVertexTextures = new CUSTOMVERTEXTEXTURA[50000];
 
-Objecte3D::Objecte3D(char* filename, int tipus) {
+Actor::Actor(char* filename, int tipus) {
 	this->materials = NULL;
 	this->cares = NULL;
 	this->punts = NULL;
 	switch (tipus) {
-		case 1: this->Objecte3DDeOBJ(filename);
+		case 1: this->ModelDeOBJ(filename);
 			break;
-		case 2: this->Objecte3DDe3DS(filename);
+		case 2: this->ModelDe3DS(filename);
 			break;
 		default: printf("Tipus invalid\n");
 	}
 }
 
-void Objecte3D::Objecte3DDeOBJ(char* filename) {
+void Actor::ModelDeOBJ(char* filename) {
 	int numpunts,numcares,i,j;
 	Punt p;
 
@@ -91,7 +91,7 @@ void Objecte3D::Objecte3DDeOBJ(char* filename) {
 	LoadInfoInVectors(CDirectX::GetInstance()->GetDevice());
 }
 
-void Objecte3D::Objecte3DDe3DS(char* filename)
+void Actor::ModelDe3DS(char* filename)
 {
 	Obj_3DS *o = new Obj_3DS();
 	t3DObject *objecte;
@@ -142,7 +142,7 @@ void Objecte3D::Objecte3DDe3DS(char* filename)
 	delete o;
 }
 
-int Objecte3D::buscarPunt(SPoint3D punt) {
+int Actor::buscarPunt(SPoint3D punt) {
 	
 	if(g_PuntsMap.empty())
 	{
@@ -154,7 +154,7 @@ int Objecte3D::buscarPunt(SPoint3D punt) {
 	return g_PuntsMap[punt];
 }
 
-int	Objecte3D::buscarTex( Point2D tex )
+int	Actor::buscarTex( Point2D tex )
 {
 	int i,j;
 	for (j=0; j<nombreCares; ++j)
@@ -171,7 +171,7 @@ int	Objecte3D::buscarTex( Point2D tex )
 	return 3*j+i;
 }
 
-Objecte3D::~Objecte3D()
+Actor::~Actor()
 {
 	delete [] punts;
 	delete [] materials;
@@ -204,7 +204,7 @@ Objecte3D::~Objecte3D()
 	vec_Geom.clear();
 }
 
-int Objecte3D::PuntMesProxim(SPoint3D p)
+int Actor::PuntMesProxim(SPoint3D p)
 {
 	int millorPunt = 0;
 	double distMin = this->punts[0].cordenades.calcularDistancia(p),distancia;
@@ -218,29 +218,29 @@ int Objecte3D::PuntMesProxim(SPoint3D p)
 	return millorPunt;
 }
 
-SPoint3D Objecte3D::GetPoint(int punt)
+SPoint3D Actor::GetPoint(int punt)
 {
 	return this->punts[punt].cordenades;
 }
 
-SPoint3D Objecte3D::GetMovement(int punt)
+SPoint3D Actor::GetMovement(int punt)
 {
 	return this->punts[punt].moviment;
 }
 
-int Objecte3D::GetNumVertexs ( void )
+int Actor::GetNumVertexs ( void )
 {
 	return nombrePunts;
 }
 
 // TODO: Recalcular les normals
-void Objecte3D::mourePunt(int punt, SPoint3D vectorMoviment)
+void Actor::mourePunt(int punt, SPoint3D vectorMoviment)
 {
 	this->punts[punt].moviment = vectorMoviment;
 }
 
 // Funcions Privades
-void Objecte3D::UseMaterial(const O3DMaterial pMaterial)
+void Actor::UseMaterial(const O3DMaterial pMaterial)
 {
 	glColor3f(1.0,1.0,1.0);
 	if (pMaterial.iTextureID > -1) {
@@ -251,7 +251,7 @@ void Objecte3D::UseMaterial(const O3DMaterial pMaterial)
 		glDisable(GL_TEXTURE_2D);
 }
 
-SPoint3D Objecte3D::GetFaceNormal(const Cara *cara)
+SPoint3D Actor::GetFaceNormal(const Cara *cara)
 {
 	SPoint3D p1,p2,normal;
 	p1 = cara->punts[0]->cordenades - cara->punts[1]->cordenades;
@@ -261,31 +261,31 @@ SPoint3D Objecte3D::GetFaceNormal(const Cara *cara)
 	return normal;
 }
 
-void Objecte3D::GetTriangle ( int index, SPoint3D* triangle )
+void Actor::GetTriangle ( int index, SPoint3D* triangle )
 {
 	triangle[0] = this->cares[index].punts[0]->cordenades;
 	triangle[1] = this->cares[index].punts[1]->cordenades;
 	triangle[2] = this->cares[index].punts[2]->cordenades;
 }
 
-int Objecte3D::GetNumTriangles ( void )
+int Actor::GetNumTriangles ( void )
 {
 	return nombreCares;
 }
 
-void Objecte3D::GetFaceCoords ( int nFace, SPoint3D* coords )
+void Actor::GetFaceCoords ( int nFace, SPoint3D* coords )
 {
 	coords[0] = this->cares[nFace].punts[0]->cordenades;
 	coords[1] = this->cares[nFace].punts[1]->cordenades;
 	coords[2] = this->cares[nFace].punts[2]->cordenades;
 }
 
-SPoint3D Objecte3D::GetNormalsFace ( int nFace )
+SPoint3D Actor::GetNormalsFace ( int nFace )
 {
 	return this->GetFaceNormal(&this->cares[nFace]);
 }
 
-void Objecte3D::Render ( void )
+void Actor::Render ( void )
 {
 	int iPreviousMaterial = -1,i,j;
 	glPushAttrib(GL_TEXTURE_BIT);
@@ -333,14 +333,14 @@ void Objecte3D::Render ( void )
 	glPopAttrib();
 }
 
-void Objecte3D::resetMoviments()
+void Actor::resetMoviments()
 {
 	for (int i = 0; i < this->nombrePunts; i++) {
 		this->punts[i].moviment = SPoint3D(0,0,0);
 	}
 }
 
-void Objecte3D::CalcularNormalsVertex()
+void Actor::CalcularNormalsVertex()
 {
 	int i,j;
 	SPoint3D p;
@@ -361,7 +361,7 @@ void Objecte3D::CalcularNormalsVertex()
 ///////////////////////////////////////
 //// RENDER WITH DIRECTX //////////////
 ///////////////////////////////////////
-void Objecte3D::Render(LPDIRECT3DDEVICE9 Device)
+void Actor::Render(LPDIRECT3DDEVICE9 Device)
 {
 	VOID* pMesh=NULL;
 	unsigned short* indexs=NULL;
@@ -392,7 +392,7 @@ void Objecte3D::Render(LPDIRECT3DDEVICE9 Device)
 	Device->SetTexture (0, NULL);
 }
 
-bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
+bool Actor::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 {
 	struct CoordsText
 	{
@@ -758,7 +758,7 @@ bool Objecte3D::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 	return true;
 }
 
-bool Objecte3D::LoadVertexsBuffers( LPDIRECT3DDEVICE9 g_pd3dDevice )
+bool Actor::LoadVertexsBuffers( LPDIRECT3DDEVICE9 g_pd3dDevice )
 {
 	VOID *pMesh;
 	//CUSTOMVERTEXTEXTURA textureVertice;

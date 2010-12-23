@@ -17,23 +17,22 @@
 #include "Render/CDirectX.h"
 
 // OBJECTE 3DS: Include per la definició de l'objecte Obj_3DS
-#include "Models/Lectors/Obj3DS.h"	
+#include "Models/Readers/Obj3DS.h"	
 
 // OBJECTE OBJ: Include per la definició de l'objecte Obj_OBJ
-#include "Models/Lectors/objLoader.h"
-#include "Models/Objecte3D.h"
+#include "Models/Readers/objLoader.h"
+#include "Models/Actor/Actor.h"
 
 // MUSCLES I EXPRESSIONS
-#include "Muscles/MuscleManager.h"
-#include "Expressions/ExpressionManager.h"
-
 #include "PracticaDoc.h"
-#include "Seleccions/Selection.h"
 #include "SPoint3D.h"
-#include "Seleccions/EditorManager.h"
 #include "Common/ParserXML/XMLReader.h"
 #include "Common/ParserXML/XMLWriter.h"
-#include "Seleccions/Deformation.h"
+#include "Logic/Muscles/MuscleManager.h"
+#include "Logic/Expressions/ExpressionManager.h"
+#include "Logic/Rigging/EditorManager.h"
+#include "Logic/Rigging/Deformation.h"
+#include "Logic/Rigging/Selection.h"
 #include "Animacio/Animation.h"
 #include "Parla/Subtitles.h"
 #include "Parla/Parla.h"
@@ -159,7 +158,7 @@ public:
 
 // GC2: Objecte OBJ:
 	//TODO: Canviar nom i demes
-	Objecte3D* ObOBJ;		// Variable d'objecte format OBJ (*.OBJ)
+	Actor* ObOBJ;		// Variable d'objecte format OBJ (*.OBJ)
 
 // GC2: Variables del Timer
 	float t;		// Paràmetre t pel Timer.

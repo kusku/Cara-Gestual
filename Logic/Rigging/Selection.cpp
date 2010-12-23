@@ -1,14 +1,14 @@
-#include "../stdafx.h"
+#include "../../stdafx.h"
 #include "Selection.h"
-#include "../SPoint3D.h"
-#include "../matrix.h"
-#include "../Models/Objecte3D.h"
+#include "../../SPoint3D.h"
+#include "../../matrix.h"
+#include "../../Models/Actor/Actor.h"
 #include "EditorManager.h"
 #include "intersection.h"
-#include "../Render/visualitzacio.h"
+#include "../../Render/visualitzacio.h"
 #include <gl/gl.h>
 #include <gl/glu.h>
-#include "../Render/CDirectX.h"
+#include "../../Render/CDirectX.h"
 
 void inline swapFloat( float &x, float &y )
 {
@@ -17,7 +17,7 @@ void inline swapFloat( float &x, float &y )
 	 y = temp;
 }
 
-Selection::Selection(Objecte3D* obj, EditorManager* editor)
+Selection::Selection(Actor* obj, EditorManager* editor)
 {
 	ObOBJ = obj;
 	editorM = editor;
@@ -166,7 +166,7 @@ void Selection::NoRender()
 	RenderBox(0.0,0.0,0.0,0.0);
 }
 
-void Selection::SetObj( Objecte3D* obj )
+void Selection::SetObj( Actor* obj )
 {
 	if (ObOBJ == NULL)
 	{

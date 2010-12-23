@@ -1,8 +1,8 @@
 #ifndef MUSCLEMANAGER_H
 #define MUSCLEMANAGER_H
 
-#include "../SPoint3D.h"
-#include "../Models/Objecte3D.h"
+#include "../../SPoint3D.h"
+#include "../../Models/Actor/Actor.h"
 #include "Muscle.h"
 
 #define NMUSCLES 14
@@ -15,7 +15,7 @@ class MuscleManager
 private:
 
 	Muscle**	muscles;
-	Objecte3D* obj3D;
+	Actor* obj3D;
 
 public:
 
@@ -27,7 +27,7 @@ public:
 	void			deleteMuscle		( TypeMuscle numMuscle );
 	void			ClearMuscle			( TypeMuscle numMuscle );
 	void			RenderMuscle		( TypeMuscle numMuscle );
-	void			SetModel			( Objecte3D* ObOBJ );
+	void			SetModel			( Actor* ObOBJ );
 
 	Muscle**		getMuscleList		( void );
 	int				getNumMuscles		( void );

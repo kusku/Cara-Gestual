@@ -1,8 +1,8 @@
 #ifndef XMLREADER_H
 #define XMLREADER_H
-#include "../../Expressions/ExpressionManager.h"
-#include "../../Muscles/MuscleManager.h"
-#include "../../Seleccions/EditorManager.h"
+#include "../../Logic/Expressions/ExpressionManager.h"
+#include "../../Logic/Muscles/MuscleManager.h"
+#include "../../Logic/Rigging/EditorManager.h"
 #include "../../SPoint3D.h"
 #include <stdio.h>
 #include <stdlib.h> 

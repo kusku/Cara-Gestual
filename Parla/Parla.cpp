@@ -31,7 +31,7 @@ void CParla::SetVelocity(float transitionT, float totalT)
 	totalTime = totalT;
 }
 
-void CParla::StartTalk(Objecte3D* obj)
+void CParla::StartTalk(Actor* obj)
 {
 	TypeExpression expressio;
 	index = 0;
@@ -61,7 +61,7 @@ void CParla::StartTalk(Objecte3D* obj)
 	}
 }
 
-void CParla::NextTalk(Objecte3D* obj)
+void CParla::NextTalk(Actor* obj)
 {
 	TypeExpression expressio;
 
@@ -159,7 +159,7 @@ bool CParla::IsTalking()
 	return parlant;
 }
 
-void CParla::TalkElapsed(Objecte3D* obj)
+void CParla::TalkElapsed(Actor* obj)
 {
 	TypeExpression expressio;
 	index = 0;

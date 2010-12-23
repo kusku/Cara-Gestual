@@ -4,8 +4,8 @@
 #include "../stdafx.h"
 #include "Subtitles.h"
 #include "../Animacio/Animation.h"
-#include "../Expressions/Expression.h"
-#include "../Models/Objecte3D.h"
+#include "../Logic/Expressions/Expression.h"
+#include "../Models/Actor/Actor.h"
 
 class CParla
 {
@@ -32,11 +32,11 @@ public:
 
 	void		SetVelocity			( float transitionT, float totalT );
 	void		SetTextToTalk		( char* text );
-	void		StartTalk			(Objecte3D* obj);
-	void		NextTalk			(Objecte3D* obj);
+	void		StartTalk			(Actor* obj);
+	void		NextTalk			(Actor* obj);
 	void		FinalizeTalk		();
 	bool		IsTalking			();
-	void		TalkElapsed			(Objecte3D* obj);
+	void		TalkElapsed			(Actor* obj);
 	
 };
 

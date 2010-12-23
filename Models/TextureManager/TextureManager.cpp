@@ -1,7 +1,7 @@
-#include "../stdafx.h"
+#include "../../stdafx.h"
 #include "TextureManager.h"
 #include <assert.h>
-#include "../defines.h"
+#include "../../defines.h"
 
 void GetFilename(const char *path, std::string *filename)
 {

@@ -1,7 +1,7 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#include "../SPoint3D.h"
+#include "../../SPoint3D.h"
 #include "../Muscles/MuscleManager.h"
 #include "../Expressions/ExpressionManager.h"
 
@@ -16,14 +16,14 @@ private:
 	int					CurrentVertex;
 	int					DominantVertex;
 	TypeMuscle			CurrentMuscle;
-	Objecte3D*			objecte;
+	Actor*			objecte;
 
 	void		CalculateDelta			( );
 	SPoint3D	PuntMesProximTriangle	( SPoint3D colisio, SPoint3D* triangle );
 
 public:
 
-	EditorManager(MuscleManager* MMan, ExpressionManager* EMan, Objecte3D* objecte);
+	EditorManager(MuscleManager* MMan, ExpressionManager* EMan, Actor* objecte);
 	~EditorManager();
 	
 	// Roger

@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "Animation.h"
-#include "../Models/Objecte3D.h"
+#include "../Models/Actor/Actor.h"
 
 Animation::Animation(ExpressionManager* manager, MuscleManager* muscle)
 {
@@ -43,7 +43,7 @@ void Animation::SetTime(int transitionTime, float totalTime)
 	this->totalTime = totalTime;
 }
 
-void Animation::StartAnimation(TypeExpression expression, Objecte3D* obj)
+void Animation::StartAnimation(TypeExpression expression, Actor* obj)
 {
 	step = 0;
 	if (expression != NONE_EXPRESSION)
@@ -91,7 +91,7 @@ bool Animation::IsActiveAnimation( void )
 	return animationActive;
 }
 
-void Animation::Render(Objecte3D* obj)
+void Animation::Render(Actor* obj)
 {
 	SPoint3D* actualMovement = new SPoint3D [sizeExpression];
 

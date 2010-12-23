@@ -1,11 +1,11 @@
 #ifndef SELECTION_H
 #define SELECTION_H
 
-#include "../SPoint3D.h"
-#include "../Models/Objecte3D.h"
+#include "../../SPoint3D.h"
+#include "../../Models/Actor/Actor.h"
 #include "EditorManager.h"
 #include "intersection.h"
-#include "../constants.h"
+#include "../../constants.h"
 
 enum SelectionModes{ SELECT_ADD, SELECT_SUB };
 enum TriFlags{ TF_SELECTED = 1, NTF_SELECTED = 2, TF_BACKFACING = 3, NTF_BACKFACING = 4 };
@@ -16,7 +16,7 @@ private:
 	float nStartX, nStartY, nEndX, nEndY;
 	bool buttonState, dominantSelect;
 	SPoint3D m_vLineP[2];
-	Objecte3D* ObOBJ;
+	Actor* ObOBJ;
 	EditorManager* editorM;
 
 	int *m_pTriFlags;
@@ -34,7 +34,7 @@ private:
 	void		GetLine				( SPoint3D &L1, SPoint3D &L2, float mouseX, float mouseY );
 
 public:
-	Selection(Objecte3D* obj, EditorManager* editor);
+	Selection(Actor* obj, EditorManager* editor);
 	~Selection();
 
 	/* Mètodes de pulsacions del ratolí */
@@ -49,7 +49,7 @@ public:
 	void	NoRender			( void );
 
 	/* Mètodes de Set */
-	void	SetObj				( Objecte3D* obj );
+	void	SetObj				( Actor* obj );
 	void	SetZBufferTriangles	( SPoint3D camera );
 	void	SetFlagsTriangles	( void );
 

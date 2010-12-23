@@ -1,13 +1,13 @@
-#include "../stdafx.h"
+#include "../../stdafx.h"
 #include "Deformation.h"
-#include "../Render/visualitzacio.h"
-#include "../Models/Objecte3D.h"
+#include "../../Render/visualitzacio.h"
+#include "../../Models/Actor/Actor.h"
 #include "../Expressions/ExpressionManager.h"
 #include "../Muscles/MuscleManager.h"
-#include "../SPoint3D.h"
+#include "../../SPoint3D.h"
 
 
-Deformation::Deformation( ExpressionManager* manager, Objecte3D* obj, EditorManager *editor )
+Deformation::Deformation( ExpressionManager* manager, Actor* obj, EditorManager *editor )
 {
 	this->EManager = manager;
 	this->ObOBJ = obj;
@@ -99,7 +99,7 @@ void Deformation::SetExpression( TypeExpression expression )
 	this->expression = expression;
 }
 
-void Deformation::SetObjecte( Objecte3D* Obj )
+void Deformation::SetObjecte( Actor* Obj )
 {
 	this->ObOBJ = Obj;
 }

@@ -8,9 +8,9 @@
 #include "escena.h"
 #include "../PracticaView.h"
 #include "visualitzacio.h"
-#include "../Seleccions/Selection.h"
-#include "../Models/Objecte3D.h"
-#include "../Muscles/MuscleManager.h"
+#include "../Logic/Rigging/Selection.h"
+#include "../Models/Actor/Actor.h"
+#include "../Logic/Muscles/MuscleManager.h"
 #include "../SPoint3D.h"
 
 void renderSphereSelection (LPDIRECT3DDEVICE9 Device, CDirectX* DX, EditorManager* EdManager, TypeMuscle muscle)

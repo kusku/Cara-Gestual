@@ -37,8 +37,8 @@
 //-------------- GC2: Objectes precompilats OpenGL amb glNewList
 #define EIXOS 1			// Eixos
 #define FRACTAL 2		// Fractal
-#define OBJECTE3DS 3	// Objecte 3DS
-#define OBJECTE3DST 4	// Objecte 3DS amb textures
+#define ActorS 3	// Objecte 3DS
+#define ActorST 4	// Objecte 3DS amb textures
 #define OBJECTEOBJ 5	// Objecte OBJ
 
 // Definició dels valors del pla near i far del Volum de 

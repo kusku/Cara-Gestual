@@ -17,12 +17,12 @@
 #include "Practica.h"
 #include "PracticaDoc.h"
 #include "PracticaView.h"
-#include "Muscles/MuscleManager.h"
-#include "Expressions/ExpressionManager.h"
+#include "Logic/Muscles/MuscleManager.h"
+#include "Logic/Expressions/ExpressionManager.h"
 #include "Render/visualitzacio.h"
 #include "SPoint3D.h"
-#include "Seleccions/Selection.h"
-#include "Seleccions/EditorManager.h"
+#include "Logic/Rigging/Selection.h"
+#include "Logic/Rigging/EditorManager.h"
 #include "Common/Timer/Timer.h"
 #include "Render/escena.h"
 #include <gl\gl.h>
@@ -1695,7 +1695,7 @@ void CPracticaView::OnFileOpen3ds()
 
 	/* i carreguem */	
 	wglMakeCurrent(m_hDC,m_hRC);	// Activem contexte OpenGL
-	ObOBJ = new Objecte3D(nomfitx,TIPUS_3DS);
+	ObOBJ = new Actor(nomfitx,TIPUS_3DS);
 	editor = new EditorManager(MManager,EManager,ObOBJ);
 	wglMakeCurrent(m_hDC,NULL);	// Desactivem contexte OpenGL
 
@@ -1742,7 +1742,7 @@ void CPracticaView::OnFileOpenObj()
 
 	/* i carreguem */	
 	wglMakeCurrent(m_hDC,m_hRC);	// Activem contexte OpenGL
-	ObOBJ = new Objecte3D(nomfitx,TIPUS_OBJ);
+	ObOBJ = new Actor(nomfitx,TIPUS_OBJ);
 	editor = new EditorManager(MManager,EManager,ObOBJ);
 	wglMakeCurrent(m_hDC,NULL);	// Desactivem contexte OpenGL
 
@@ -1782,7 +1782,7 @@ void CPracticaView::OnCarregaAutomatica()
 
 	/* i carreguem */	
 	wglMakeCurrent(m_hDC,m_hRC);	// Activem contexte OpenGL
-	ObOBJ = new Objecte3D(nomfitx,TIPUS_OBJ);
+	ObOBJ = new Actor(nomfitx,TIPUS_OBJ);
 	editor = new EditorManager(MManager,EManager,ObOBJ);
 	wglMakeCurrent(m_hDC,NULL);	// Desactivem contexte OpenGL
 
@@ -2232,7 +2232,7 @@ void CPracticaView::OnUpdateEixos(CCmdUI* pCmdUI)
 //	Ob3DS->Carregar3DS(nomfitx);
 //
 //// objecte nou;index DisplayList nº2; amb textures
-//	Ob3DS->Dibuixa3DS(false,OBJECTE3DS);
+//	Ob3DS->Dibuixa3DS(false,ActorS);
 //	wglMakeCurrent(m_hDC,NULL);	// Desactivem contexte OpenGL
 //
 //// Crida a OnPaint() per redibuixar l'escena
@@ -2270,7 +2270,7 @@ void CPracticaView::OnUpdateEixos(CCmdUI* pCmdUI)
 //
 //	/* i carreguem */	
 //	wglMakeCurrent(m_hDC,m_hRC);	// Activem contexte OpenGL
-//	ObOBJ = new Objecte3D(nomfitx,TIPUS_OBJ);
+//	ObOBJ = new Actor(nomfitx,TIPUS_OBJ);
 //	ObOBJ->Dibuixar(OBJECTEOBJ);
 //	wglMakeCurrent(m_hDC,NULL);	// Desactivem contexte OpenGL
 //

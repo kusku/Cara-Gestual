@@ -1,11 +1,11 @@
-#include "../stdafx.h"
+#include "../../stdafx.h"
 #include "EditorManager.h"
 #include "../Muscles/MuscleManager.h"
 #include "../Expressions/ExpressionManager.h"
-#include "../SPoint3D.h"
-#include "../Models/Objecte3D.h"
+#include "../../SPoint3D.h"
+#include "../../Models/Actor/Actor.h"
 
-EditorManager::EditorManager(MuscleManager* MMan, ExpressionManager* EMan, Objecte3D* objecte)
+EditorManager::EditorManager(MuscleManager* MMan, ExpressionManager* EMan, Actor* objecte)
 {
 	MManager = MMan;
 	EManager = EMan;

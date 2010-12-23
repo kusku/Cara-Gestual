@@ -1,7 +1,7 @@
-#include "../stdafx.h"
+#include "../../stdafx.h"
 #include "Muscle.h"
 #include "MuscleManager.h"
-#include "../SPoint3D.h"
+#include "../../SPoint3D.h"
 
 MuscleManager::MuscleManager()
 {
@@ -50,7 +50,7 @@ void MuscleManager::RenderMuscle( TypeMuscle numMuscle )
 		muscles[numMuscle]->RenderMuscle(obj3D);
 }
 
-void MuscleManager::SetModel( Objecte3D* ObOBJ )
+void MuscleManager::SetModel( Actor* ObOBJ )
 {
 	this->obj3D = ObOBJ;
 }

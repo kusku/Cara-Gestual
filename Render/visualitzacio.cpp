@@ -16,8 +16,8 @@
 #include "visualitzacio.h"
 #include "escena.h"
 #include "../constants.h"
-#include "../Seleccions/Selection.h"
-#include "../Muscles/MuscleManager.h"
+#include "../Logic/Rigging/Selection.h"
+#include "../Logic/Muscles/MuscleManager.h"
 
 // TEXTURES: Vector de noms de textura
 GLuint textures[NUM_MAX_TEXTURES]={0,1,2,3,4,5,6,7,8,9};
@@ -60,7 +60,7 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 				 CColor col_fons,char objecte,bool TR, 
 				 CPunt3D VScl,CPunt3D VTr, CPunt3D VRot,bool oculta,bool testv,
 				 bool bck_ln,bool filferros,bool textur,bool ifix,bool eix,
-				 EditorManager* EdManager, Objecte3D* ObOBJ, MuscleManager* MManager, bool flags,
+				 EditorManager* EdManager, Actor* ObOBJ, MuscleManager* MManager, bool flags,
 				 CSubtitles* MSubtitles, bool subtitles, CParla* parla)
 {    
 	D3DXVECTOR3 cam,up;

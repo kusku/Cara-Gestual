@@ -8,9 +8,9 @@
 #define GLVIS_H
 
 #include "../stdafx.h"
-#include "../Seleccions/Selection.h"
-#include "../Muscles/MuscleManager.h"
-#include "../Seleccions/EditorManager.h"
+#include "../Logic/Rigging/Selection.h"
+#include "../Logic/Muscles/MuscleManager.h"
+#include "../Logic/Rigging/EditorManager.h"
 #include "../Parla/Subtitles.h"
 #include "../Parla/Parla.h"
 #include "CDirectX.h"
@@ -27,7 +27,7 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 				 CColor col_fons,char objecte,bool TR,
 				 CPunt3D VScl,CPunt3D VTr, CPunt3D VRot,bool oculta,bool testv,
 				 bool bck_ln,bool filferros,bool textur,bool ifix,bool eix,
-				 EditorManager* EdManager, Objecte3D* ObOBJ, MuscleManager* MManager, bool flags,
+				 EditorManager* EdManager, Actor* ObOBJ, MuscleManager* MManager, bool flags,
 				 CSubtitles* MSubtitles, bool subtitles, CParla* parla);
 
 

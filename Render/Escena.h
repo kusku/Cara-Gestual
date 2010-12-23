@@ -8,10 +8,10 @@
 #define ESCENA_H
 
 #include "../SPoint3D.h"
-#include "../Seleccions/Selection.h"
-#include "../Models/Objecte3D.h"
-#include "../Muscles/MuscleManager.h"
-#include "../Seleccions/EditorManager.h"
+#include "../Logic/Rigging/Selection.h"
+#include "../Models/Actor/Actor.h"
+#include "../Logic/Muscles/MuscleManager.h"
+#include "../Logic/Rigging/EditorManager.h"
 #include "../Render/CDirectX.h"
 
 
