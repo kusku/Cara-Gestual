@@ -9,7 +9,7 @@
 
 #include "../SPoint3D.h"
 #include "../Seleccions/Selection.h"
-#include "../lectorsModels/Objecte3D.h"
+#include "../Models/Objecte3D.h"
 #include "../Muscles/MuscleManager.h"
 #include "../Seleccions/EditorManager.h"
 #include "../Render/CDirectX.h"

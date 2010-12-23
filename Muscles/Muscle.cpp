@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "Muscle.h"
-#include "../lectorsModels/Objecte3D.h"
+#include "../Models/Objecte3D.h"
 #include "../SPoint3D.h"
 
 Muscle::Muscle()

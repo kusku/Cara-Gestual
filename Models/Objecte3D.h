@@ -15,12 +15,12 @@
 
 #include "Windows.h"
 #include "../SPoint3D.h"
-#include "objLoader.h"
+#include "Lectors/objLoader.h"
 #include "../Seleccions/intersection.h"
 #include "../Render/CDirectX.h"
 #include "TextureManager.h"
 #include "../defines.h"
-#include "../Timer/Timer.h"
+#include "../Common/Timer/Timer.h"
 
 struct VERTICEXYZ_T2_NORMAL
 {

@@ -2,7 +2,7 @@
 #define SELECTION_H
 
 #include "../SPoint3D.h"
-#include "../lectorsModels/Objecte3D.h"
+#include "../Models/Objecte3D.h"
 #include "EditorManager.h"
 #include "intersection.h"
 #include "../constants.h"

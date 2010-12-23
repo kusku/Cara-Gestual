@@ -1,4 +1,4 @@
-#include "../stdafx.h"
+#include "../../stdafx.h"
 #include "XMLReader.h"
 #include <sstream>
 #include <fstream>

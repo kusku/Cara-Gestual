@@ -17,22 +17,22 @@
 #include "Render/CDirectX.h"
 
 // OBJECTE 3DS: Include per la definició de l'objecte Obj_3DS
-#include "lectorsModels/Obj3DS.h"	
+#include "Models/Lectors/Obj3DS.h"	
 
 // OBJECTE OBJ: Include per la definició de l'objecte Obj_OBJ
-#include "lectorsModels/objLoader.h"
-#include "lectorsModels/Objecte3D.h"
+#include "Models/Lectors/objLoader.h"
+#include "Models/Objecte3D.h"
 
 // MUSCLES I EXPRESSIONS
 #include "Muscles/MuscleManager.h"
-#include "Expresions/ExpressionManager.h"
+#include "Expressions/ExpressionManager.h"
 
 #include "PracticaDoc.h"
 #include "Seleccions/Selection.h"
 #include "SPoint3D.h"
 #include "Seleccions/EditorManager.h"
-#include "tractarXML/XMLReader.h"
-#include "tractarXML/XMLWriter.h"
+#include "Common/ParserXML/XMLReader.h"
+#include "Common/ParserXML/XMLWriter.h"
 #include "Seleccions/Deformation.h"
 #include "Animacio/Animation.h"
 #include "Parla/Subtitles.h"

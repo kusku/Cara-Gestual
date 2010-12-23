@@ -2,7 +2,7 @@
 #include "Selection.h"
 #include "../SPoint3D.h"
 #include "../matrix.h"
-#include "../lectorsModels/Objecte3D.h"
+#include "../Models/Objecte3D.h"
 #include "EditorManager.h"
 #include "intersection.h"
 #include "../Render/visualitzacio.h"
@@ -113,7 +113,7 @@ void Selection::ButtonRDown( float mouseX, float mouseY )
 	}
 }
 
-//Obt� una l�nia d'all� on s'ha apretat en coordenades m�n
+//Obté una línia en el món virtual a partir d'unes coordenades de pantalla fetes amb el ratolí
 void Selection::GetLine( SPoint3D &L1, SPoint3D &L2, float mouseX, float mouseY )
 {
 	D3DVIEWPORT9 ViewPortMatrix;
@@ -125,35 +125,19 @@ void Selection::GetLine( SPoint3D &L1, SPoint3D &L2, float mouseX, float mouseY 
 
 	LPDIRECT3DDEVICE9 Device = CDirectX::GetInstance()->GetDevice();
 
-	//double* mvmatrix;
-	//double* projmatrix;
-	//int* viewport;
-	////int Viewport[4];
-	//double dX, dY, dZ, dClickY; // glUnProject uses doubles, but I'm using floats for these 3D vector
 	Device->GetViewport(&ViewPortMatrix);
 	Device->GetTransform(D3DTS_VIEW, &ViewMatrix);
 	Device->GetTransform(D3DTS_PROJECTION, &ProjectionMatrix);
-	Device->GetTransform(D3DTS_WORLD, &WorldMatrix);
 
-	screenPoint = D3DXVECTOR3(mouseX, ViewPortMatrix.Height - mouseY, ViewPortMatrix.MinZ);
+	D3DXMatrixIdentity(&WorldMatrix);
 
+	screenPoint = D3DXVECTOR3(mouseX, ViewPortMatrix.Height - mouseY + 1.0, ViewPortMatrix.MinZ);
 	D3DXVec3Unproject( &result, &screenPoint, &ViewPortMatrix, &ProjectionMatrix, &ViewMatrix, &WorldMatrix );
 	L1 = SPoint3D(result.x,  result.y, result.z);
 
-	screenPoint = D3DXVECTOR3(mouseX,ViewPortMatrix.Height - mouseY, ViewPortMatrix.MaxZ);
+	screenPoint = D3DXVECTOR3(mouseX, mouseY, ViewPortMatrix.MaxZ);
 	D3DXVec3Unproject( &result, &screenPoint, &ViewPortMatrix, &ProjectionMatrix, &ViewMatrix, &WorldMatrix );
 	L2 = SPoint3D(result.x, result.y, result.z);
-
-	//Viewport = GetViewportMatrix();
-	/*mvmatrix = GetModelviewMatrix();
-	projmatrix = GetProjectionMatrix();*/
-	//dClickY = double (Viewport[3] - mouseY); 
-	// OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
-
-	/*gluUnProject ((double) mouseX, dClickY, 0.0, mvmatrix, projmatrix, Viewport, &dX, &dY, &dZ);
-	L1 = SPoint3D( (float) dX, (float) dY, (float) dZ );
-	gluUnProject ((double) mouseX, dClickY, 1.0, mvmatrix, projmatrix, Viewport, &dX, &dY, &dZ);
-	L2 = SPoint3D( (float) dX, (float) dY, (float) dZ );*/
 }
 
 void Selection::GetFrustum( SPoint3D Normals[4], SPoint3D P[8])

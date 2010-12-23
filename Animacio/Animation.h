@@ -1,10 +1,10 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
-#include "../Expresions/ExpressionManager.h"
+#include "../Expressions/ExpressionManager.h"
 #include "../Muscles/MuscleManager.h"
 #include "../SPoint3D.h"
-#include "../lectorsModels/Objecte3D.h"
+#include "../Models/Objecte3D.h"
 
 class Animation
 {

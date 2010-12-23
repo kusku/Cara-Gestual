@@ -2,7 +2,7 @@
 #include "Parla.h"
 #include "Subtitles.h"
 #include "../PracticaView.h"
-#include "../Timer/Timer.h"
+#include "../Common/Timer/Timer.h"
 
 
 CParla::CParla(Animation* an)

@@ -1,6 +1,6 @@
 #include "../stdafx.h"
 #include "Animation.h"
-#include "../lectorsModels/Objecte3D.h"
+#include "../Models/Objecte3D.h"
 
 Animation::Animation(ExpressionManager* manager, MuscleManager* muscle)
 {

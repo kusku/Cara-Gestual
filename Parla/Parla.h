@@ -4,8 +4,8 @@
 #include "../stdafx.h"
 #include "Subtitles.h"
 #include "../Animacio/Animation.h"
-#include "../Expresions/Expression.h"
-#include "../lectorsModels/Objecte3D.h"
+#include "../Expressions/Expression.h"
+#include "../Models/Objecte3D.h"
 
 class CParla
 {

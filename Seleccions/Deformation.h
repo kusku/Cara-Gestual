@@ -2,8 +2,8 @@
 #define DEFORMATION_H
 
 #include "../SPoint3D.h"
-#include "../lectorsModels/Objecte3D.h"
-#include "../Expresions/ExpressionManager.h"
+#include "../Models/Objecte3D.h"
+#include "../Expressions/ExpressionManager.h"
 #include "../Muscles/MuscleManager.h"
 #include "EditorManager.h"
 

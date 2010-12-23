@@ -3,7 +3,7 @@
 
 #include "../SPoint3D.h"
 #include "../Muscles/MuscleManager.h"
-#include "../Expresions/ExpressionManager.h"
+#include "../Expressions/ExpressionManager.h"
 
 class EditorManager
 {

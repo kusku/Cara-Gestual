@@ -18,12 +18,12 @@
 #include "PracticaDoc.h"
 #include "PracticaView.h"
 #include "Muscles/MuscleManager.h"
-#include "Expresions/ExpressionManager.h"
+#include "Expressions/ExpressionManager.h"
 #include "Render/visualitzacio.h"
 #include "SPoint3D.h"
 #include "Seleccions/Selection.h"
 #include "Seleccions/EditorManager.h"
-#include "Timer/Timer.h"
+#include "Common/Timer/Timer.h"
 #include "Render/escena.h"
 #include <gl\gl.h>
 #include <gl\glu.h>
