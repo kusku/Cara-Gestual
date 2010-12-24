@@ -4,7 +4,7 @@
 // PracticaView.cpp : implementation of the CPracticaView class
 // FUNCIONS:		- Control del bucle principal (OnPaint)
 //					- Control teclat (OnKeyDown)
-//					- Control mouse interactiu i botons mouse 
+//			- Control mouse interactiu i botons mouse 
 //							(OnLButtomDown, OnRButtomDown, OnMouseMove)
 //					- Control opcions de menú (On*, OnUpdate*)
 //					- Control de color de fons per teclat.
@@ -234,12 +234,12 @@ CPracticaView::CPracticaView()
 	tr_cpv = D3DXVECTOR3(0.f, 0.f, 0.f);
 
 // GC2: Variables de control de l'opció Vista->Navega?
-	n[0]=0.0;		n[1]=0.0;		n[2]=0.0;
+	n.x=0.0;		n.y=0.0;		n.z=0.0;
 	opv.x=10.0;		opv.y=0.0;		opv.z=0.0;
 	angleZ=0.0;
 
 // GC2: Variables de control per les opcions de menú Projecció, Objecte
-	projeccio=PERSPECT;			objecte=CAP;
+	projeccio=PERSPECT;		
 
 // GC2: Variables de control del menú Transforma
 	transf=false;	trasl=false;	rota=false;		escal=false;
@@ -263,10 +263,6 @@ CPracticaView::CPracticaView()
 	w=0;			h=0;					// Mides finestra
 	R=15;		angleh=0;		anglev=0;	// PV en esfèriques
 	Vis_Polar=POLARZ;
-
-// GC2: Color de fons
-	fonsR=true;		fonsG=true;		fonsB=true;
-	c_fons.r=0.0;	c_fons.g=0.0;	c_fons.b=0.0;
 
 
 // GC2: Objecte OBJ:
@@ -294,7 +290,7 @@ CPracticaView::CPracticaView()
 // GC2: Inicialització de les llibreries DevIL per a la càrrega de textures i fitxers .3DS
 	ilInit();					// Inicialitzar llibreria IL
 	iluInit();					// Inicialitzar llibreria ILU
-	ilutRenderer(ILUT_OPENGL);	// Inicialitzar llibreria ILUT per a OpenGL
+	ilutRenderer(ILUT_DIRECT3D9);	// Inicialitzar llibreria ILUT per a DirectX
 
 	// Variables d'animació
 	animacio = false;
@@ -467,340 +463,9 @@ void CPracticaView::OnDestroy()
 
 void CPracticaView::OnPaint() 
 {
-	Perspectiva(anglev,angleh,R,Vis_Polar,pan,tr_cpv,c_fons,objecte,transf,
+	Perspectiva(anglev,angleh,R,Vis_Polar,pan,tr_cpv,transf,
 				VScal,VTras,VRota,oculta,test_vis,back_line,filferros,textura,ifixe,eixos, editor, ObOBJ, MManager, editMuscle, 
 				MSubtitles, subtitles, parla);
-
-
-//  Actualitzar la barra d'estat de l'aplicació amb els valors R,A,B,PVx,PVy,PVz
-	//Barra_Estat();
-}
-
-// Barra_Estat: Actualitza la barra d'estat (Status Bar) de l'aplicació amb els
-//      valors R,A,B,PVx,PVy,PVz en Visualització Interactiva.
-void CPracticaView::Barra_Estat() 
-{
-	CString sss,buffer;
-	int  tam,i,decimal,sign;
-	char car;
-	float Raux = 0.f, angv = 0.f, angh = 0.f;
-	float PVx = 0.f, PVy = 0.f, PVz = 0.f;
-	GLfloat color;
-
-//  Agafar entorn Status Bar
-	CMainFrame *pChild = (CMainFrame*)AfxGetMainWnd();
-	CStatusBar *StatusBar = pChild->GetStatusBar();
-
-// Status Bar fitxer fractal
-	if (nom!="") StatusBar->SetPaneText(0, nom); 
-
-// Càlcul dels valors per l'opció Vista->Navega
-	if (projeccio!=CAP && projeccio!=ORTO) { 
-		if (navega) 
-			{	Raux=sqrt(opv.x*opv.x+opv.y*opv.y+opv.z*opv.z);
-				angv=(asin(opv.z/Raux)*180)/pi; 
-				angh=(atan(opv.y/opv.x))*180/pi;
-			}
-			else {	Raux=R; angv=anglev; angh=angleh; }
-			}
-
-// Status Bar R
-	if (projeccio==CAP) buffer="       ";
-		else if (navega) buffer=" NAV   ";
-			else if (projeccio==ORTO) buffer="ORTO   ";
-				else {	buffer = _ecvt(Raux, 6, &decimal, &sign );
-						//err = _ecvt_s(buffer,_CVTBUFSIZE,Raux, 6, &decimal, &sign );
-						//	Posar el punt decimal
-						if (decimal==0) decimal=1;
-						tam=buffer.GetLength();
-						for (i=tam-2;i>=decimal;i=i-1)
-							{	car=buffer.GetAt(i);
-								buffer.SetAt(i+1,car);}
-						buffer.SetAt(decimal,'.');
-					}
-	sss = "R=" + buffer;
-// Refrescar posició R Status Bar
-	StatusBar->SetPaneText(1, sss); 
-
-// Status Bar anglev
-	if (projeccio==CAP) buffer="       ";
-		else if (navega) buffer=" NAV   ";
-			else if (projeccio==ORTO) buffer="ORTO   ";
-				else {	buffer = _ecvt(angv, 5, &decimal, &sign );
-						//  Posar el punt decimal
-						if (decimal==0) decimal=1;
-						tam=buffer.GetLength();
-						for (i=tam-2;i>=decimal;i=i-1)
-							{	car=buffer.GetAt(i);
-								buffer.SetAt(i+1,car);}
-						buffer.SetAt(decimal,'.');
-					}
-    sss = "A=" + buffer;
-// Refrescar posició angleh Status Bar
-	StatusBar->SetPaneText(2, sss); 
-
-// Status Bar anglev
-	if (projeccio==CAP) buffer="       ";
-		else if (navega) buffer=" NAV   ";
-			else if (projeccio==ORTO) buffer="ORTO   ";
-				else {buffer = _ecvt(angh, 5, &decimal, &sign );
-					  //  Posar el punt decimal
-						if (decimal==0) decimal=1;
-							tam=buffer.GetLength();
-						for (i=tam-2;i>=decimal;i=i-1)
-							{	car=buffer.GetAt(i);
-								buffer.SetAt(i+1,car);}
-						buffer.SetAt(decimal,'.');
-					}
-    sss = "B=" + buffer;
-// Refrescar posició anglev Status Bar
-	StatusBar->SetPaneText(3, sss); 
-
-// Transformació PV de Coord. esfèriques (R,anglev,angleh) --> Coord. cartesianes (PVx,PVy,PVz)
-	if (navega) {PVx=opv.x; PVy=opv.y; PVz=opv.z;}
-	else {	PVx=Raux*cos(angh*pi/180)*cos(angv*pi/180);
-			PVy=Raux*sin(angh*pi/180)*cos(angv*pi/180);
-			PVz=Raux*sin(angv*pi/180);
-			}
-
-// Status Bar PVx
-	if (projeccio==CAP) buffer="       ";
-	else if (projeccio==ORTO) buffer="ORTO   ";
-		else if (pan) buffer="PAN    ";
-			else {	buffer = _ecvt(PVx, 7, &decimal, &sign );
-					//  Posar el punt decimal
-					if (decimal<0) buffer="0.00000";
-						else{	if (decimal==0) decimal=1;
-								tam=buffer.GetLength();
-								for (i=tam-2;i>=decimal;i=i-1)
-									{	car=buffer.GetAt(i);
-										buffer.SetAt(i+1,car);	}
-								buffer.SetAt(decimal,'.');
-							}
-					if (sign!=0) buffer='-' + buffer;
-				}
-    sss = "PVx=" + buffer;
-// Refrescar posició PVx Status Bar
-	StatusBar->SetPaneText(4, sss);
-
-// Status Bar PVy
-	if (projeccio==CAP) buffer="       ";
-	else if (projeccio==ORTO) buffer="ORTO   ";
-		else if (pan) buffer="PAN    ";
-				else {	buffer = _ecvt(PVy, 7, &decimal, &sign );
-					//  Posar el punt decimal
-					if (decimal<0) buffer="0.00000";
-						else{	if (decimal==0) decimal=1;
-								tam=buffer.GetLength();
-								for (i=tam-2;i>=decimal;i=i-1)
-									{	car=buffer.GetAt(i);
-										buffer.SetAt(i+1,car);	}
-								buffer.SetAt(decimal,'.');
-							}
-					if (sign!=0) buffer='-' + buffer;
-				}
-    sss = "PVy=" + buffer;
-// Refrescar posició PVy Status Bar
-	StatusBar->SetPaneText(5, sss);
-
-// Status Bar PVz
-	if (projeccio==CAP) buffer="       ";
-	else if (projeccio==ORTO) buffer="ORTO   ";
-		else if (pan) buffer="PAN    ";
-				else {	buffer = _ecvt(PVz, 7, &decimal, &sign );
-					//  Posar el punt decimal
-					if (decimal<0) buffer="0.00000";
-						else{	if (decimal==0) decimal=1;
-								tam=buffer.GetLength();
-								for (i=tam-2;i>=decimal;i=i-1)
-									{	car=buffer.GetAt(i);
-										buffer.SetAt(i+1,car);	}
-								buffer.SetAt(decimal,'.');
-							}
-					if (sign!=0) buffer='-' + buffer;
-				}
-    sss = "PVz=" + buffer;
-// Refrescar posició PVz Status Bar
-	StatusBar->SetPaneText(6, sss);
-
-// Status Bar per indicar tipus de Transformació (TRAS, ROT, ESC)
-	sss=" ";
-	if (transf) {	
-		if (rota) sss="ROT";
-			else if (trasl) sss="TRA";
-					else if (escal) sss="ESC";
-		}
-	else {
-// Components d'intensitat de fons que varien per teclat
-		   if ((fonsR) && (fonsG) && (fonsB)) sss="RGB";
-			else if ((fonsR) && (fonsG)) sss="RG ";
-					else if ((fonsR) && (fonsB)) sss="R   B";
-						else if ((fonsG) && (fonsB)) sss="   GB";
-							else if (fonsR) sss="R  ";
-								else if (fonsG) sss="  G ";
-									else if (fonsB) sss="     B";
-		}
-// Refrescar posició Transformacions en Status Bar
-	StatusBar->SetPaneText(7, sss);
-
-// Status Bar dels paràmetres de Transformació, Color i posicions de Robot i Cama
-	sss=" ";
-	if (transf)
-		 { if (rota)
-				{	buffer = _ecvt(VRota.x, 4, &decimal, &sign );
-					// Posar el punt decimal
-					if ((decimal<=0) || (VRota.x==0)) buffer="0.00";
-					else{	tam=buffer.GetLength();
-							for (i=tam-2;i>=decimal;i=i-1)
-							{	car=buffer.GetAt(i);
-								buffer.SetAt(i+1,car);	}
-							buffer.SetAt(decimal,'.');
-						}
-					sss = "  " + buffer + "   ";
-
-					buffer = _ecvt(VRota.y, 4, &decimal, &sign );
-					// Posar el punt decimal
-					if ((decimal<=0) || (VRota.y==0)) buffer="0.00";
-					else{	tam=buffer.GetLength();
-							for (i=tam-2;i>=decimal;i=i-1)
-							{	car=buffer.GetAt(i);
-								buffer.SetAt(i+1,car);	}
-							buffer.SetAt(decimal,'.');
-						}
-					sss = sss + buffer + "   ";
-
-					buffer = _ecvt(VRota.z, 4, &decimal, &sign );
-					// Posar el punt decimal
-					if ((decimal<=0) || (VRota.z==0)) buffer="0.00";
-					else{	tam=buffer.GetLength();
-							for (i=tam-2;i>=decimal;i=i-1)
-							{	car=buffer.GetAt(i);
-								buffer.SetAt(i+1,car);	}
-							buffer.SetAt(decimal,'.');
-						}
-					sss = sss + buffer;
-				}
-			else if (trasl)
-				{	buffer = _ecvt(VTras.x, 5, &decimal, &sign );
-					// Posar el punt decimal
-					if ((decimal<=0) || (VTras.x==0)) buffer=" 0.000";
-					else{	tam=buffer.GetLength();
-							for (i=tam-2;i>=decimal;i=i-1)
-							{	car=buffer.GetAt(i);
-								buffer.SetAt(i+1,car);	}
-							if (decimal<tam) buffer.SetAt(decimal,'.');
-							if (sign!=0) buffer='-' + buffer;
-								else buffer=' ' + buffer;
-						}
-					sss = buffer + ' ';
-
-					buffer = _ecvt(VTras.y, 5, &decimal, &sign );
-					// Posar el punt decimal
-					if ((decimal<=0) || (VTras.y==0)) buffer=" 0.000";
-					else{	tam=buffer.GetLength();
-							for (i=tam-2;i>=decimal;i=i-1)
-							{	car=buffer.GetAt(i);
-								buffer.SetAt(i+1,car);	}
-							if (decimal<tam) buffer.SetAt(decimal,'.');
-							if (sign!=0) buffer='-' + buffer;
-								else buffer=' ' + buffer;
-						}
-					sss = sss + buffer + ' ';
-
-					buffer = _ecvt(VTras.z, 5, &decimal, &sign );
-					// Posar el punt decimal
-					if ((decimal<=0) || (VTras.z==0)) buffer=" 0.000";
-					else{	tam=buffer.GetLength();
-							for (i=tam-2;i>decimal;i=i-1)
-							{	car=buffer.GetAt(i);
-								buffer.SetAt(i+1,car);	}
-							if (decimal<tam) buffer.SetAt(decimal,'.');
-							if (sign!=0) buffer='-' + buffer;
-								else buffer=' ' + buffer;
-						}
-					sss = sss + buffer;
-				}
-				else if (escal)
-					{	buffer = _ecvt(VScal.x, 5, &decimal, &sign );
-						// Posar el punt decimal
-						if ((decimal<0) || (VScal.x==1)) buffer="1.000";
-						else{	tam=buffer.GetLength();
-								for (i=tam-2;i>=decimal;i=i-1)
-								{	car=buffer.GetAt(i);
-									buffer.SetAt(i+1,car);	}
-								if (decimal<tam) buffer.SetAt(decimal,'.');
-							}
-						sss = " " + buffer + "  ";
-	
-						buffer = _ecvt(VScal.y, 5, &decimal, &sign );
-						// Posar el punt decimal
-						if ((decimal<0) || (VScal.y==1)) buffer="1.000";
-						else{	tam=buffer.GetLength();
-								for (i=tam-2;i>=decimal;i=i-1)
-								{	car=buffer.GetAt(i);
-									buffer.SetAt(i+1,car);	}
-								if (decimal<tam) buffer.SetAt(decimal,'.');
-							}
-						sss = sss + buffer + "  ";
-	
-						buffer = _ecvt(VScal.z, 5, &decimal, &sign );
-						// Posar el punt decimal
-						if ((decimal<0) || (VScal.z==1)) buffer="1.000";
-						else{	tam=buffer.GetLength();
-								for (i=tam-2;i>=decimal;i=i-1)
-								{	car=buffer.GetAt(i);
-									buffer.SetAt(i+1,car);	}
-								if (decimal<tam) buffer.SetAt(decimal,'.');
-							}
-						sss = sss + buffer;
-					}
-		}
-			else {
-
-					color=c_fons.r*1000;
-					buffer = _ecvt(color, 5, &decimal, &sign );
-					// Posar el punt decimal
-					if ((decimal<0) || (c_fons.r==1)) buffer="1.000";
-					else{	tam=buffer.GetLength();
-							for (i=decimal-1;i>=0;i=i-1)
-							{	car=buffer.GetAt(i);
-								buffer.SetAt(i+(tam-decimal),car);	}
-							buffer.SetAt(1,'.');
-							buffer.SetAt(0,'0');
-						}
-					sss = " " + buffer + "  ";
-	
-					color=c_fons.g*1000;
-					buffer = _ecvt(color, 5, &decimal, &sign );
-					// Posar el punt decimal
-					if ((decimal<0) || (c_fons.g==1)) buffer="1.000";
-					else{	tam=buffer.GetLength();
-							for (i=decimal-1;i>=0;i=i-1)
-							{	car=buffer.GetAt(i);
-								buffer.SetAt(i+(tam-decimal),car);	}
-							buffer.SetAt(1,'.');
-							buffer.SetAt(0,'0');
-						}
-					sss = sss + buffer + "  ";
-
-					color=c_fons.b*1000;
-					buffer = _ecvt(color, 5, &decimal, &sign );
-					// Posar el punt decimal
-					if ((decimal<0) || (c_fons.b==1)) buffer="1.000";
-					else{	tam=buffer.GetLength();
-							for (i=decimal-1;i>=0;i=i-1)
-								{	car=buffer.GetAt(i);
-									buffer.SetAt(i+(tam-decimal),car);	}
-									buffer.SetAt(1,'.');
-									buffer.SetAt(0,'0');
-						}
-							sss = sss + buffer;
-						
-				}
-
-// Refrescar posició PVz Status Bar
-	StatusBar->SetPaneText(8, sss);
-
 }
 
 void CPracticaView::OnSize(UINT nType, int cx, int cy) 
@@ -950,7 +615,7 @@ void CPracticaView::OnRButtonUp(UINT nFlags, CPoint point)
 BOOL CPracticaView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt) 
 {
 	float modul=0;
-	GLfloat vdir[3]={0,0,0};
+	D3DXVECTOR3 vdir=D3DXVECTOR3(0.f,0.f,0.f);
 
 // Funció de zoom quan està activada la funció pan o les T. Geomètriques
 	if ((zzoom) || (transX) || (transY) || (transZ)) 
@@ -959,17 +624,17 @@ BOOL CPracticaView::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 			Invalidate();
 	}
 	else if (navega)
-		{	vdir[0]=n[0]-opv.x;
-			vdir[1]=n[1]-opv.y;
-			vdir[2]=n[2]-opv.z;
-			modul=sqrt(vdir[0]*vdir[0]+vdir[1]*vdir[1]+vdir[2]*vdir[2]);
-			vdir[0]=vdir[0]/modul;
-			vdir[1]=vdir[1]/modul;
-			vdir[2]=vdir[2]/modul;
-			opv.x+=(zDelta/4)*vdir[0];
-			opv.y+=(zDelta/4)*vdir[1];
-			n[0]+=(zDelta/4)*vdir[0];
-			n[1]+=(zDelta/4)*vdir[1];
+		{	vdir.x=n.x-opv.x;
+			vdir.y=n.y-opv.y;
+			vdir.z=n.z-opv.z;
+			modul=sqrt(vdir.x*vdir.x+vdir.y*vdir.y+vdir.z*vdir.z);
+			vdir.x=vdir.x/modul;
+			vdir.y=vdir.y/modul;
+			vdir.z=vdir.z/modul;
+			opv.x+=(zDelta/4)*vdir.x;
+			opv.y+=(zDelta/4)*vdir.y;
+			n.x+=(zDelta/4)*vdir.x;
+			n.y+=(zDelta/4)*vdir.y;
 			Invalidate();
 		}
 
@@ -999,9 +664,8 @@ void CPracticaView::OnMouseMove(UINT nFlags, CPoint point)
 	else
 		{
 		float modul=0;
-		GLfloat vdir[3]={0,0,0};
+		D3DXVECTOR3 vdir=D3DXVECTOR3(0.f,0.f,0.f);
 
-	// TODO: Add your message handler code here and/or call default
 		if (m_ButoEAvall && mobil && projeccio!=CAP)
 		{
 			
@@ -1030,12 +694,12 @@ void CPracticaView::OnMouseMove(UINT nFlags, CPoint point)
 	//			if(angleZ>=360)	angleZ=angleZ-360;
 	//			if(angleZ<0)	angleZ=angleZ+360;
 
-				n[0]=n[0]-opv.x;
-				n[1]=n[1]-opv.y;
-				n[0]=n[0]*cos(angleZ*pi/180)-n[1]*sin(angleZ*pi/180);
-				n[1]=n[0]*sin(angleZ*pi/180)+n[1]*cos(angleZ*pi/180);
-				n[0]=n[0]+opv.x;
-				n[1]=n[1]+opv.y;
+				n.x=n.x-opv.x;
+				n.y=n.y-opv.y;
+				n.x=n.x*cos(angleZ*D3DX_PI/180)-n.y*sin(angleZ*D3DX_PI/180);
+				n.y=n.x*sin(angleZ*D3DX_PI/180)+n.y*cos(angleZ*D3DX_PI/180);
+				n.x=n.x+opv.x;
+				n.y=n.y+opv.y;
 
 				m_PosEAvall = point;
 				InvalidateRect(NULL,false);
@@ -1134,17 +798,17 @@ void CPracticaView::OnMouseMove(UINT nFlags, CPoint point)
 
 						float incr=zoomincr.cy/2;
 	//					long int incr=zoomincr.cy/2.0;  // Causa assertion en "afx.inl" lin 169
-						vdir[0]=n[0]-opv.x;
-						vdir[1]=n[1]-opv.y;
-						vdir[2]=n[2]-opv.z;
-						modul=sqrt(vdir[0]*vdir[0]+vdir[1]*vdir[1]+vdir[2]*vdir[2]);
-						vdir[0]=vdir[0]/modul;
-						vdir[1]=vdir[1]/modul;
-						vdir[2]=vdir[2]/modul;
-						opv.x+=incr*vdir[0];
-						opv.y+=incr*vdir[1];
-						n[0]+=incr*vdir[0];
-						n[1]+=incr*vdir[1];
+						vdir.x=n.x-opv.x;
+						vdir.y=n.y-opv.y;
+						vdir.z=n.z-opv.z;
+						modul=sqrt(vdir.x*vdir.x+vdir.y*vdir.y+vdir.z*vdir.z);
+						vdir.x=vdir.x/modul;
+						vdir.y=vdir.y/modul;
+						vdir.x=vdir.x/modul;
+						opv.x+=incr*vdir.x;
+						opv.y+=incr*vdir.y;
+						n.x+=incr*vdir.x;
+						n.y+=incr*vdir.y;
 						m_PosDAvall=point;
 						InvalidateRect(NULL,false);
 						}
@@ -1199,10 +863,9 @@ void CPracticaView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 const float incr=0.025f;
 float modul=0;
-GLfloat vdir[3]={0,0,0};
+D3DXVECTOR3 vdir=D3DXVECTOR3(0.f,0.f,0.f);
 
 	if ((!pan) && (!transf) && (!navega)) {
-// Canvi de la intensitat de fons per teclat
 
 		if (nChar==VK_CONTROL && !TeclaControl)
 		{
@@ -1219,64 +882,7 @@ GLfloat vdir[3]={0,0,0};
 		else
 			TeclaTab = false;
 
-		if(nChar==VK_DOWN) {
-			if (fonsR) {
-				c_fons.r-=nRepCnt*incr;
-				if(c_fons.r<0.0) c_fons.r=0.0;
-				}
-			if (fonsG) {
-				c_fons.g-=nRepCnt*incr;
-				if(c_fons.g<0.0) c_fons.g=0.0;
-				}
-			if (fonsB) {
-				c_fons.b-=nRepCnt*incr;
-				if(c_fons.b<0.0) c_fons.b=0.0;
-				}
-			}
-			else if(nChar==VK_UP) {
-					if (fonsR) {
-						c_fons.r+=nRepCnt*incr;
-						if(c_fons.r>1.0) c_fons.r=1.0;
-						}
-					if (fonsG) {
-						c_fons.g+=nRepCnt*incr;
-						if(c_fons.g>1.0) c_fons.g=1.0;
-						}
-					if (fonsB) {
-						c_fons.b+=nRepCnt*incr;
-						if(c_fons.b>1.0) c_fons.b=1.0;
-						}
-					}
-				else if(nChar==VK_SPACE) { 
-						if ((fonsR) && (fonsG) && (fonsB)) {
-							fonsG=false;
-							fonsB=false;
-							}
-						else if ((fonsR) && (fonsG)) {
-							fonsG=false;
-							fonsB=true;
-							}
-							else if ((fonsR) && (fonsB)) {
-								fonsR=false;
-								fonsG=true;
-								}
-								else if ((fonsG) && (fonsB)) fonsR=true;
-									else if (fonsR) {
-											fonsR=false;
-											fonsG=true;
-											}
-										else if (fonsG) {
-												fonsG=false;
-												fonsB=true;
-												}
-											else if (fonsB) {
-												fonsR=true;
-												fonsG=true;
-												fonsB=false;
-												}
-					}
-		}
-		else {	
+	}else {	
 			if (transf)
 				{ if (rota)
 // Modificar vector de rotació per teclat.
@@ -1552,63 +1158,63 @@ GLfloat vdir[3]={0,0,0};
 					}
 					else if (navega)
 // Controls de moviment de navegació
-							{ vdir[0]=n[0]-opv.x;
-							  vdir[1]=n[1]-opv.y;
-							  vdir[2]=n[2]-opv.z;
-							  modul=sqrt(vdir[0]*vdir[0]+vdir[1]*vdir[1]+vdir[2]*vdir[2]);
-							  vdir[0]=vdir[0]/modul;
-							  vdir[1]=vdir[1]/modul;
-							  vdir[2]=vdir[2]/modul;
+							{ vdir.x=n.x-opv.x;
+							  vdir.y=n.y-opv.y;
+							  vdir.z=n.z-opv.z;
+							  modul=sqrt(vdir.x*vdir.x+vdir.y*vdir.y+vdir.z*vdir.z);
+							  vdir.x=vdir.x/modul;
+							  vdir.y=vdir.y/modul;
+							  vdir.z=vdir.z/modul;
 							  switch(nChar)
 								{
 								// Tecla cursor amunt
 								case VK_UP:
-									opv.x+=nRepCnt*fact_pan*vdir[0];
-									opv.y+=nRepCnt*fact_pan*vdir[1];
-									n[0]+=nRepCnt*fact_pan*vdir[0];
-									n[1]+=nRepCnt*fact_pan*vdir[1];
+									opv.x+=nRepCnt*fact_pan*vdir.x;
+									opv.y+=nRepCnt*fact_pan*vdir.y;
+									n.x+=nRepCnt*fact_pan*vdir.x;
+									n.y+=nRepCnt*fact_pan*vdir.y;
 									break;
 
 								// Tecla cursor avall
 								case VK_DOWN:
-									opv.x-=nRepCnt*fact_pan*vdir[0];
-									opv.y-=nRepCnt*fact_pan*vdir[1];
-									n[0]-=nRepCnt*fact_pan*vdir[0];
-									n[1]-=nRepCnt*fact_pan*vdir[1];
+									opv.x-=nRepCnt*fact_pan*vdir.x;
+									opv.y-=nRepCnt*fact_pan*vdir.y;
+									n.x-=nRepCnt*fact_pan*vdir.x;
+									n.y-=nRepCnt*fact_pan*vdir.y;
 									break;
 
 								// Tecla cursor esquerra
 								case VK_LEFT:
 									angleZ=+nRepCnt*fact_pan;
-									n[0]=n[0]-opv.x;
-									n[1]=n[1]-opv.y;
-									n[0]=n[0]*cos(angleZ*pi/180)-n[1]*sin(angleZ*pi/180);
-									n[1]=n[0]*sin(angleZ*pi/180)+n[1]*cos(angleZ*pi/180);
-									n[0]=n[0]+opv.x;
-									n[1]=n[1]+opv.y;
+									n.x=n.x-opv.x;
+									n.y=n.y-opv.y;
+									n.x=n.x*cos(angleZ*D3DX_PI/180)-n.y*sin(angleZ*D3DX_PI/180);
+									n.y=n.x*sin(angleZ*D3DX_PI/180)+n.y*cos(angleZ*D3DX_PI/180);
+									n.x=n.x+opv.x;
+									n.y=n.y+opv.y;
 									break;
 						
 								// Tecla cursor dret
 								case VK_RIGHT:
 									angleZ=360-nRepCnt*fact_pan;
-									n[0]=n[0]-opv.x;
-									n[1]=n[1]-opv.y;
-									n[0]=n[0]*cos(angleZ*pi/180)-n[1]*sin(angleZ*pi/180);
-									n[1]=n[0]*sin(angleZ*pi/180)+n[1]*cos(angleZ*pi/180);
-									n[0]=n[0]+opv.x;
-									n[1]=n[1]+opv.y;
+									n.x=n.x-opv.x;
+									n.y=n.y-opv.y;
+									n.x=n.x*cos(angleZ*D3DX_PI/180)-n.y*sin(angleZ*D3DX_PI/180);
+									n.y=n.x*sin(angleZ*D3DX_PI/180)+n.y*cos(angleZ*D3DX_PI/180);
+									n.x=n.x+opv.x;
+									n.y=n.y+opv.y;
 									break;
 
 								// Tecla Inicio
 								case VK_HOME:
 									opv.z+=nRepCnt*fact_pan;
-									n[2]+=nRepCnt*fact_pan;
+									n.z+=nRepCnt*fact_pan;
 									break;
 				
 								// Tecla Fin
 								case VK_END:
 									opv.z-=nRepCnt*fact_pan;
-									n[2]-=nRepCnt*fact_pan;
+									n.z-=nRepCnt*fact_pan;
 									break;
 
 								// Tecla PgUp
@@ -1680,8 +1286,6 @@ void CPracticaView::OnFileOpen3ds()
 {
 	if(ObOBJ!=NULL) delete ObOBJ;
 
-	objecte=OBJOBJ;
-
 	// Obrir diàleg de lectura de fitxer
 		CFileDialog openOBJ (TRUE, NULL, NULL,
 			OFN_FILEMUSTEXIST | OFN_HIDEREADONLY ,
@@ -1727,8 +1331,6 @@ void CPracticaView::OnFileOpenObj()
 {
 	if(ObOBJ!=NULL) delete ObOBJ;
 
-	objecte=OBJOBJ;
-
 	// Obrir diàleg de lectura de fitxer
 		CFileDialog openOBJ (TRUE, NULL, NULL,
 			OFN_FILEMUSTEXIST | OFN_HIDEREADONLY ,
@@ -1770,7 +1372,6 @@ void CPracticaView::OnFileOpenObj()
 void CPracticaView::OnCarregaAutomatica()
 {
 	if(ObOBJ!=NULL) delete ObOBJ;
-	objecte=OBJOBJ;
 			
 	//TODO: Path
 	nom = "./Data/Models/heavytriangles/heavyweapons.obj";
@@ -2055,7 +1656,7 @@ void CPracticaView::OnUpdateNavega(CCmdUI* pCmdUI)
 void CPracticaView::OnIninav() 
 {
 // TODO: Add your command handler code here
-	if (navega) {	n[0]=0.0;		n[1]=0.0;		n[2]=0.0;
+	if (navega) {	n.x=0.0;		n.y=0.0;		n.z=0.0;
 					opv.x=10.0;		opv.y=0.0;		opv.z=0.0;
 					angleZ=0.0;
 				}

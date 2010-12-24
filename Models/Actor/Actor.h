@@ -34,8 +34,8 @@ struct VERTICEXYZ_T2_NORMAL
 
 struct O3DMaterial
 {
-	char	szName[1024];		 // Name of the material
-	char	szTexture[_MAX_PATH];// Filename of the texture
+	char	szName[MAX_NAME_TEXTURE];		 // Name of the material
+	char	szTexture[MAX_PATH_TEXTURE];// Filename of the texture
 	int	iTextureID;			 // OpenGL name of the texture
 	float fDiffuse[3];		 // Diffuse component
 	float fAmbient[3];		 // Ambient component
@@ -85,8 +85,8 @@ class Actor {
 		void		GetTriangle			( int index, SPoint3D* triangle );
 		void		GetFaceCoords		( int nFace, SPoint3D* coords );
 
-		bool		LoadInfoInVectors	( LPDIRECT3DDEVICE9 g_pd3dDevice );
-		bool		LoadVertexsBuffers	( LPDIRECT3DDEVICE9 g_pd3dDevice );
+		HRESULT		LoadInfoInVectors	( LPDIRECT3DDEVICE9 g_pd3dDevice );
+		HRESULT		LoadVertexsBuffers	( LPDIRECT3DDEVICE9 g_pd3dDevice );
 
 private:
 		Cara		*cares;

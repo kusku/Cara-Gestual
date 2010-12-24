@@ -143,7 +143,7 @@ void XMLReader::GuardarNums() {
 			j++;
 		}
 		num[n][j]='\0';
-		convertit[n] = atof(num[n]);
+		convertit[n] = (float) atof(num[n]);
 		n++;
 		i++;
 	}
@@ -176,7 +176,7 @@ void XMLReader::ReadAtribut() {
 }
 
 float XMLReader::ConvertirNum() {
-	return atof(atribut);
+	return (float) atof(atribut);
 }
 
 void XMLReader::ReadExpressions() {

@@ -30,8 +30,8 @@ void Timer::CleanUp()
 float Timer::GetElapsedTime()
 {
 	double nowTime = clock();
-	float elapsedTime = ClockDiff(nowTime, lastTime);
-	lastTime = nowTime;
+	float elapsedTime = ClockDiff((clock_t)nowTime, lastTime);
+	lastTime = (clock_t) nowTime;
 
 	return elapsedTime;
 }

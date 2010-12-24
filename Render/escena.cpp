@@ -29,9 +29,9 @@ void renderSphereSelection (LPDIRECT3DDEVICE9 Device, CDirectX* DX, EditorManage
 			DX->GetDevice()->SetTransform(D3DTS_WORLD, &l_Matrix);
 
 			if (i == dominant)
-				DX->RenderSphere(0.05,0xffff0000,8);
+				DX->RenderSphere(0.05f,0xffff0000,8);
 			else
-				DX->RenderSphere(0.05,0xffffffff,8);	
+				DX->RenderSphere(0.05f,0xffffffff,8);	
 		}
 
 		delete[] llista;
@@ -65,13 +65,6 @@ void renderSphereSelection (LPDIRECT3DDEVICE9 Device, CDirectX* DX, EditorManage
 //    DrawLine( SPoint3D(x1,y1,0), SPoint3D(x1,y2,0) );
 //}
 //
-//void DrawLine( const SPoint3D &P1, const SPoint3D &P2 )
-//{
-//	glBegin( GL_LINES );
-//	glVertex3f( P1.x, P1.y, P1.z );
-//	glVertex3f( P2.x, P2.y, P2.z );
-//	glEnd();
-//}
 //
 //void SetProjection3D()
 //{

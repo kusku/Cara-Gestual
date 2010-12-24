@@ -37,7 +37,7 @@ Animation::~Animation()
 	delete [] backMovement;
 }
 
-void Animation::SetTime(int transitionTime, float totalTime)
+void Animation::SetTime(float transitionTime, float totalTime)
 {
 	this->transitionTime = transitionTime;
 	this->totalTime = totalTime;

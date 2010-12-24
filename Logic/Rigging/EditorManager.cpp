@@ -64,7 +64,7 @@ void EditorManager::CalculateDelta()
 	numVertex = objecte->GetNumVertexs();
 	for (int i = 0; i < numVertex; i++) {
 		if (this->VertexList[i]) {
-			this->DeltaList[i] = (float) 1/(1 + objecte->GetPoint(i).calcularDistancia(objecte->GetPoint(DominantVertex)));
+			this->DeltaList[i] = (float) 1/(1 + (float)objecte->GetPoint(i).calcularDistancia(objecte->GetPoint(DominantVertex)));
 		}
 	}
 }
@@ -164,9 +164,9 @@ SPoint3D EditorManager::PuntMesProximTriangle(SPoint3D colisio, SPoint3D* triang
 {
 	SPoint3D puntFinal = triangle[0];
 	float distanciaMinima, distanciaActual;
-	distanciaMinima = colisio.calcularDistancia(puntFinal);
+	distanciaMinima = (float)colisio.calcularDistancia(puntFinal);
 	for (int i = 1; i < 3; i++) {
-		distanciaActual = colisio.calcularDistancia(triangle[i]);
+		distanciaActual = (float)colisio.calcularDistancia(triangle[i]);
 		if (distanciaActual < distanciaMinima) {
 			puntFinal = triangle[i];
 			distanciaMinima = distanciaActual;

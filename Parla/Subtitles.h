@@ -5,8 +5,8 @@ class CSubtitles
 {
 private:
 
-	GLfloat red, green, blue, alpha;
-	GLfloat posX, posY;
+	float red, green, blue, alpha;
+	D3DXVECTOR2 position;
 	char* subtitle;
 
 public:
@@ -15,8 +15,8 @@ public:
 	~CSubtitles();
 
 	void		SetColor			( float r, float g, float b, float a );
-	void		SetPosition			( float x, float y );
-	void		SetText				( char* text );
+	void		SetPosition			( D3DXVECTOR2 pos ) { position = pos; };
+	void		SetText				( char* text ) {subtitle = text; };
 
 	void		ParseSubtitles		( void );
 	void		RenderSubtitles		( void );

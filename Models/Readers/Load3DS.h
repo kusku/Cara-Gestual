@@ -16,9 +16,6 @@
 #include <math.h>
 #include <fstream>
 #include <vector>
-#include <gl\gl.h>										// Header File For The OpenGL32 Library
-#include <gl\glu.h>										// Header File For The GLu32 Library
-#include <gl\glaux.h>
 #include <crtdbg.h>
 using namespace std;
 

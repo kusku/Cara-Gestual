@@ -131,8 +131,8 @@ void Actor::ModelDe3DS(char* filename)
 	this->nombreMaterials = o->g_3DModel.numOfMaterials;
 	this->materials = new O3DMaterial[this->nombreMaterials];
 	for (i = 0; i < this->nombreMaterials; i++) {
-		strcpy(this->materials[i].szTexture,o->g_3DModel.pMaterials[i].strFile);
-		strcpy(this->materials[i].szName,o->g_3DModel.pMaterials[i].strName);
+		strcpy_s(this->materials[i].szTexture, MAX_PATH_TEXTURE, o->g_3DModel.pMaterials[i].strFile);
+		strcpy_s(this->materials[i].szName, MAX_NAME_TEXTURE, o->g_3DModel.pMaterials[i].strName);
 		this->materials[i].iTextureID = o->g_Texture[o->g_3DModel.pMaterials[i].texureId];
 	}
 
@@ -392,7 +392,7 @@ void Actor::Render(LPDIRECT3DDEVICE9 Device)
 	Device->SetTexture (0, NULL);
 }
 
-bool Actor::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
+HRESULT Actor::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 {
 	struct CoordsText
 	{
@@ -502,7 +502,7 @@ bool Actor::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 		int y = buscarPunt(cares[i].punts[1]->cordenades);
 		int z = buscarPunt(cares[i].punts[2]->cordenades);
 
-		D3DXVECTOR3 index_face = D3DXVECTOR3(x, y, z);
+		D3DXVECTOR3 index_face = D3DXVECTOR3((float)x, (float)y, (float)z);
 		IndexBufferByMat[material].push_back( index_face );
 		IndexMaterial.push_back( material );
 	}
@@ -520,9 +520,9 @@ bool Actor::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 	{
 		D3DXVECTOR3 index_tFace;
 		
-		index_tFace.x = buscarTex(cares[i].cordTex[0]);
-		index_tFace.y = buscarTex(cares[i].cordTex[1]);
-		index_tFace.z = buscarTex(cares[i].cordTex[2]);
+		index_tFace.x = (float)buscarTex(cares[i].cordTex[0]);
+		index_tFace.y = (float)buscarTex(cares[i].cordTex[1]);
+		index_tFace.z = (float)buscarTex(cares[i].cordTex[2]);
 
 		int mat = IndexMaterial[ i ];
 		CIndexBufferByMat[mat].push_back( index_tFace );
@@ -569,7 +569,7 @@ bool Actor::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 				}
 				else
 				{
-					CVertexIndexOldNew.insert( Pair_IndexOldNew(face_texture[j], contador_tvertices ) );
+					CVertexIndexOldNew.insert( Pair_IndexOldNew((int)face_texture[j], contador_tvertices ) );
 					CVertexBufferByMat[cont_texture].push_back( CVertexBuffer[(int)face_texture[j]] );
 					face_texture[j] = (float)contador_tvertices;
 					contador_tvertices++;
@@ -758,7 +758,7 @@ bool Actor::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 	return true;
 }
 
-bool Actor::LoadVertexsBuffers( LPDIRECT3DDEVICE9 g_pd3dDevice )
+HRESULT Actor::LoadVertexsBuffers( LPDIRECT3DDEVICE9 g_pd3dDevice )
 {
 	VOID *pMesh;
 	//CUSTOMVERTEXTEXTURA textureVertice;

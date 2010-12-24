@@ -8,8 +8,7 @@ CSubtitles::CSubtitles()
 	green = 1.f;
 	blue = 1.f;
 	alpha = 1.f;
-	posX = 100.f;
-	posY = 100.f;
+	position = D3DXVECTOR2(100.0f, 100.0f);
 	subtitle = "Com que no em puc menjar una mandarina, em compro un pressec.";
 }
 
@@ -19,21 +18,10 @@ CSubtitles::~CSubtitles()
 
 void CSubtitles::SetColor(float r, float g, float b, float a)
 {
-	red = (GLfloat) r;
-	green = (GLfloat) g;
-	blue = (GLfloat) b;
-	alpha = (GLfloat) a;
-}
-
-void CSubtitles::SetPosition(float x, float y)
-{
-	posX = (GLfloat) x;
-	posY = (GLfloat) y;
-}
-
-void CSubtitles::SetText (char* text)
-{
-	subtitle = text;
+	red = r;
+	green = g;
+	blue = b;
+	alpha = a;
 }
 
 void CSubtitles::ParseSubtitles()
@@ -48,15 +36,15 @@ void CSubtitles::RenderSubtitles()
 	char* frase = subtitle;
 
 	//SetProjection2D();
-	glColor4f(red,green,blue,alpha); 
-	glPushMatrix();
-		glRasterPos2f(posX,posY);
-		while (*frase)
-		{
-			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *frase); 
-			++frase;
-		}
-		
-	glPopMatrix();
+	//glColor4f(red,green,blue,alpha); 
+	//glPushMatrix();
+	//	glRasterPos2f(posX,posY);
+	//	while (*frase)
+	//	{
+	//		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *frase); 
+	//		++frase;
+	//	}
+	//	
+	//glPopMatrix();
 	//SetProjection3D();
 }

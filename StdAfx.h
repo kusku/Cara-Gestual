@@ -27,12 +27,6 @@
 /*                                INCLUDES                                   */
 /* ------------------------------------------------------------------------- */
 
-// GC2: Llibreries OpenGL
-#include <gl\gl.h>
-#include <gl\glu.h>
-#include <gl\glaux.h>
-#include <gl\glut.h>
-
 //Llibreries DirectX
 #include <d3dx9.h>
 
@@ -51,7 +45,7 @@
 #include <time.h>
 
 // GC2: Constants de l'aplicació Practica
-#include "constants.h"
+#include "defines.h"
 
 #endif // _AFX_NO_AFXCMN_SUPPORT
 

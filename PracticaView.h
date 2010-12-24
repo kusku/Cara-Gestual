@@ -104,13 +104,12 @@ public:
 	D3DXVECTOR3 tr_cpv;      // vector de Traslació del Centre del Punt de Vista (opció pan)
 
 // GC2: Variables de control de l'opció Vista->Navega?
-	GLfloat n[3];   // Punt cap on mira.
-	CPunt3D opv;    // Definició Orígen Punt de Vista (en coordenades món)
+	D3DXVECTOR3 n;   // Punt cap on mira.
+	D3DXVECTOR3 opv;    // Definició Orígen Punt de Vista (en coordenades món)
 	float angleZ;   // angle de rotació de la trajectòria.
 
 // GC2: Variables de control per les opcions de menú Projecció, Objecte
 	char projeccio;	// Menú Projecció: Tipus de projeccio 
-    char objecte;	// Menú Objecte: Tipus d'Objecte
 
 // GC2: Variables de control del menú Transforma
 	bool transf;	// Booleana per activar Transformacions (true) o no (false).
@@ -118,9 +117,9 @@ public:
 	bool rota;		// Booleana d'activació de la Rotació (true) o no (false).
 	bool escal;		// Booleana d'activació de l'Escalatge (true) o no (false).
 	float fact_Tras, fact_Rota;	// Increments de Traslació i Rotació.
-	CPunt3D VTras;				// Vector de Traslació
-	CPunt3D VRota;				// Vector de Rotació
-	CPunt3D VScal;				// Vector d'Escalatge
+	D3DXVECTOR3 VTras;				// Vector de Traslació
+	D3DXVECTOR3 VRota;				// Vector de Rotació
+	D3DXVECTOR3 VScal;				// Vector d'Escalatge
 	bool transX; // Opció Mobil Eix X?: TG interactives per l'eix X via mouse [F:NO,T:SI].
 	bool transY; // Opció Mobil Eix Y?: TG interactives per l'eix Y via mouse [F:NO,T:SI].
 	bool transZ; // Opció Mobil Eix Z?: TG interactives per l'eix Z via mouse [F:NO,T:SI].
@@ -148,10 +147,6 @@ public:
 	int w,h;				// Mides de la finestra Windows (w-amplada,h-alçada)
 	float R,angleh,anglev;	// Paràmetres camera en coord. esfèriques (R,angleh,anglev)
 	char Vis_Polar;			// Variable que controla orientació dels eixos en Visualització Interactiva (POLARZ,POLARY,POLARX)
-
-// GC2: Color de fons
-	bool fonsR,fonsG,fonsB;	// Booleanes per controlar variació de color per teclat.
-	CColor c_fons;			// Intensitat de color de fons.
 
 // GC2: Objecte 3DS:
 	Obj_3DS* Ob3DS;			// Variable d'objecte 3D Studio (*.3DS)
@@ -196,7 +191,6 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-void CPracticaView::Barra_Estat();
 int CPracticaView::Log2(int num);   // Log2: Càlcul del log base 2 de num
 
 protected:

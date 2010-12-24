@@ -11,7 +11,7 @@ class Animation
 private:
 
 	int sizeExpression;
-	int transitionTime;
+	float transitionTime;
 	float totalTime;
 	float divisionTime;
 	int step;
@@ -32,7 +32,7 @@ public:
 	Animation(ExpressionManager* manager, MuscleManager* muscle);
 	~Animation();
 
-	void		SetTime				( int transitionTime, float totalTime );
+	void		SetTime				( float transitionTime, float totalTime );
 	bool		IsActiveAnimation	( void );
 
 	void		StartAnimation		( TypeExpression expression, Actor* obj );

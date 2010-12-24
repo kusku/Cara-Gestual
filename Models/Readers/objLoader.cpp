@@ -45,7 +45,6 @@ const short unsigned int z = 2;
 
 _stdcall COBJModel::COBJModel()
 {
-	//m_iDisplayList = OBJECTEOBJ;
 	Model.info = NULL;
 	Model.pFaces = NULL;
 	Model.pMaterials = NULL;
@@ -430,7 +429,7 @@ bool _stdcall COBJModel::LoadMaterialLib(const char szFileName[],
 			// Store texture filename in the structure
 			strcpy(pMaterials[*iCurMaterialIndex].szTexture, szTextureFile);
 			// Load texture and store its ID in the structure
-			pMaterials[*iCurMaterialIndex].iTextureID = LoadTexture2(szTextureFile);
+			pMaterials[*iCurMaterialIndex].iTextureID = LoadTexture(szTextureFile);
 		}
 
 		// Shininess
@@ -736,7 +735,7 @@ void _stdcall COBJModel::MakePath(char szFileAndPath[])
 	////////////////////////////////////////////////////////////////////////
 	
 	// Get string length
-	int iNumChars = strlen(szFileAndPath);
+	int iNumChars = (int)strlen(szFileAndPath);
 
 	// Loop from the last to the first char
 	for (int iCurChar=iNumChars-1; iCurChar>=0; iCurChar--)
@@ -800,114 +799,31 @@ int COBJModel::LoadTexture(const char szFileName[_MAX_PATH])
 	// Load a texture and return its ID
 	////////////////////////////////////////////////////////////////////////
 
-	unsigned int iTexture = 0;
-	AUX_RGBImageRec *AUXTextureImage[1];
-	memset(AUXTextureImage,0,sizeof(void *)*1);
-
-	// Open the file
-	FILE *hFile = fopen(szFileName,"r");
-
-	// Does file exist ?
-    if (hFile)
-    {
-		// Close the stream
-		fclose(hFile);
-
-		// Load bitmap
-		AUXTextureImage[0] = auxDIBImageLoad(szFileName);
-
-		// Create one texture
-		glGenTextures(1, &iTexture);
-
-		// Make the texture the current one
-		glBindTexture(GL_TEXTURE_2D, iTexture);
-
-		// Texture parameters
-		/*glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);*/
-
-		// Build mip-maps
-		glTexImage2D(GL_TEXTURE_2D, 0, 3, AUXTextureImage[0]->sizeX, AUXTextureImage[0]->sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, AUXTextureImage[0]->data);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-
-		/*gluBuild2DMipmaps(GL_TEXTURE_2D, 3, AUXTextureImage->sizeX, AUXTextureImage->sizeY,
-			GL_RGB, GL_UNSIGNED_BYTE, AUXTextureImage->data);*/
-	}
-	else
-		// Failed
-		return FALSE;
-
-	// Does texture exist ?
-	if (AUXTextureImage[0])
-	{
-		// If texture image exists
-		if (AUXTextureImage[0]->data)
-			// Free the texture image memory
-			free(AUXTextureImage[0]->data);
-		else
-			// Failed
-			return FALSE;
-		
-		// free the image structure
-		free(AUXTextureImage[0]);						
-	}
-	else
-		// Failed
-		return FALSE;
-
-	// Success (return the texture id)
-	
-	return iTexture;
-}
-
-int COBJModel::LoadTexture2(const char szFileName[_MAX_PATH])
-{
-	////////////////////////////////////////////////////////////////////////
-	// Load a texture and return its ID
-	////////////////////////////////////////////////////////////////////////
-
 	FILE *file=NULL;
 	int errno;
 	unsigned int iTexture = 0;
 
 	
-// Open the image file for reading
-// file=fopen(filename,"r");					// Funció Visual Studio 6.0
-   errno=fopen_s(&file,szFileName,"r");			// Funció Visual 2005
-
-// If the file is empty (or non existent) print an error and return false
-// if (file == NULL)
-   if (errno!=0)
- {
-//	printf("Could not open file '%s'.\n",filename) ;
-
-	 return false ;
- }
-
-// Close the image file
- fclose(file);
-
-// ilutGLLoadImage: Funció que llegeix la imatge del fitxer filename
-//				si és compatible amb els formats DevIL/OpenIL (BMP,JPG,GIF,TIF,TGA,etc.)
-//				i defineix la imatge com a textura OpenGL retornant l'identificador 
-//				de textura OpenGL.
-// GetBuffer: Funció de converió d'una variable CString -> char *
-iTexture = ilutGLLoadImage((char *) szFileName);
-
-// If execution arrives here it means that all went well. Return true
- 
+	// Open the image file for reading
+	errno=fopen_s(&file,szFileName,"r");			// Funció Visual 2005
 	
+	// If the file is empty (or non existent) print an error and return false
+	// if (file == NULL)
+	if (errno!=0) 
+		return false ;
+
+	// Close the image file
+	 fclose(file);
+
+	// ilLoadImage: Funció que llegeix la imatge del fitxer filename
+	//				si és compatible amb els formats DevIL/OpenIL (BMP,JPG,GIF,TIF,TGA,etc.)
+	//				i defineix la imatge com a textura retornant l'identificador 
+	//				de textura.
+	// GetBuffer: Funció de converió d'una variable CString -> char *
+	iTexture = ilLoadImage((char *) szFileName);
+
+	// If execution arrives here it means that all went well. Return true
 	return iTexture;
-}
-
-void _stdcall COBJModel::DrawModel()
-{
-	
-		glCallList(m_iDisplayList);
-	
 }
 
   
@@ -921,11 +837,6 @@ OBJLOADER_CLASS_DECL COBJModel* _stdcall InitObject()
 OBJLOADER_CLASS_DECL void _stdcall UnInitObject(COBJModel * obj) 
 {
   delete obj; //Release TMyObject instance
-}
-
-void _stdcall COBJModel::EliminaLlista(unsigned int iDisplayList)
-{
-	glDeleteLists(iDisplayList, 1);
 }
 
 void COBJModel::FreeMemory ( void )

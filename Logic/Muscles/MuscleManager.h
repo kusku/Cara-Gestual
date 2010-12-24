@@ -26,7 +26,6 @@ public:
 	void			moveAMuscle			( TypeMuscle numMuscle, SPoint3D vecDir );
 	void			deleteMuscle		( TypeMuscle numMuscle );
 	void			ClearMuscle			( TypeMuscle numMuscle );
-	void			RenderMuscle		( TypeMuscle numMuscle );
 	void			SetModel			( Actor* ObOBJ );
 
 	Muscle**		getMuscleList		( void );

@@ -74,11 +74,9 @@ struct ModelOBJ
 class OBJLOADER_CLASS_DECL COBJModel  
 {
   public:
-	  void _stdcall DrawModel();
 	  bool _stdcall LoadModel(const char szFileName[],unsigned int iDisplayList);
 	  _stdcall COBJModel();
 	  virtual _stdcall ~COBJModel();
-	  void _stdcall COBJModel::EliminaLlista(unsigned int iDisplayList);
 
 	  // Mètodes nous
 	  void				COBJModel::FreeMemory				( void );
@@ -94,7 +92,6 @@ class OBJLOADER_CLASS_DECL COBJModel
   private:
 	  void _stdcall ReadNextString(char szString[], FILE *hStream);
 	  int _stdcall LoadTexture(const char szFileName[_MAX_PATH]);
-	  int _stdcall LoadTexture2(const char szFileName[_MAX_PATH]);
 	  void _stdcall UseMaterial(const Material *pMaterial);
 	  void _stdcall GetTokenParameter(char szString[], const unsigned int iStrSize, FILE *hFile);
 	  void _stdcall MakePath(char szFileAndPath[]);

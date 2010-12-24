@@ -131,7 +131,7 @@ void Selection::GetLine( SPoint3D &L1, SPoint3D &L2, float mouseX, float mouseY 
 
 	D3DXMatrixIdentity(&WorldMatrix);
 
-	screenPoint = D3DXVECTOR3(mouseX, ViewPortMatrix.Height - mouseY + 1.0, ViewPortMatrix.MinZ);
+	screenPoint = D3DXVECTOR3(mouseX, (float)(ViewPortMatrix.Height - mouseY + 1.0), ViewPortMatrix.MinZ);
 	D3DXVec3Unproject( &result, &screenPoint, &ViewPortMatrix, &ProjectionMatrix, &ViewMatrix, &WorldMatrix );
 	L1 = SPoint3D(result.x,  result.y, result.z);
 
@@ -277,7 +277,7 @@ int Selection::LineSelect (const SPoint3D &LP1, const SPoint3D &LP2 )
 		{
 			if ( HitP.calcularDistancia( LP1 ) < fDistance ) 
 			{
-				fDistance = HitP.calcularDistancia( LP1 );
+				fDistance = (float) HitP.calcularDistancia( LP1 );
 				nSelTri = nTri;
 
 				if (dominantSelect)

@@ -2,6 +2,7 @@
 #define DEFINES_H
 
 #include "stdafx.h"
+#include <math.h>
 
 #define TEXTURES_FOLDER		".\\Data\\Models\\heavytriangles\\maps\\"
 
@@ -44,5 +45,18 @@ struct VERTEX_TEXTURED
 
 #define DEG2RAD(x) x*D3DX_PI/180.0f
 #define RAD2DEG(x) x*180.0f/D3DX_PI
+
+//--------------- GC2: Tipus de Projecció
+#define CAP ' '
+#define ORTO 'O'
+#define PERSPECT 'P'
+
+//--------------- GC2: Tipus de Polars (per la Visualització Interactiva)
+#define POLARZ 'Z'
+#define POLARY 'Y'
+#define POLARX 'X'
+
+#define MAX_PATH_TEXTURE 260
+#define MAX_NAME_TEXTURE 1024
 
 #endif

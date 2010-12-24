@@ -36,7 +36,7 @@ public:
 	vector<struct nomfitxer> fitxerstextures;
 
 // Array de textures dels materials
-	GLuint g_Texture[MAX_TEXTURES];
+	int g_Texture[MAX_TEXTURES];
 	
 	// Model carregat de 3DStudio
 	t3DModel g_3DModel;

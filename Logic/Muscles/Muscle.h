@@ -24,7 +24,6 @@ public:
 	int				alterDelta		( unsigned int vertex, float newDelta );
 	int				deleteVertex	( unsigned int vertex );
 	void			ClearMuscle		( void );
-	void			RenderMuscle	( Actor* obj3D );
 
 	unsigned int*	getVertexIndex	( void );
 	float*			getVertexDelta	( void );
