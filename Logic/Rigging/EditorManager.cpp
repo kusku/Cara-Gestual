@@ -2,8 +2,8 @@
 #include "EditorManager.h"
 #include "../Muscles/MuscleManager.h"
 #include "../Expressions/ExpressionManager.h"
-#include "../../SPoint3D.h"
 #include "../../Models/Actor/Actor.h"
+#include "intersection.h"
 
 EditorManager::EditorManager(MuscleManager* MMan, ExpressionManager* EMan, Actor* objecte)
 {
@@ -28,7 +28,7 @@ EditorManager::~EditorManager()
 }
 
 //Afegeix un vèrtex al muscle definit
-void EditorManager::AddVertex(SPoint3D vertex)
+void EditorManager::AddVertex(D3DXVECTOR3 vertex)
 {
 	int v = this->objecte->buscarPunt(vertex);
 	if(!this->VertexList[v]) {
@@ -39,12 +39,12 @@ void EditorManager::AddVertex(SPoint3D vertex)
 	}
 }
 
-SPoint3D* EditorManager::GetPointList(int* tamany, int* dominant)
+D3DXVECTOR3* EditorManager::GetPointList(int* tamany, int* dominant)
 {
 	*tamany = this->CurrentVertex;
 	int i = -1, nVertex;
 	nVertex = *tamany;
-	SPoint3D *llista = new SPoint3D[*tamany];
+	D3DXVECTOR3 *llista = new D3DXVECTOR3[*tamany];
 	while (nVertex) {
 		if(this->VertexList[++i]) {
 			if (i == this->DominantVertex) {
@@ -64,13 +64,13 @@ void EditorManager::CalculateDelta()
 	numVertex = objecte->GetNumVertexs();
 	for (int i = 0; i < numVertex; i++) {
 		if (this->VertexList[i]) {
-			this->DeltaList[i] = (float) 1/(1 + (float)objecte->GetPoint(i).calcularDistancia(objecte->GetPoint(DominantVertex)));
+			this->DeltaList[i] = (float) 1/(1 + (float)Distance(objecte->GetPoint(i),objecte->GetPoint(DominantVertex)));
 		}
 	}
 }
 
 //Elimina un vèrtex del muscle definit
-void EditorManager::DeleteVertex(SPoint3D vertex)
+void EditorManager::DeleteVertex(D3DXVECTOR3 vertex)
 {
 	int v = objecte->buscarPunt(vertex);
 	if(this->VertexList[v]) {
@@ -82,21 +82,21 @@ void EditorManager::DeleteVertex(SPoint3D vertex)
 }
 
 //Defineix el moviment del muscle per a una expressió
-void EditorManager::DefineMovement(TypeExpression expression, TypeMuscle muscle, SPoint3D desplaçament)
+void EditorManager::DefineMovement(TypeExpression expression, TypeMuscle muscle, D3DXVECTOR3 desplaçament)
 {
 	EManager->modifyMuscleExpression(expression,muscle,desplaçament);
 }
 
-void EditorManager::AddVertexFromTriangle(SPoint3D colisio, SPoint3D* triangle)
+void EditorManager::AddVertexFromTriangle(D3DXVECTOR3 colisio, D3DXVECTOR3* triangle)
 {
-	SPoint3D puntFinal;
+	D3DXVECTOR3 puntFinal;
 	puntFinal = this->PuntMesProximTriangle(colisio,triangle);
 	this->AddVertex(puntFinal);
 }
 
-void EditorManager::DeleteVertexFromTriangle(SPoint3D colisio, SPoint3D* triangle)
+void EditorManager::DeleteVertexFromTriangle(D3DXVECTOR3 colisio, D3DXVECTOR3* triangle)
 {
-	SPoint3D puntFinal;
+	D3DXVECTOR3 puntFinal;
 	puntFinal = this->PuntMesProximTriangle(colisio,triangle);
 	this->DeleteVertex(puntFinal);
 }
@@ -160,13 +160,13 @@ void EditorManager::SaveMuscle()
 	}
 }
 
-SPoint3D EditorManager::PuntMesProximTriangle(SPoint3D colisio, SPoint3D* triangle)
+D3DXVECTOR3 EditorManager::PuntMesProximTriangle(D3DXVECTOR3 colisio, D3DXVECTOR3* triangle)
 {
-	SPoint3D puntFinal = triangle[0];
+	D3DXVECTOR3 puntFinal = triangle[0];
 	float distanciaMinima, distanciaActual;
-	distanciaMinima = (float)colisio.calcularDistancia(puntFinal);
+	distanciaMinima = (float)Distance(colisio, puntFinal);
 	for (int i = 1; i < 3; i++) {
-		distanciaActual = (float)colisio.calcularDistancia(triangle[i]);
+		distanciaActual = (float)Distance(colisio, triangle[i]);
 		if (distanciaActual < distanciaMinima) {
 			puntFinal = triangle[i];
 			distanciaMinima = distanciaActual;
@@ -174,15 +174,15 @@ SPoint3D EditorManager::PuntMesProximTriangle(SPoint3D colisio, SPoint3D* triang
 	}
 	return puntFinal;
 }
-void EditorManager::SetDominantVertex( SPoint3D colisio, SPoint3D* triangle )
+void EditorManager::SetDominantVertex( D3DXVECTOR3 colisio, D3DXVECTOR3* triangle )
 {
-	SPoint3D puntFinal;
+	D3DXVECTOR3 puntFinal;
 
 	puntFinal = this->PuntMesProximTriangle(colisio,triangle);
 	this->AddVertex(puntFinal);
 	DominantVertex = objecte->buscarPunt(puntFinal);
 }
-SPoint3D EditorManager::GetDominantVertex( void )
+D3DXVECTOR3 EditorManager::GetDominantVertex( void )
 {
 	return objecte->GetPoint(DominantVertex);
 }

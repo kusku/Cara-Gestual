@@ -3,7 +3,6 @@
 
 #include "../Logic/Expressions/ExpressionManager.h"
 #include "../Logic/Muscles/MuscleManager.h"
-#include "../SPoint3D.h"
 #include "../Models/Actor/Actor.h"
 
 class Animation
@@ -19,10 +18,10 @@ private:
 
 	TypeExpression expression;
 
-	SPoint3D* totalMovement;
-	SPoint3D* partialMovement;
-	SPoint3D* portionMovement;
-	SPoint3D* backMovement;
+	D3DXVECTOR3* totalMovement;
+	D3DXVECTOR3* partialMovement;
+	D3DXVECTOR3* portionMovement;
+	D3DXVECTOR3* backMovement;
 
 	ExpressionManager* EManager;
 	MuscleManager* MManager;

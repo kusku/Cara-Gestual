@@ -1,7 +1,6 @@
 #ifndef MUSCLEMANAGER_H
 #define MUSCLEMANAGER_H
 
-#include "../../SPoint3D.h"
 #include "../../Models/Actor/Actor.h"
 #include "Muscle.h"
 
@@ -23,7 +22,7 @@ public:
 	~MuscleManager();
 
 	void			addVertexMuscle		( TypeMuscle numMuscle, unsigned int vertex, float delta );
-	void			moveAMuscle			( TypeMuscle numMuscle, SPoint3D vecDir );
+	void			moveAMuscle			( TypeMuscle numMuscle, D3DXVECTOR3 vecDir );
 	void			deleteMuscle		( TypeMuscle numMuscle );
 	void			ClearMuscle			( TypeMuscle numMuscle );
 	void			SetModel			( Actor* ObOBJ );

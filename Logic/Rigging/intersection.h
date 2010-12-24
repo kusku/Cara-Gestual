@@ -1,8 +1,7 @@
-#include "../../SPoint3D.h"
-
-bool CheckLineBox( SPoint3D L1, SPoint3D L2, SPoint3D B1, SPoint3D B2, SPoint3D &HitP );
-bool CheckLineTri( const SPoint3D &L1, const SPoint3D &L2, const SPoint3D &PV1, const SPoint3D &PV2, const SPoint3D &PV3, SPoint3D &HitP );
-bool PointInFrustum( const SPoint3D &P, SPoint3D Normals[4], SPoint3D Points[8] );
-bool TriInFrustum( SPoint3D vTri[3], SPoint3D Normals[4], SPoint3D Points[8] );
-bool LineInFrustum( const SPoint3D &LP1, const SPoint3D &LP2, SPoint3D Normals[4], SPoint3D Points[8] );
-bool CheckLinePlane(const SPoint3D& planeN, const SPoint3D& planePoint, const SPoint3D& LP1, const SPoint3D& LP2, SPoint3D& HitP);
+bool CheckLineBox( D3DXVECTOR3 L1, D3DXVECTOR3 L2, D3DXVECTOR3 B1, D3DXVECTOR3 B2, D3DXVECTOR3 &HitP );
+bool CheckLineTri( const D3DXVECTOR3 &L1, const D3DXVECTOR3 &L2, const D3DXVECTOR3 &PV1, const D3DXVECTOR3 &PV2, const D3DXVECTOR3 &PV3, D3DXVECTOR3 &HitP );
+bool PointInFrustum( const D3DXVECTOR3 &P, D3DXVECTOR3 Normals[4], D3DXVECTOR3 Points[8] );
+bool TriInFrustum( D3DXVECTOR3 vTri[3], D3DXVECTOR3 Normals[4], D3DXVECTOR3 Points[8] );
+bool LineInFrustum( const D3DXVECTOR3 &LP1, const D3DXVECTOR3 &LP2, D3DXVECTOR3 Normals[4], D3DXVECTOR3 Points[8] );
+bool CheckLinePlane(const D3DXVECTOR3& planeN, const D3DXVECTOR3& planePoint, const D3DXVECTOR3& LP1, const D3DXVECTOR3& LP2, D3DXVECTOR3& HitP);
+double Distance(const D3DXVECTOR3 L1,const D3DXVECTOR3 L2 );

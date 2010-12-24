@@ -1,12 +1,11 @@
 #include "../../stdafx.h"
 #include "Expression.h"
 #include "../Muscles/MuscleManager.h"
-#include "../../SPoint3D.h"
 
 Expression::Expression(MuscleManager* MMan)
 {
 	MManager = MMan;
-	movements = (SPoint3D*) malloc (MManager->getNumMuscles()*sizeof(SPoint3D));
+	movements = (D3DXVECTOR3*) malloc (MManager->getNumMuscles()*sizeof(D3DXVECTOR3));
 	resetMuscles();
 }
 
@@ -16,12 +15,12 @@ Expression::~Expression()
 	MManager = NULL;
 }
 
-void Expression::modifyMuscle( TypeMuscle muscle, SPoint3D movement )
+void Expression::modifyMuscle( TypeMuscle muscle, D3DXVECTOR3 movement )
 {
 	movements[muscle] = movement;
 }
 
-SPoint3D Expression::getMovement( TypeMuscle muscle )
+D3DXVECTOR3 Expression::getMovement( TypeMuscle muscle )
 {
 	return movements[muscle];
 }
@@ -30,7 +29,7 @@ void Expression::resetMuscles( void )
 {
 	for (int i=0; i<MManager->getNumMuscles(); ++i)
 	{
-		movements[i] = SPoint3D(0.f,0.f,0.f);
+		movements[i] = D3DXVECTOR3(0.f,0.f,0.f);
 	}
 }
 
@@ -42,7 +41,7 @@ void Expression::RenderExpression( void )
 	}
 }
 
-void Expression::ExternalRender(SPoint3D* newNovements)
+void Expression::ExternalRender(D3DXVECTOR3* newNovements)
 {
 	for (int i=0; i<MManager->getNumMuscles(); ++i)
 	{

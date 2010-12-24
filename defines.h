@@ -40,6 +40,17 @@ struct VERTEX_TEXTURED
 	}
 };
 
+struct D3DXVECTOR3_LessThan
+{
+	bool operator()(D3DXVECTOR3 lhs, D3DXVECTOR3 rhs) const
+	{
+		return lhs.x < rhs.x ||
+		(lhs.x==rhs.x && lhs.y<rhs.y) ||
+		(lhs.x==rhs.x && lhs.y==rhs.y && lhs.z<rhs.z);
+	}
+};
+
+
 #define CHECKED_DELETE(x) if(x!=NULL) {delete x; x=NULL;}
 #define CHECKED_RELEASE(x) if(x!=NULL) {x->Release(); x=NULL;}
 

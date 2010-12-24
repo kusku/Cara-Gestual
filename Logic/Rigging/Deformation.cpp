@@ -4,7 +4,6 @@
 #include "../../Models/Actor/Actor.h"
 #include "../Expressions/ExpressionManager.h"
 #include "../Muscles/MuscleManager.h"
-#include "../../SPoint3D.h"
 
 
 Deformation::Deformation( ExpressionManager* manager, Actor* obj, EditorManager *editor )
@@ -22,20 +21,20 @@ Deformation::~Deformation()
 	this->editorM = NULL;
 }
 
-void Deformation::ButtonDown(float mouseX, float mouseY, SPoint3D opv)
+void Deformation::ButtonDown(float mouseX, float mouseY, D3DXVECTOR3 opv)
 {
-	SPoint3D LP1, LP2;
+	D3DXVECTOR3 LP1, LP2;
 
 	if (ObOBJ != NULL)
 	{
 		GetLine(LP1, LP2, mouseX, mouseY);
 
-		SPoint3D dominant = editorM->GetDominantVertex();
+		D3DXVECTOR3 dominant = editorM->GetDominantVertex();
 
 		normalPla = opv;
-		normalPla.normalizeVector();
+		D3DXVec3Normalize(&normalPla,&normalPla);
 
-		SPoint3D HitP(0.0f, 0.0f,0.0f);
+		D3DXVECTOR3 HitP(0.0f, 0.0f,0.0f);
 		bool coll = CheckLinePlane(normalPla, dominant, LP1, LP2, HitP);
 		if (coll)
 		{
@@ -49,9 +48,9 @@ void Deformation::ButtonDown(float mouseX, float mouseY, SPoint3D opv)
 
 void Deformation::ButtonMove(float mouseX, float mouseY)
 {
-	SPoint3D LP1, LP2;
-	SPoint3D HitP(0.0f, 0.0f,0.0f);
-	SPoint3D dominant = editorM->GetDominantVertex();
+	D3DXVECTOR3 LP1, LP2;
+	D3DXVECTOR3 HitP(0.0f, 0.0f,0.0f);
+	D3DXVECTOR3 dominant = editorM->GetDominantVertex();
 
 	GetLine(LP1, LP2, mouseX, mouseY);
 
@@ -70,7 +69,7 @@ void Deformation::ButtonUp()
 	EManager->RenderExpression(expression, ObOBJ);
 }
 
-void Deformation::GetLine( SPoint3D &L1, SPoint3D &L2, float mouseX, float mouseY )
+void Deformation::GetLine( D3DXVECTOR3 &L1, D3DXVECTOR3 &L2, float mouseX, float mouseY )
 {
 	D3DVIEWPORT9 ViewPortMatrix;
 	D3DXMATRIX ViewMatrix;
@@ -89,11 +88,11 @@ void Deformation::GetLine( SPoint3D &L1, SPoint3D &L2, float mouseX, float mouse
 
 	screenPoint = D3DXVECTOR3(mouseX, ViewPortMatrix.Height - mouseY + 1.0, ViewPortMatrix.MinZ);
 	D3DXVec3Unproject( &result, &screenPoint, &ViewPortMatrix, &ProjectionMatrix, &ViewMatrix, &WorldMatrix );
-	L1 = SPoint3D(result.x,  result.y, result.z);
+	L1 = D3DXVECTOR3(result.x,  result.y, result.z);
 
 	screenPoint = D3DXVECTOR3(mouseX, mouseY, ViewPortMatrix.MaxZ);
 	D3DXVec3Unproject( &result, &screenPoint, &ViewPortMatrix, &ProjectionMatrix, &ViewMatrix, &WorldMatrix );
-	L2 = SPoint3D(result.x, result.y, result.z);
+	L2 = D3DXVECTOR3(result.x, result.y, result.z);
 
 	//double* mvmatrix;
 	//double* projmatrix;
@@ -108,9 +107,9 @@ void Deformation::GetLine( SPoint3D &L1, SPoint3D &L2, float mouseX, float mouse
 	//// OpenGL renders with (0,0) on bottom, mouse reports with (0,0) on top
 
 	//gluUnProject ((double) mouseX, dClickY, 0.0, mvmatrix, projmatrix, Viewport, &dX, &dY, &dZ);
-	//L1 = SPoint3D( (float) dX, (float) dY, (float) dZ );
+	//L1 = D3DXVECTOR3( (float) dX, (float) dY, (float) dZ );
 	//gluUnProject ((double) mouseX, dClickY, 1.0, mvmatrix, projmatrix, Viewport, &dX, &dY, &dZ);
-	//L2 = SPoint3D( (float) dX, (float) dY, (float) dZ );
+	//L2 = D3DXVECTOR3( (float) dX, (float) dY, (float) dZ );
 }
 void Deformation::SetMuscle( TypeMuscle muscle )
 {

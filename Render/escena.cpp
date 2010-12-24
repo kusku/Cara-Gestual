@@ -11,12 +11,11 @@
 #include "../Logic/Rigging/Selection.h"
 #include "../Models/Actor/Actor.h"
 #include "../Logic/Muscles/MuscleManager.h"
-#include "../SPoint3D.h"
 
 void renderSphereSelection (LPDIRECT3DDEVICE9 Device, CDirectX* DX, EditorManager* EdManager, TypeMuscle muscle)
 {
 	int tamany, dominant;
-	SPoint3D* llista;
+	D3DXVECTOR3* llista;
 
 	if (EdManager != NULL && muscle != NONE_MUSCLE)
 	{
@@ -59,10 +58,10 @@ void renderSphereSelection (LPDIRECT3DDEVICE9 Device, CDirectX* DX, EditorManage
 //}
 //void WireRect( float x1, float y1, float x2, float y2 )
 //{
-//    DrawLine( SPoint3D(x1,y1,0), SPoint3D(x2,y1,0) );
-//    DrawLine( SPoint3D(x2,y1,0), SPoint3D(x2,y2,0) );
-//    DrawLine( SPoint3D(x1,y2,0), SPoint3D(x2,y2,0) );
-//    DrawLine( SPoint3D(x1,y1,0), SPoint3D(x1,y2,0) );
+//    DrawLine( D3DXVECTOR3(x1,y1,0), D3DXVECTOR3(x2,y1,0) );
+//    DrawLine( D3DXVECTOR3(x2,y1,0), D3DXVECTOR3(x2,y2,0) );
+//    DrawLine( D3DXVECTOR3(x1,y2,0), D3DXVECTOR3(x2,y2,0) );
+//    DrawLine( D3DXVECTOR3(x1,y1,0), D3DXVECTOR3(x1,y2,0) );
 //}
 //
 //

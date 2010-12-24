@@ -148,7 +148,7 @@ void XMLReader::GuardarNums() {
 		i++;
 	}
 
-	punt = SPoint3D(convertit[0], convertit[1], convertit[2]);
+	punt = D3DXVECTOR3(convertit[0], convertit[1], convertit[2]);
 }
 
 void XMLReader::ReadChar()

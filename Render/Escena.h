@@ -7,7 +7,6 @@
 #ifndef ESCENA_H
 #define ESCENA_H
 
-#include "../SPoint3D.h"
 #include "../Logic/Rigging/Selection.h"
 #include "../Models/Actor/Actor.h"
 #include "../Logic/Muscles/MuscleManager.h"

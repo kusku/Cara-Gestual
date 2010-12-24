@@ -16,16 +16,16 @@ Animation::Animation(ExpressionManager* manager, MuscleManager* muscle)
 	MManager = muscle;
 	
 	sizeExpression = MManager->getNumMuscles();
-	totalMovement = new SPoint3D [sizeExpression];
-	partialMovement = new SPoint3D [sizeExpression];
-	portionMovement = new SPoint3D[sizeExpression];
-	backMovement = new SPoint3D[sizeExpression];
+	totalMovement = new D3DXVECTOR3 [sizeExpression];
+	partialMovement = new D3DXVECTOR3 [sizeExpression];
+	portionMovement = new D3DXVECTOR3[sizeExpression];
+	backMovement = new D3DXVECTOR3[sizeExpression];
 
 	for (int i=0; i<sizeExpression; ++i)
 	{
-		totalMovement[i] = SPoint3D(0.0f, 0.0f, 0.0f);
-		partialMovement[i] = SPoint3D(0.0f, 0.0f, 0.0f);
-		backMovement[i] = SPoint3D(0.0f, 0.0f, 0.0f);
+		totalMovement[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		partialMovement[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		backMovement[i] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	}
 }
 
@@ -93,7 +93,7 @@ bool Animation::IsActiveAnimation( void )
 
 void Animation::Render(Actor* obj)
 {
-	SPoint3D* actualMovement = new SPoint3D [sizeExpression];
+	D3DXVECTOR3* actualMovement = new D3DXVECTOR3 [sizeExpression];
 
 	for (int i=0; i<sizeExpression; ++i)
 	{

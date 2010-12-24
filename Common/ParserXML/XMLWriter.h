@@ -2,7 +2,6 @@
 #define XMLWRITER_H
 #include "../../Logic/Expressions/ExpressionManager.h"
 #include "../../Logic/Muscles/MuscleManager.h"
-#include "../../SPoint3D.h"
 #include <stdio.h>
 #include <stdlib.h> 
 #include <windows.h>

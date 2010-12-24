@@ -3,7 +3,6 @@
 
 #include "Expression.h"
 #include "../Muscles/MuscleManager.h"
-#include "../../SPoint3D.h"
 #include "../../Models/Actor/Actor.h"
 
 #define NEXPRESSIONS 12
@@ -30,11 +29,11 @@ public:
 	void			resetExpression			( TypeExpression nameExpression );
 
 	//Modifica el moviment d'un muscle que pertany a una expressió concreta
-	void			modifyMuscleExpression	( TypeExpression nameExpression, TypeMuscle nameMuscle, SPoint3D movement );
+	void			modifyMuscleExpression	( TypeExpression nameExpression, TypeMuscle nameMuscle, D3DXVECTOR3 movement );
 	
 	// Mou els muscles de l'expressió desitjada
 	void			RenderExpression		( TypeExpression nameExpression, Actor* obj );
-	void			ExternalRender			( TypeExpression nameExpression, SPoint3D* newMovements, Actor* obj);
+	void			ExternalRender			( TypeExpression nameExpression, D3DXVECTOR3* newMovements, Actor* obj);
 
 	Expression**	getExpressionList		( void );
 	int				getNumExpressions		( void );

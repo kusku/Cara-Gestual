@@ -3,7 +3,6 @@
 #include "../../Logic/Expressions/ExpressionManager.h"
 #include "../../Logic/Muscles/MuscleManager.h"
 #include "../../Logic/Rigging/EditorManager.h"
-#include "../../SPoint3D.h"
 #include <stdio.h>
 #include <stdlib.h> 
 #include <windows.h>
@@ -16,7 +15,7 @@ public:
 	void	Read();
 
 private:
-	SPoint3D			punt;
+	D3DXVECTOR3			punt;
 	ExpressionManager*	EManager;
 	MuscleManager*		MManager;
 	EditorManager*		EditorM;

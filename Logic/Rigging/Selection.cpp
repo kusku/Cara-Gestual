@@ -1,6 +1,5 @@
 #include "../../stdafx.h"
 #include "Selection.h"
-#include "../../SPoint3D.h"
 #include "../../matrix.h"
 #include "../../Models/Actor/Actor.h"
 #include "EditorManager.h"
@@ -93,8 +92,8 @@ void Selection::ButtonUp( void )
 	
 	if (ObOBJ != NULL)
 	{
-		SPoint3D P[8];
-		SPoint3D Normals[6];
+		D3DXVECTOR3 P[8];
+		D3DXVECTOR3 Normals[6];
 		GetFrustum(Normals,P);
 		FrustumSelect(Normals, P);
 		//Cridar als m�todes de EditorManager per tal d'afegir els v�rtexs all�
@@ -114,7 +113,7 @@ void Selection::ButtonRDown( float mouseX, float mouseY )
 }
 
 //Obté una línia en el món virtual a partir d'unes coordenades de pantalla fetes amb el ratolí
-void Selection::GetLine( SPoint3D &L1, SPoint3D &L2, float mouseX, float mouseY )
+void Selection::GetLine( D3DXVECTOR3 &L1, D3DXVECTOR3 &L2, float mouseX, float mouseY )
 {
 	D3DVIEWPORT9 ViewPortMatrix;
 	D3DXMATRIX ViewMatrix;
@@ -133,25 +132,26 @@ void Selection::GetLine( SPoint3D &L1, SPoint3D &L2, float mouseX, float mouseY 
 
 	screenPoint = D3DXVECTOR3(mouseX, (float)(ViewPortMatrix.Height - mouseY + 1.0), ViewPortMatrix.MinZ);
 	D3DXVec3Unproject( &result, &screenPoint, &ViewPortMatrix, &ProjectionMatrix, &ViewMatrix, &WorldMatrix );
-	L1 = SPoint3D(result.x,  result.y, result.z);
+	L1 = D3DXVECTOR3(result.x,  result.y, result.z);
 
 	screenPoint = D3DXVECTOR3(mouseX, mouseY, ViewPortMatrix.MaxZ);
 	D3DXVec3Unproject( &result, &screenPoint, &ViewPortMatrix, &ProjectionMatrix, &ViewMatrix, &WorldMatrix );
-	L2 = SPoint3D(result.x, result.y, result.z);
+	L2 = D3DXVECTOR3(result.x, result.y, result.z);
 }
 
-void Selection::GetFrustum( SPoint3D Normals[4], SPoint3D P[8])
+void Selection::GetFrustum( D3DXVECTOR3 Normals[4], D3DXVECTOR3 P[8])
 {
 	GetLine( P[0], P[1], nStartX, nStartY );
 	GetLine( P[2], P[3], nStartX, nEndY );
 	GetLine( P[4], P[5], nEndX, nEndY );
 	GetLine( P[6], P[7], nEndX, nStartY );
-	Normals[0] = (P[0]-P[1]).CrossProduct( P[2]-P[3] );
-	Normals[1] = (P[2]-P[3]).CrossProduct( P[4]-P[5] );
-	Normals[2] = (P[4]-P[5]).CrossProduct( P[6]-P[7] );
-	Normals[3] = (P[6]-P[7]).CrossProduct( P[0]-P[1] );
+	D3DXVec3Cross(&Normals[0], &(P[0]-P[1]), &(P[2]-P[3]));
+	D3DXVec3Cross(&Normals[1], &(P[2]-P[3]), &(P[4]-P[5]));
+	D3DXVec3Cross(&Normals[2], &(P[4]-P[5]), &(P[6]-P[7]));
+	D3DXVec3Cross(&Normals[3], &(P[6]-P[7]), &(P[0]-P[1]));
+
 	for (int i = 0; i < 4; i++) 
-		Normals[i].normalizeVector();
+		D3DXVec3Normalize(&Normals[i], &Normals[i]);
 }
 
 
@@ -220,10 +220,10 @@ void Selection::SelectTriangle	( int nTri )
 	}
 }
 
-int Selection::FrustumSelect ( SPoint3D Normals[4], SPoint3D Points[8] )
+int Selection::FrustumSelect ( D3DXVECTOR3 Normals[4], D3DXVECTOR3 Points[8] )
 {
 	int nbHits = 0;
-	SPoint3D Tri[3];
+	D3DXVECTOR3 Tri[3];
 
 	for (int nTri = 0; nTri < ObOBJ->GetNumTriangles(); ++nTri )
 	{	
@@ -256,9 +256,9 @@ int Selection::FrustumSelect ( SPoint3D Normals[4], SPoint3D Points[8] )
 	return nbHits;
 }
 
-int Selection::LineSelect (const SPoint3D &LP1, const SPoint3D &LP2 )
+int Selection::LineSelect (const D3DXVECTOR3 &LP1, const D3DXVECTOR3 &LP2 )
 {
-	SPoint3D HitP, pFace[3];
+	D3DXVECTOR3 HitP, pFace[3];
 	int nbHits = 0;
 	int nSelTri = -1;
 	float fDistance = 1000000000.0f;
@@ -275,9 +275,9 @@ int Selection::LineSelect (const SPoint3D &LP1, const SPoint3D &LP2 )
 		bool bHit = CheckLineTri( LP2, LP1, pFace[0], pFace[1], pFace[2], HitP );
 		if ( bHit ) 
 		{
-			if ( HitP.calcularDistancia( LP1 ) < fDistance ) 
+			if ( Distance(HitP, LP1) < fDistance ) 
 			{
-				fDistance = (float) HitP.calcularDistancia( LP1 );
+				fDistance = (float) Distance(HitP, LP1 );
 				nSelTri = nTri;
 
 				if (dominantSelect)
@@ -300,14 +300,15 @@ int Selection::LineSelect (const SPoint3D &LP1, const SPoint3D &LP2 )
 	
 	return nbHits;
 }
-void Selection::SetZBufferTriangles( SPoint3D camera )
+void Selection::SetZBufferTriangles( D3DXVECTOR3 camera )
 {
-	SPoint3D coords[3];
+	D3DXVECTOR3 coords[3];
 
 	for (int nTri = 0; nTri < ObOBJ->GetNumTriangles(); nTri++ )
 	{
 		ObOBJ->GetTriangle(nTri, coords);
-		if ( ObOBJ->GetNormalsFace(nTri).Dot( camera - coords[0] ) < 0 ) 
+
+		if ( D3DXVec3Dot(&ObOBJ->GetNormalsFace(nTri), &(camera - coords[0])) < 0 ) 
 			m_pTriBackFacing[ nTri ] = TF_BACKFACING;
 		else
 			m_pTriBackFacing[ nTri ] = NTF_BACKFACING;

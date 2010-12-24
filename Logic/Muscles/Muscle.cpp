@@ -1,7 +1,6 @@
 #include "../../stdafx.h"
 #include "Muscle.h"
 #include "../../Models/Actor/Actor.h"
-#include "../../SPoint3D.h"
 
 Muscle::Muscle()
 {
@@ -78,7 +77,7 @@ int Muscle::deleteVertex(unsigned int vertex)
 		return -1;
 	}
 }
-void Muscle::moveMuscle(Actor* obj3D, SPoint3D vecDir)
+void Muscle::moveMuscle(Actor* obj3D, D3DXVECTOR3 vecDir)
 {
 	unsigned short i;
 	for(i=0; i<size; i++)

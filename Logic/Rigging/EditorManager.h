@@ -1,7 +1,6 @@
 #ifndef EDITOR_H
 #define EDITOR_H
 
-#include "../../SPoint3D.h"
 #include "../Muscles/MuscleManager.h"
 #include "../Expressions/ExpressionManager.h"
 
@@ -19,7 +18,7 @@ private:
 	Actor*			objecte;
 
 	void		CalculateDelta			( );
-	SPoint3D	PuntMesProximTriangle	( SPoint3D colisio, SPoint3D* triangle );
+	D3DXVECTOR3	PuntMesProximTriangle	( D3DXVECTOR3 colisio, D3DXVECTOR3* triangle );
 
 public:
 
@@ -28,19 +27,19 @@ public:
 	
 	// Roger
 	// Metodes relacionats amb els muscles
-	void		AddVertex				( SPoint3D vertex );
-	void		DeleteVertex			( SPoint3D vertex );
+	void		AddVertex				( D3DXVECTOR3 vertex );
+	void		DeleteVertex			( D3DXVECTOR3 vertex );
 	void		SetMuscle				( TypeMuscle m );
 	void		SaveMuscle				( void );
-	void		AddVertexFromTriangle	( SPoint3D colisio, SPoint3D* triangle );
-	void		DeleteVertexFromTriangle( SPoint3D colisio, SPoint3D* triangle );
-	void		SetDominantVertex		( SPoint3D colisio, SPoint3D* triangle );
+	void		AddVertexFromTriangle	( D3DXVECTOR3 colisio, D3DXVECTOR3* triangle );
+	void		DeleteVertexFromTriangle( D3DXVECTOR3 colisio, D3DXVECTOR3* triangle );
+	void		SetDominantVertex		( D3DXVECTOR3 colisio, D3DXVECTOR3* triangle );
 	void		ClearVertexs			( void );
-	SPoint3D*	GetPointList			( int* tamany, int* dominant );
-	SPoint3D	GetDominantVertex		( void );
+	D3DXVECTOR3*	GetPointList			( int* tamany, int* dominant );
+	D3DXVECTOR3	GetDominantVertex		( void );
 
 	// Metodes relacionats amb les expresions
-	void		DefineMovement	( TypeExpression expression, TypeMuscle muscle, SPoint3D desplaçament );
+	void		DefineMovement	( TypeExpression expression, TypeMuscle muscle, D3DXVECTOR3 desplaçament );
 };
 
 #endif

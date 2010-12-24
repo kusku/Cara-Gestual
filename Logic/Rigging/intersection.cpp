@@ -5,21 +5,20 @@
 // http://www.3dkingdoms.com/weekly
 //
 #include "../../stdafx.h"
-#include "../../SPoint3D.h"
 #include <math.h>
 
 #define SMALL_NUM  0.00000001
 //
 // CheckLineBox Helper Functions
 //
-bool inline GetIntersection( float fDst1, float fDst2, SPoint3D P1, SPoint3D P2, SPoint3D &Hit) {
+bool inline GetIntersection( float fDst1, float fDst2, D3DXVECTOR3 P1, D3DXVECTOR3 P2, D3DXVECTOR3 &Hit) {
 if ( (fDst1 * fDst2) >= 0.0f) return false;
 if ( fDst1 == fDst2) return false;
 Hit = P1 + (P2-P1) * ( -fDst1/(fDst2-fDst1) );
 return true;
 }
 
-bool inline InBox( SPoint3D Hit, SPoint3D B1, SPoint3D B2, const int Axis ) {
+bool inline InBox( D3DXVECTOR3 Hit, D3DXVECTOR3 B1, D3DXVECTOR3 B2, const int Axis ) {
 if ( Axis == 1 && Hit.z > B1.z && Hit.z < B2.z && Hit.y > B1.y && Hit.y < B2.y) return true;
 if ( Axis == 2 && Hit.z > B1.z && Hit.z < B2.z && Hit.x > B1.x && Hit.x < B2.x) return true;
 if ( Axis == 3 && Hit.x > B1.x && Hit.x < B2.x && Hit.y > B1.y && Hit.y < B2.y) return true;
@@ -30,7 +29,7 @@ return false;
 //  returns true if line (L1, L2) intersects with axis-aligned box (B1, B2) 
 //  The point of intersection is returned in HitP
 //
-bool CheckLineBox( SPoint3D L1, SPoint3D L2, SPoint3D B1, SPoint3D B2, SPoint3D &HitP )
+bool CheckLineBox( D3DXVECTOR3 L1, D3DXVECTOR3 L2, D3DXVECTOR3 B1, D3DXVECTOR3 B2, D3DXVECTOR3 &HitP )
 {
 // Check for a quick exit if the line is completely to one side of the box
 if (L2.x < B1.x && L1.x < B1.x) return false;
@@ -61,18 +60,18 @@ return false;
 //  returns true if line (L1, L2) intersects with triangle( PV1, PV2, PV3 )
 //  The point of intersection is returned in HitP
 //
-bool CheckLineTri( const SPoint3D &L1, const SPoint3D &L2, const SPoint3D &PV1, const SPoint3D &PV2, const SPoint3D &PV3, SPoint3D &HitP )
+bool CheckLineTri( const D3DXVECTOR3 &L1, const D3DXVECTOR3 &L2, const D3DXVECTOR3 &PV1, const D3DXVECTOR3 &PV2, const D3DXVECTOR3 &PV3, D3DXVECTOR3 &HitP )
 {
-	SPoint3D VIntersect;
+	D3DXVECTOR3 VIntersect;
 
 	// Find Triangle Normal, would be quicker to have these computed already
-	SPoint3D VNorm;
-	VNorm = ( PV2 - PV1 ).CrossProduct( PV3 - PV1 );
-	VNorm.normalizeVector();
+	D3DXVECTOR3 VNorm;
+	D3DXVec3Cross(&VNorm, &(PV2-PV1), &(PV3 - PV1));
+	D3DXVec3Normalize(&VNorm, &VNorm);
 
 	// Find distance from L1 and L2 to the plane defined by the triangle
-	float fDst1 = (L1-PV1).Dot( VNorm );
-	float fDst2 = (L2-PV1).Dot( VNorm );
+	float fDst1 = D3DXVec3Dot(&(L1-PV1),&VNorm);
+	float fDst2 = D3DXVec3Dot(&(L2-PV1),&VNorm);
 
 	if ( (fDst1 * fDst2) >= 0.0f) return false;  // line doesn't cross the triangle.
 	if ( fDst1 == fDst2) {return false;} // line and plane are parallel
@@ -81,13 +80,15 @@ bool CheckLineTri( const SPoint3D &L1, const SPoint3D &L2, const SPoint3D &PV1, 
 	VIntersect = L1 + (L2-L1) * ( -fDst1/(fDst2-fDst1) );
 
 	// Find if the interesection point lies inside the triangle by testing it against all edges
-	SPoint3D VTest;
-	VTest = VNorm.CrossProduct( PV2-PV1 );
-	if ( VTest.Dot( VIntersect-PV1 ) < 0.0f ) return false;
-	VTest = VNorm.CrossProduct( PV3-PV2 );
-	if ( VTest.Dot( VIntersect-PV2 ) < 0.0f ) return false;
-	VTest = VNorm.CrossProduct( PV1-PV3 );
-	if ( VTest.Dot( VIntersect-PV1 ) < 0.0f ) return false;
+	D3DXVECTOR3 VTest;
+	D3DXVec3Cross(&VTest, &VNorm, &(PV2-PV1));
+	if ( D3DXVec3Dot(&VTest,&(VIntersect-PV1)) < 0.0f ) return false;
+	D3DXVec3Cross(&VTest, &VNorm, &(PV3-PV2));
+
+	if ( D3DXVec3Dot(&VTest,&(VIntersect-PV2)) < 0.0f ) return false;
+	D3DXVec3Cross(&VTest, &VNorm, &(PV1-PV3));
+
+	if ( D3DXVec3Dot(&VTest,&(VIntersect-PV1)) < 0.0f ) return false;
 
 	HitP = VIntersect;
 
@@ -97,11 +98,11 @@ bool CheckLineTri( const SPoint3D &L1, const SPoint3D &L2, const SPoint3D &PV1, 
 //
 // returns true if point P is in the 4-plane frustum
 //
-bool PointInFrustum( const SPoint3D &P, SPoint3D Normals[4], SPoint3D Points[8] )
+bool PointInFrustum( const D3DXVECTOR3 &P, D3DXVECTOR3 Normals[4], D3DXVECTOR3 Points[8] )
 {
 	for ( int x = 0; x < 4; x++ )
 	{
-		if ( Normals[x].Dot( P - Points[x*2] ) > 0 ) return false;
+		if ( D3DXVec3Dot(&Normals[x],&(P - Points[x*2])) > 0 ) return false;
 	}
     return true;
 }
@@ -110,9 +111,9 @@ bool PointInFrustum( const SPoint3D &P, SPoint3D Normals[4], SPoint3D Points[8] 
 // LineInFrustum is much slower than it could be. I don't think it will be called very often, if it ever is I'll rewrite it.
 // It just constructs a 4-plane frustum box out of triangles, and uses the Line-Triangle test.
 //
-bool LineInFrustum( const SPoint3D &LP1, const SPoint3D &LP2, SPoint3D Points[8] )
+bool LineInFrustum( const D3DXVECTOR3 &LP1, const D3DXVECTOR3 &LP2, D3DXVECTOR3 Points[8] )
 {
-	SPoint3D HitP;
+	D3DXVECTOR3 HitP;
 	int List[24] = { 0, 1, 2, 1, 2, 3, 0, 1, 6, 1, 6, 7, 6, 7, 5, 6, 5, 4, 2, 3, 5, 2, 5, 4 };
 	
 	for ( int x = 0; x < 8; x++ )
@@ -125,7 +126,7 @@ bool LineInFrustum( const SPoint3D &LP1, const SPoint3D &LP2, SPoint3D Points[8]
 //
 // returns false if the triangle is not within the frustum
 //
-bool TriInFrustum( SPoint3D vTri[3], SPoint3D Normals[4], SPoint3D Points[8] )
+bool TriInFrustum( D3DXVECTOR3 vTri[3], D3DXVECTOR3 Normals[4], D3DXVECTOR3 Points[8] )
 {
  int i;
  // If all 3 points are to one side any frustum plane return false
@@ -133,7 +134,7 @@ bool TriInFrustum( SPoint3D vTri[3], SPoint3D Normals[4], SPoint3D Points[8] )
 	{
 	for ( i = 0; i < 3; i++ )
 		{
-		if ( Normals[x].Dot( vTri[i] - Points[x*2] ) < 0 ) break;
+		if ( D3DXVec3Dot(&Normals[x],&(vTri[i] - Points[x*2])) < 0 ) break;
 		}
 	if ( i >= 3 ) return false;
 	}
@@ -149,19 +150,19 @@ bool TriInFrustum( SPoint3D vTri[3], SPoint3D Normals[4], SPoint3D Points[8] )
   if ( LineInFrustum( vTri[2], vTri[0], Points ) ) return true;
   
   // If the frustum is completely inside the triangle, any frustum line into the screen will intersect the triangle
-  SPoint3D HitP;
+  D3DXVECTOR3 HitP;
   if ( CheckLineTri( Points[0], Points[1], vTri[0], vTri[1], vTri[2], HitP ) ) return true;
   
 return false;
 }
-bool CheckLinePlane (const SPoint3D& planeN, const SPoint3D& planePoint,
-					 const SPoint3D& LP1, const SPoint3D& LP2, SPoint3D& HitP)
+bool CheckLinePlane (const D3DXVECTOR3& planeN, const D3DXVECTOR3& planePoint,
+					 const D3DXVECTOR3& LP1, const D3DXVECTOR3& LP2, D3DXVECTOR3& HitP)
 {
-    SPoint3D u = LP2 - LP1;
-    SPoint3D w = LP1 - planePoint;
+    D3DXVECTOR3 u = LP2 - LP1;
+    D3DXVECTOR3 w = LP1 - planePoint;
 
-    float D = u.Dot(planeN);
-	float N = -w.Dot(planeN);
+    float D = D3DXVec3Dot(&u, &planeN);
+	float N = D3DXVec3Dot(&(-w), &planeN);
 
     if (abs(D) < SMALL_NUM) // segment is parallel to plane		
 		return false;
@@ -174,4 +175,9 @@ bool CheckLinePlane (const SPoint3D& planeN, const SPoint3D& planePoint,
 
     HitP = LP1 + u*sI;                 // compute segment intersect point
     return true;
+}
+
+double Distance(const D3DXVECTOR3 L1, const D3DXVECTOR3 L2 )
+{
+	return sqrt(pow(L1.x - L2.x,2) + pow(L1.y - L2.y,2) + pow(L1.z - L2.z,2));
 }

@@ -36,7 +36,7 @@ void Actor::ModelDeOBJ(char* filename) {
 
 	this->resetMoviments();
 	for (i = 0; i < numpunts; i++) {
-		this->punts[i].cordenades = SPoint3D(ob.pVertices[i].fX,ob.pVertices[i].fY,ob.pVertices[i].fZ);
+		this->punts[i].cordenades = D3DXVECTOR3(ob.pVertices[i].fX,ob.pVertices[i].fY,ob.pVertices[i].fZ);
 		if (ob.pTexCoords != NULL)
 		{
 			this->punts[i].cordTex.x = ob.pTexCoords[i].fX;
@@ -51,10 +51,10 @@ void Actor::ModelDeOBJ(char* filename) {
 
 	for (i = 0; i < numcares; ++i) {
 		for (j = 0; j < 3; ++j) {
-			this->cares[i].punts[j] = &(this->punts[this->buscarPunt(SPoint3D(ob.pFaces[i].pVertices[j].fX,ob.pFaces[i].pVertices[j].fY,ob.pFaces[i].pVertices[j].fZ))]);
+			this->cares[i].punts[j] = &(this->punts[this->buscarPunt(D3DXVECTOR3(ob.pFaces[i].pVertices[j].fX,ob.pFaces[i].pVertices[j].fY,ob.pFaces[i].pVertices[j].fZ))]);
 			if (ob.pNormals != NULL)
 			{
-				this->cares[i].normals[j] = SPoint3D(ob.pFaces[i].pNormals[j].fX,ob.pFaces[i].pNormals[j].fY,ob.pFaces[i].pNormals[j].fZ);
+				this->cares[i].normals[j] = D3DXVECTOR3(ob.pFaces[i].pNormals[j].fX,ob.pFaces[i].pNormals[j].fY,ob.pFaces[i].pNormals[j].fZ);
 			}
 			// Controlar que tenen textures
 			if (ob.pTexCoords != NULL)
@@ -112,7 +112,7 @@ void Actor::ModelDe3DS(char* filename)
 		this->nombrePunts += objecte->numOfVerts;
 		this->punts = (Punt*) realloc(this->punts,this->nombrePunts*sizeof(Punt));
 		for (i = 0; i < npunts; i++) {
-			this->punts[i + offsetPunts].cordenades = SPoint3D(objecte->pVerts[i].x,objecte->pVerts[i].y,objecte->pVerts[i].z);
+			this->punts[i + offsetPunts].cordenades = D3DXVECTOR3(objecte->pVerts[i].x,objecte->pVerts[i].y,objecte->pVerts[i].z);
 		}
 
 		ncares = objecte->numOfFaces;
@@ -142,7 +142,7 @@ void Actor::ModelDe3DS(char* filename)
 	delete o;
 }
 
-int Actor::buscarPunt(SPoint3D punt) {
+int Actor::buscarPunt(D3DXVECTOR3 punt) {
 	
 	if(g_PuntsMap.empty())
 	{
@@ -204,12 +204,13 @@ Actor::~Actor()
 	vec_Geom.clear();
 }
 
-int Actor::PuntMesProxim(SPoint3D p)
+int Actor::PuntMesProxim(D3DXVECTOR3 p)
 {
 	int millorPunt = 0;
-	double distMin = this->punts[0].cordenades.calcularDistancia(p),distancia;
+	double distancia;
+	double distMin = Distance(this->punts[0].cordenades, p);
 	for (int i = 1; i < this->nombrePunts; i++) {
-		distancia = this->punts[i].cordenades.calcularDistancia(p);
+		distancia = Distance(this->punts[i].cordenades,p);
 		if (distancia < distMin) {
 			millorPunt = i;
 			distMin = distancia;
@@ -218,12 +219,12 @@ int Actor::PuntMesProxim(SPoint3D p)
 	return millorPunt;
 }
 
-SPoint3D Actor::GetPoint(int punt)
+D3DXVECTOR3 Actor::GetPoint(int punt)
 {
 	return this->punts[punt].cordenades;
 }
 
-SPoint3D Actor::GetMovement(int punt)
+D3DXVECTOR3 Actor::GetMovement(int punt)
 {
 	return this->punts[punt].moviment;
 }
@@ -234,7 +235,7 @@ int Actor::GetNumVertexs ( void )
 }
 
 // TODO: Recalcular les normals
-void Actor::mourePunt(int punt, SPoint3D vectorMoviment)
+void Actor::mourePunt(int punt, D3DXVECTOR3 vectorMoviment)
 {
 	this->punts[punt].moviment = vectorMoviment;
 }
@@ -251,17 +252,17 @@ void Actor::UseMaterial(const O3DMaterial pMaterial)
 		glDisable(GL_TEXTURE_2D);
 }
 
-SPoint3D Actor::GetFaceNormal(const Cara *cara)
+D3DXVECTOR3 Actor::GetFaceNormal(const Cara *cara)
 {
-	SPoint3D p1,p2,normal;
+	D3DXVECTOR3 p1,p2,normal;
 	p1 = cara->punts[0]->cordenades - cara->punts[1]->cordenades;
 	p2 = cara->punts[1]->cordenades - cara->punts[2]->cordenades;
-	normal = SPoint3D(p1.y*p2.z - p1.z*p2.y,p1.z*p2.x - p1.x*p2.z,p1.x*p2.y - p1.y*p2.x);
-	normal.normalizeVector();
+	normal = D3DXVECTOR3(p1.y*p2.z - p1.z*p2.y,p1.z*p2.x - p1.x*p2.z,p1.x*p2.y - p1.y*p2.x);
+	D3DXVec3Normalize(&normal, &normal);
 	return normal;
 }
 
-void Actor::GetTriangle ( int index, SPoint3D* triangle )
+void Actor::GetTriangle ( int index, D3DXVECTOR3* triangle )
 {
 	triangle[0] = this->cares[index].punts[0]->cordenades;
 	triangle[1] = this->cares[index].punts[1]->cordenades;
@@ -273,14 +274,14 @@ int Actor::GetNumTriangles ( void )
 	return nombreCares;
 }
 
-void Actor::GetFaceCoords ( int nFace, SPoint3D* coords )
+void Actor::GetFaceCoords ( int nFace, D3DXVECTOR3* coords )
 {
 	coords[0] = this->cares[nFace].punts[0]->cordenades;
 	coords[1] = this->cares[nFace].punts[1]->cordenades;
 	coords[2] = this->cares[nFace].punts[2]->cordenades;
 }
 
-SPoint3D Actor::GetNormalsFace ( int nFace )
+D3DXVECTOR3 Actor::GetNormalsFace ( int nFace )
 {
 	return this->GetFaceNormal(&this->cares[nFace]);
 }
@@ -310,7 +311,7 @@ void Actor::Render ( void )
 
 		// Calculate and set face normal if no vertex normals are specified
 		//if (!this->teNormals) {
-			//SPoint3D fNormal = GetFaceNormal(&this->cares[i]);
+			//D3DXVECTOR3 fNormal = GetFaceNormal(&this->cares[i]);
 			//glNormal3fv(fNormal);
 		//}
 		// Process all vertices
@@ -336,16 +337,16 @@ void Actor::Render ( void )
 void Actor::resetMoviments()
 {
 	for (int i = 0; i < this->nombrePunts; i++) {
-		this->punts[i].moviment = SPoint3D(0,0,0);
+		this->punts[i].moviment = D3DXVECTOR3(0,0,0);
 	}
 }
 
 void Actor::CalcularNormalsVertex()
 {
 	int i,j;
-	SPoint3D p;
+	D3DXVECTOR3 p;
 	for (i = 0; i < this->nombrePunts; i++) {
-		this->punts[i].normal = SPoint3D(0.0, 0.0, 0.0);
+		this->punts[i].normal = D3DXVECTOR3(0.0, 0.0, 0.0);
 	}
 	for (i = 0; i < this->nombreCares; i++) {
 		p = this->GetNormalsFace(i);
@@ -354,7 +355,7 @@ void Actor::CalcularNormalsVertex()
 		}
 	}
 	for (i = 0; i < this->nombrePunts; i++) {
-		this->punts[i].normal.normalizeVector();
+		D3DXVec3Normalize(&this->punts[i].normal, &this->punts[i].normal);
 	}
 }
 
@@ -782,8 +783,8 @@ HRESULT Actor::LoadVertexsBuffers( LPDIRECT3DDEVICE9 g_pd3dDevice )
 			{
 				//textureVertice = vec_Geom[mat][i];
 				//
-				////num = buscarPunt(SPoint3D(textureVertice.x, textureVertice.y, textureVertice.z));
-				//num = g_PuntsMap[SPoint3D(textureVertice.x, textureVertice.y, textureVertice.z)];
+				////num = buscarPunt(D3DXVECTOR3(textureVertice.x, textureVertice.y, textureVertice.z));
+				//num = g_PuntsMap[D3DXVECTOR3(textureVertice.x, textureVertice.y, textureVertice.z)];
 				//textureVertice.x += punts[num].moviment.x;
 				//textureVertice.y += punts[num].moviment.y;
 				//textureVertice.z += punts[num].moviment.z;
@@ -791,7 +792,7 @@ HRESULT Actor::LoadVertexsBuffers( LPDIRECT3DDEVICE9 g_pd3dDevice )
 				//l_VTMesh[i] = textureVertice;
 
 				l_VTMesh[i] =vec_Geom[mat][i]; 
-				num = g_PuntsMap[SPoint3D(l_VTMesh[i].x, l_VTMesh[i].y, l_VTMesh[i].z)];
+				num = g_PuntsMap[D3DXVECTOR3(l_VTMesh[i].x, l_VTMesh[i].y, l_VTMesh[i].z)];
 				l_VTMesh[i].x += punts[num].moviment.x;
 				l_VTMesh[i].y += punts[num].moviment.y;
 				l_VTMesh[i].z += punts[num].moviment.z;

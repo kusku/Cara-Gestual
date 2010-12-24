@@ -20,7 +20,6 @@
 #include "Logic/Muscles/MuscleManager.h"
 #include "Logic/Expressions/ExpressionManager.h"
 #include "Render/visualitzacio.h"
-#include "SPoint3D.h"
 #include "Logic/Rigging/Selection.h"
 #include "Logic/Rigging/EditorManager.h"
 #include "Common/Timer/Timer.h"
@@ -530,7 +529,7 @@ void CPracticaView::OnLButtonDown(UINT nFlags, CPoint point)
 			y=R*cos(anglev)*cos(angleh);
 			z=R*sin(anglev)*cos(angleh);
 		}
-		deform->ButtonDown(point.x, point.y, SPoint3D(x, y, z));
+		deform->ButtonDown(point.x, point.y, D3DXVECTOR3(x, y, z));
 
 	}
 	else if (editMuscle && ObOBJ != NULL)
@@ -539,7 +538,7 @@ void CPracticaView::OnLButtonDown(UINT nFlags, CPoint point)
 			select = new Selection(ObOBJ,editor);
 
 		select->SetObj(ObOBJ);
-		select->SetZBufferTriangles(SPoint3D(opv.x,opv.y,opv.z));
+		select->SetZBufferTriangles(D3DXVECTOR3(opv.x,opv.y,opv.z));
 		if(TeclaControl)
 		{
 			select->ButtonDown(point.x, point.y, 1);
@@ -572,7 +571,7 @@ void CPracticaView::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 	else if ((select != NULL && TeclaControl) ||(select != NULL && TeclaTab))
 	{
-		//select->SetZBufferTriangles(SPoint3D(opv.x,opv.y,opv.z));
+		//select->SetZBufferTriangles(D3DXVECTOR3(opv.x,opv.y,opv.z));
 		select->ButtonUp();
 		select->NoRender();
 	}
@@ -594,7 +593,7 @@ void CPracticaView::OnRButtonDown(UINT nFlags, CPoint point)
 			select = new Selection(ObOBJ,editor);
 
 		select->SetObj(ObOBJ);
-		select->SetZBufferTriangles(SPoint3D(opv.x,opv.y,opv.z));
+		select->SetZBufferTriangles(D3DXVECTOR3(opv.x,opv.y,opv.z));
 		if (TeclaControl)
 			select->ButtonRDown(point.x,point.y);
 	}

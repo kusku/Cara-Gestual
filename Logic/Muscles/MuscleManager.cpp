@@ -1,7 +1,6 @@
 #include "../../stdafx.h"
 #include "Muscle.h"
 #include "MuscleManager.h"
-#include "../../SPoint3D.h"
 
 MuscleManager::MuscleManager()
 {
@@ -21,7 +20,7 @@ void MuscleManager::addVertexMuscle(TypeMuscle numMuscle, unsigned int vertex, f
 	muscles[numMuscle]->addVertex(vertex, delta );
 }
 
-void MuscleManager::moveAMuscle( TypeMuscle numMuscle, SPoint3D vecDir )
+void MuscleManager::moveAMuscle( TypeMuscle numMuscle, D3DXVECTOR3 vecDir )
 {
 	muscles[numMuscle]->moveMuscle(obj3D,vecDir);
 }

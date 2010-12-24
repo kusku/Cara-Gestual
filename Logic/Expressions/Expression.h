@@ -1,14 +1,13 @@
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 
-#include "../../SPoint3D.h"
 #include "../Muscles/MuscleManager.h"
 
 class Expression
 {
 private:
 	
-	SPoint3D*			movements;
+	D3DXVECTOR3*			movements;
 	MuscleManager*		MManager;
 
 public:
@@ -17,12 +16,12 @@ public:
 	~Expression();
 
 	void		resetMuscles		( void );
-	void		modifyMuscle		( TypeMuscle muscle, SPoint3D movement );
-	SPoint3D		getMovement			( TypeMuscle muscle );
+	void		modifyMuscle		( TypeMuscle muscle, D3DXVECTOR3 movement );
+	D3DXVECTOR3		getMovement			( TypeMuscle muscle );
 
 	// Mou tots els muscles per a generar l'expressió
 	void		RenderExpression	( void );
-	void		ExternalRender		( SPoint3D* newMovements );
+	void		ExternalRender		( D3DXVECTOR3* newMovements );
 
 };
 

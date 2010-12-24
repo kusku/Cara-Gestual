@@ -1,7 +1,6 @@
 #ifndef MUSCLE_H
 #define MUSCLE_H
 
-#include "../../SPoint3D.h"
 #include "../../Models/Actor/Actor.h"
 
 class Muscle
@@ -20,7 +19,7 @@ public:
 	~Muscle();
 
 	int				addVertex		( unsigned int vertex, float delta );
-	void			moveMuscle		( Actor* obj3D, SPoint3D vecDir );
+	void			moveMuscle		( Actor* obj3D, D3DXVECTOR3 vecDir );
 	int				alterDelta		( unsigned int vertex, float newDelta );
 	int				deleteVertex	( unsigned int vertex );
 	void			ClearMuscle		( void );

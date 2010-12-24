@@ -14,7 +14,6 @@
 #include <map>
 
 #include "Windows.h"
-#include "../../SPoint3D.h"
 #include "../Readers/objLoader.h"
 #include "../../Logic/Rigging/intersection.h"
 #include "../../Render/CDirectX.h"
@@ -49,7 +48,7 @@ struct Point2D {
 };
 
 struct Punt {
-	SPoint3D cordenades,normal,moviment;
+	D3DXVECTOR3 cordenades,normal,moviment;
 	Point2D cordTex;
 };
 
@@ -57,7 +56,7 @@ struct Punt {
 // Es guarda la ID relacionada a cada punt.
 struct Cara {
 	Punt *punts[3];
-	SPoint3D normals[3];
+	D3DXVECTOR3 normals[3];
 	int materialTextura;
 	Point2D cordTex[3];
 };
@@ -67,8 +66,8 @@ class Actor {
 		Actor(char* file,int tipus);
 		~Actor();
 
-		void		mourePunt			( int punt , SPoint3D vectorMoviment );
-		int			buscarPunt			( SPoint3D punt );
+		void		mourePunt			( int punt , D3DXVECTOR3 vectorMoviment );
+		int			buscarPunt			( D3DXVECTOR3 punt );
 		int			buscarTex			( Point2D tex );
 		void		Render				( void );
 		void		resetMoviments		( void );
@@ -76,14 +75,14 @@ class Actor {
 		void		Render				(LPDIRECT3DDEVICE9 Device);	
 
 		// Mètodes GET
-		int			PuntMesProxim		( SPoint3D );
-		SPoint3D	GetPoint			( int punt );
-		SPoint3D	GetMovement			( int punt );
-		SPoint3D	GetNormalsFace		( int nFace );
+		int			PuntMesProxim		( D3DXVECTOR3 );
+		D3DXVECTOR3	GetPoint			( int punt );
+		D3DXVECTOR3	GetMovement			( int punt );
+		D3DXVECTOR3	GetNormalsFace		( int nFace );
 		int			GetNumVertexs		( void );
 		int			GetNumTriangles		( void );
-		void		GetTriangle			( int index, SPoint3D* triangle );
-		void		GetFaceCoords		( int nFace, SPoint3D* coords );
+		void		GetTriangle			( int index, D3DXVECTOR3* triangle );
+		void		GetFaceCoords		( int nFace, D3DXVECTOR3* coords );
 
 		HRESULT		LoadInfoInVectors	( LPDIRECT3DDEVICE9 g_pd3dDevice );
 		HRESULT		LoadVertexsBuffers	( LPDIRECT3DDEVICE9 g_pd3dDevice );
@@ -91,7 +90,7 @@ class Actor {
 private:
 		Cara		*cares;
 		Punt		*punts;
-		SPoint3D	*moviment;
+		D3DXVECTOR3	*moviment;
 		O3DMaterial *materials;
 		Point2D		*cordTex;
 
@@ -113,7 +112,7 @@ private:
 		std::vector< D3DMATERIAL9 >				vec_materials;
 		std::vector< int >						vec_numCaresByMat;
 		std::vector <std::string>				listaTexturas;
-		std::map<SPoint3D, int, Spoint3D_LessThan>			g_PuntsMap;
+		std::map<D3DXVECTOR3, int, D3DXVECTOR3_LessThan>			g_PuntsMap;
 
 		//std::vector<unsigned short*>				m_IndicesMesh;
 		std::vector < std::vector <CUSTOMVERTEX> >			vec_VerticesMesh;
@@ -124,7 +123,7 @@ private:
 		void		UseMaterial				( O3DMaterial pMaterial );
 		void		CalcularNormalsVertex	( void );
 
-		SPoint3D	GetFaceNormal			( const Cara* );
+		D3DXVECTOR3	GetFaceNormal			( const Cara* );
 };
 
 #endif
