@@ -22,6 +22,7 @@
 // OBJECTE OBJ: Include per la definició de l'objecte Obj_OBJ
 #include "Models/Readers/objLoader.h"
 #include "Models/Actor/Actor.h"
+#include "Models/ModelManager.h"
 
 // MUSCLES I EXPRESSIONS
 #include "PracticaDoc.h"
@@ -62,6 +63,7 @@ private:
 	Animation*	animate;
 	CParla*		parla;
 	CSubtitles* MSubtitles;
+	ModelManager* m_ModelManager;
 
 // Attributes
 public:

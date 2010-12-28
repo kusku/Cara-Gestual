@@ -12,17 +12,17 @@
 // CheckLineBox Helper Functions
 //
 bool inline GetIntersection( float fDst1, float fDst2, D3DXVECTOR3 P1, D3DXVECTOR3 P2, D3DXVECTOR3 &Hit) {
-if ( (fDst1 * fDst2) >= 0.0f) return false;
-if ( fDst1 == fDst2) return false;
-Hit = P1 + (P2-P1) * ( -fDst1/(fDst2-fDst1) );
-return true;
+	if ( (fDst1 * fDst2) >= 0.0f) return false;
+	if ( fDst1 == fDst2) return false;
+	Hit = P1 + (P2-P1) * ( -fDst1/(fDst2-fDst1) );
+	return true;
 }
 
 bool inline InBox( D3DXVECTOR3 Hit, D3DXVECTOR3 B1, D3DXVECTOR3 B2, const int Axis ) {
-if ( Axis == 1 && Hit.z > B1.z && Hit.z < B2.z && Hit.y > B1.y && Hit.y < B2.y) return true;
-if ( Axis == 2 && Hit.z > B1.z && Hit.z < B2.z && Hit.x > B1.x && Hit.x < B2.x) return true;
-if ( Axis == 3 && Hit.x > B1.x && Hit.x < B2.x && Hit.y > B1.y && Hit.y < B2.y) return true;
-return false;
+	if ( Axis == 1 && Hit.z > B1.z && Hit.z < B2.z && Hit.y > B1.y && Hit.y < B2.y) return true;
+	if ( Axis == 2 && Hit.z > B1.z && Hit.z < B2.z && Hit.x > B1.x && Hit.x < B2.x) return true;
+	if ( Axis == 3 && Hit.x > B1.x && Hit.x < B2.x && Hit.y > B1.y && Hit.y < B2.y) return true;
+	return false;
 }
 
 //  
@@ -31,29 +31,29 @@ return false;
 //
 bool CheckLineBox( D3DXVECTOR3 L1, D3DXVECTOR3 L2, D3DXVECTOR3 B1, D3DXVECTOR3 B2, D3DXVECTOR3 &HitP )
 {
-// Check for a quick exit if the line is completely to one side of the box
-if (L2.x < B1.x && L1.x < B1.x) return false;
-if (L2.x > B2.x && L1.x > B2.x) return false;
-if (L2.y < B1.y && L1.y < B1.y) return false;
-if (L2.y > B2.y && L1.y > B2.y) return false;
-if (L2.z < B1.z && L1.z < B1.z) return false;
-if (L2.z > B2.z && L1.z > B2.z) return false;
+	// Check for a quick exit if the line is completely to one side of the box
+	if (L2.x < B1.x && L1.x < B1.x) return false;
+	if (L2.x > B2.x && L1.x > B2.x) return false;
+	if (L2.y < B1.y && L1.y < B1.y) return false;
+	if (L2.y > B2.y && L1.y > B2.y) return false;
+	if (L2.z < B1.z && L1.z < B1.z) return false;
+	if (L2.z > B2.z && L1.z > B2.z) return false;
 
-// Check if the line originates in the box
-if (L1.x > B1.x && L1.x < B2.x && L1.y > B1.y && L1.y < B2.y && L1.z > B1.z && L1.z < B2.z ) {
-	HitP = L1; 
-	return true;
-	}
-	
-// Check for a line intersection with each side of the box
-if ( GetIntersection( L1.x-B1.x, L2.x-B1.x, L1, L2, HitP) && InBox( HitP, B1, B2, 1 ) ) return true;
-if ( GetIntersection( L1.y-B1.y, L2.y-B1.y, L1, L2, HitP) && InBox( HitP, B1, B2, 2 ) ) return true;
-if ( GetIntersection( L1.z-B1.z, L2.z-B1.z, L1, L2, HitP) && InBox( HitP, B1, B2, 3 ) ) return true;
-if ( GetIntersection( L1.x-B2.x, L2.x-B2.x, L1, L2, HitP) && InBox( HitP, B1, B2, 1 ) ) return true;
-if ( GetIntersection( L1.y-B2.y, L2.y-B2.y, L1, L2, HitP) && InBox( HitP, B1, B2, 2 ) ) return true;
-if ( GetIntersection( L1.z-B2.z, L2.z-B2.z, L1, L2, HitP) && InBox( HitP, B1, B2, 3 ) ) return true;
+	// Check if the line originates in the box
+	if (L1.x > B1.x && L1.x < B2.x && L1.y > B1.y && L1.y < B2.y && L1.z > B1.z && L1.z < B2.z ) {
+		HitP = L1; 
+		return true;
+		}
+		
+	// Check for a line intersection with each side of the box
+	if ( GetIntersection( L1.x-B1.x, L2.x-B1.x, L1, L2, HitP) && InBox( HitP, B1, B2, 1 ) ) return true;
+	if ( GetIntersection( L1.y-B1.y, L2.y-B1.y, L1, L2, HitP) && InBox( HitP, B1, B2, 2 ) ) return true;
+	if ( GetIntersection( L1.z-B1.z, L2.z-B1.z, L1, L2, HitP) && InBox( HitP, B1, B2, 3 ) ) return true;
+	if ( GetIntersection( L1.x-B2.x, L2.x-B2.x, L1, L2, HitP) && InBox( HitP, B1, B2, 1 ) ) return true;
+	if ( GetIntersection( L1.y-B2.y, L2.y-B2.y, L1, L2, HitP) && InBox( HitP, B1, B2, 2 ) ) return true;
+	if ( GetIntersection( L1.z-B2.z, L2.z-B2.z, L1, L2, HitP) && InBox( HitP, B1, B2, 3 ) ) return true;
 
-return false;
+	return false;
 }
 
 //
@@ -128,33 +128,33 @@ bool LineInFrustum( const D3DXVECTOR3 &LP1, const D3DXVECTOR3 &LP2, D3DXVECTOR3 
 //
 bool TriInFrustum( D3DXVECTOR3 vTri[3], D3DXVECTOR3 Normals[4], D3DXVECTOR3 Points[8] )
 {
- int i;
- // If all 3 points are to one side any frustum plane return false
- for( int x = 0; x < 4; x++ )
-	{
-	for ( i = 0; i < 3; i++ )
-		{
-		if ( D3DXVec3Dot(&Normals[x],&(vTri[i] - Points[x*2])) < 0 ) break;
+	int i;
+	// If all 3 points are to one side any frustum plane return false
+	for( int x = 0; x < 4; x++ ) {
+		for ( i = 0; i < 3; i++ ) {
+			if ( D3DXVec3Dot(&Normals[x],&(vTri[i] - Points[x*2])) < 0 ) break;
 		}
-	if ( i >= 3 ) return false;
+
+		if ( i >= 3 ) return false;	
 	}
-  // If any point is in the frustum, return true
-  for ( i = 0; i < 3; i++ )
-	{
-	if ( PointInFrustum( vTri[i], Normals, Points ) ) return true;
+
+	// If any point is in the frustum, return true
+	for ( i = 0; i < 3; i++ ) {
+		if ( PointInFrustum( vTri[i], Normals, Points ) ) return true;
 	}
-  // If we didn't get quick result, do a slower but accurate test.
-  // If any of the lines of the triangle are in the frustum, the triangle is in the frustum
-  if ( LineInFrustum( vTri[0], vTri[1], Points ) ) return true;
-  if ( LineInFrustum( vTri[1], vTri[2], Points ) ) return true;
-  if ( LineInFrustum( vTri[2], vTri[0], Points ) ) return true;
-  
-  // If the frustum is completely inside the triangle, any frustum line into the screen will intersect the triangle
-  D3DXVECTOR3 HitP;
-  if ( CheckLineTri( Points[0], Points[1], vTri[0], vTri[1], vTri[2], HitP ) ) return true;
-  
-return false;
+	// If we didn't get quick result, do a slower but accurate test.
+	// If any of the lines of the triangle are in the frustum, the triangle is in the frustum
+	if ( LineInFrustum( vTri[0], vTri[1], Points ) ) return true;
+	if ( LineInFrustum( vTri[1], vTri[2], Points ) ) return true;
+	if ( LineInFrustum( vTri[2], vTri[0], Points ) ) return true;
+
+	// If the frustum is completely inside the triangle, any frustum line into the screen will intersect the triangle
+	D3DXVECTOR3 HitP;
+	if ( CheckLineTri( Points[0], Points[1], vTri[0], vTri[1], vTri[2], HitP ) ) return true;
+
+	return false;
 }
+
 bool CheckLinePlane (const D3DXVECTOR3& planeN, const D3DXVECTOR3& planePoint,
 					 const D3DXVECTOR3& LP1, const D3DXVECTOR3& LP2, D3DXVECTOR3& HitP)
 {

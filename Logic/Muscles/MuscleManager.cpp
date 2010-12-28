@@ -52,3 +52,44 @@ void MuscleManager::ClearMuscle( TypeMuscle numMuscle )
 {
 	muscles[numMuscle]->ClearMuscle();
 }
+
+void MuscleManager::Load(std::string xmlFile)
+{
+	//Llegeix el fitxer XML
+	xmlParseFile(xmlFile);
+}
+
+void MuscleManager::onStartElement(const std::string &elem, MKeyValue &atts)
+{
+	if (searchMuscle(elem) != NONE_MUSCLE)
+	{
+		std::string s_vertex = atts["vertex"];
+		std::string s_delta = atts["delta"];
+
+		int n_vertex;
+		float n_delta;
+
+		sscanf(s_vertex.c_str(),"%d",&n_vertex);
+		sscanf(s_delta.c_str(),"%f",&n_delta);
+		addVertexMuscle(searchMuscle(elem),n_vertex, n_delta);
+	}
+}
+
+TypeMuscle MuscleManager::searchMuscle( std::string m )
+{
+	if (m == "ECELLA") return ECELLA;
+	if (m == "DCELLA") return DCELLA;
+	if (m == "INFBOCA") return INFBOCA;
+	if (m == "EBOCA") return EBOCA;
+	if (m == "DBOCA") return DBOCA;
+	if (m == "EPARPELLA") return EPARPELLA;
+	if (m == "DPARPELLA") return DPARPELLA;
+	if (m == "EGALTA") return EGALTA;
+	if (m == "DGALTA") return DGALTA;
+	if (m == "SUPBOCA") return SUPBOCA;
+	if (m == "LATEBOCA") return LATEBOCA;
+	if (m == "LATDBOCA") return LATDBOCA;
+	if (m == "DENTDALT") return DENTDALT;
+	if (m == "DENTBAIX") return DENTBAIX;
+	return NONE_MUSCLE;
+}

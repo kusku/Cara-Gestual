@@ -307,6 +307,7 @@ CPracticaView::CPracticaView()
 	animate = new Animation(EManager, MManager);
 	parla = new CParla(animate);
 	MSubtitles = new CSubtitles();
+	m_ModelManager = new ModelManager();
 	editor = NULL;
 }
 
@@ -329,6 +330,8 @@ CPracticaView::~CPracticaView()
 		delete parla;
 	if (MSubtitles != NULL)
 		delete MSubtitles;
+	if (m_ModelManager != NULL)
+		delete m_ModelManager;
 }
 
 BOOL CPracticaView::PreCreateWindow(CREATESTRUCT& cs)
@@ -1370,27 +1373,24 @@ void CPracticaView::OnFileOpenObj()
 
 void CPracticaView::OnCarregaAutomatica()
 {
-	if(ObOBJ!=NULL) delete ObOBJ;
-			
-	//TODO: Path
-	nom = "./Data/Models/heavytriangles/heavyweapons.obj";
-	CString musclesP = "./Data/Models/heavytriangles/m8.xml";
-	CString expressionsP = "./Data/Models/heavytriangles/e12.xml";
+	std::string actors = "./Data/XML/actors.xml";
+	std::string scene = "./Data/XML/scene.xml";
 
-	// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
-	char * nomfitx = (char *)(LPCTSTR)nom;
+	m_ModelManager->Load(actors);
+	ObOBJ = m_ModelManager->GetActor();
+	std::string m_musclePath = m_ModelManager->GetMusclePath();
+	std::string m_expressionPath = m_ModelManager->GetExpressionPath();
 
-	/* i carreguem */	
-	wglMakeCurrent(m_hDC,m_hRC);	// Activem contexte OpenGL
-	ObOBJ = new Actor(nomfitx,TIPUS_OBJ);
 	editor = new EditorManager(MManager,EManager,ObOBJ);
-	wglMakeCurrent(m_hDC,NULL);	// Desactivem contexte OpenGL
-
 	MManager->SetModel(ObOBJ);
-	//Resetejar la memòria de Selection
-	if (select != NULL)
-		select->SetFlagsTriangles();
-	//Borrem els muscles i expressions que hi pugui haver
+
+	// Eliminació de la memòria en Selection, Expressions i Muscles
+	{
+		//Reseteja la memòria de Selection
+		if (select != NULL)
+			select->SetFlagsTriangles();
+
+		//Borrem els muscles i expressions que hi pugui haver
 		int expressions = EManager->getNumExpressions();
 		for (int i=0; i<expressions; ++i)
 		{
@@ -1402,26 +1402,10 @@ void CPracticaView::OnCarregaAutomatica()
 			MManager->ClearMuscle((TypeMuscle) i);
 		}
 		editor->ClearVertexs();
-
-	// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
-	char * nomExpressions = (char *)(LPCTSTR)expressionsP;
-
-	if (ObOBJ != NULL)
-	{
-		XMLReader* lector = new XMLReader(nomExpressions, EManager, MManager, editor);
-		lector->Read();
-		delete lector;
 	}
-
-	// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
-	char * nomMuscles = (char *)(LPCTSTR)musclesP;
-
-	if (ObOBJ != NULL)
-	{
-		XMLReader* lector = new XMLReader(nomMuscles, EManager, MManager, editor);
-		lector->Read();
-		delete lector;
-	}
+	
+	MManager->Load(m_musclePath);
+	EManager->Load(m_expressionPath);
 
 	// Crida a OnPaint() per redibuixar l'escena
 	Invalidate();	

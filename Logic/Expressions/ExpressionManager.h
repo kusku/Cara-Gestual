@@ -1,9 +1,11 @@
 #ifndef EXPMANAGER_H
 #define	EXPMANAGER_H
 
+#include <vector>
 #include "Expression.h"
 #include "../Muscles/MuscleManager.h"
 #include "../../Models/Actor/Actor.h"
+#include "../../../include/expat/XMLParser.h"
 
 #define NEXPRESSIONS 12
 //NONE és l'últim element ja que l'array arriba a l'element N-1.
@@ -13,12 +15,16 @@
 enum TypeExpression {TRIST, ALEGRE, ENFADAT, SERIOS, SORPRES, A, E, I, O, U, BILABIAL, NEUTRE, NONE_EXPRESSION};
 
 
-class ExpressionManager
+class ExpressionManager : public CXMLParser
 {
 private:
 	
+	MuscleManager*	MManager;
 	Expression**	Expressions;
 	int				numExpressions;
+
+	void onStartElement	( const std::string &elem, MKeyValue &atts );
+	TypeExpression searchExpression ( std::string m );
 
 public:
 	
@@ -34,6 +40,9 @@ public:
 	// Mou els muscles de l'expressió desitjada
 	void			RenderExpression		( TypeExpression nameExpression, Actor* obj );
 	void			ExternalRender			( TypeExpression nameExpression, D3DXVECTOR3* newMovements, Actor* obj);
+
+	// Carrega el fitxer XML
+	void			Load				(std::string xmlFile );
 
 	Expression**	getExpressionList		( void );
 	int				getNumExpressions		( void );

@@ -1,6 +1,5 @@
 #include "../../stdafx.h"
 #include "Selection.h"
-#include "../../matrix.h"
 #include "../../Models/Actor/Actor.h"
 #include "EditorManager.h"
 #include "intersection.h"
