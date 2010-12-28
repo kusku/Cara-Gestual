@@ -69,13 +69,15 @@ class Actor {
 		void		mourePunt			( int punt , D3DXVECTOR3 vectorMoviment );
 		int			buscarPunt			( D3DXVECTOR3 punt );
 		int			buscarTex			( Point2D tex );
-		void		Render				( void );
 		void		resetMoviments		( void );
 
-		void		Render				(LPDIRECT3DDEVICE9 Device);	
+		void		Render				(LPDIRECT3DDEVICE9 Device, D3DXVECTOR3 pan = D3DXVECTOR3(0.0f,0.0f,0.0f));	
+
+		void		SetPosition			( D3DXVECTOR3 pos) { m_Position = pos; };
 
 		// Mètodes GET
 		int			PuntMesProxim		( D3DXVECTOR3 );
+		D3DXVECTOR3 GetPosition			( ) { return m_Position; };
 		D3DXVECTOR3	GetPoint			( int punt );
 		D3DXVECTOR3	GetMovement			( int punt );
 		D3DXVECTOR3	GetNormalsFace		( int nFace );
@@ -98,6 +100,8 @@ private:
 		int nombrePunts, nombreMaterials;
 		int nombreCares;
 		int nombreTexturesVertexs;
+
+		D3DXVECTOR3 m_Position;
 
 		//VertexBuffer i IndexBuffer
 		LPDIRECT3DVERTEXBUFFER9				m_pVB;

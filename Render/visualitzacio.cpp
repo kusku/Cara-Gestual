@@ -80,9 +80,10 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 					up[2]=-sin(angley)*sin(anglex);	}
 
 	// Especificació del punt de vista
+	D3DXVECTOR3 lookAt = D3DXVECTOR3(0.0f,0.0f,0.0f);
 	l_DX->SetEye(cam);
 	l_DX->SetUpVector(up);
-	l_DX->SetLookAt(D3DXVECTOR3(0.f, 0.f, 0.f));
+	l_DX->SetLookAt(lookAt);
 	
 	//Habilita o no el ZBuffer
 	l_DX->SetZBuffer(oculta);
@@ -102,7 +103,7 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 	//Activa el Render en DirectX
 	l_DX->BeginRenderDX();
 	l_DX->SetupMatrices();
-
+	
 	//Establim matrius de transformacions
 	{
 		D3DXMATRIX l_Matrix;
@@ -120,7 +121,7 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 
 	//Dibuixa el model
 	if (ObOBJ != NULL)
-		ObOBJ->Render(Device);	
+		ObOBJ->Render(Device,tr);
 
 	renderSphereSelection(Device, l_DX, EdManager, muscle);
 

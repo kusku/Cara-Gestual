@@ -1377,6 +1377,7 @@ void CPracticaView::OnCarregaAutomatica()
 	std::string scene = "./Data/XML/scene.xml";
 
 	m_ModelManager->Load(actors);
+	m_ModelManager->Load(scene,true);
 	ObOBJ = m_ModelManager->GetActor();
 	std::string m_musclePath = m_ModelManager->GetMusclePath();
 	std::string m_expressionPath = m_ModelManager->GetExpressionPath();

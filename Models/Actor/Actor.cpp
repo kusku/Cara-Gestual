@@ -12,6 +12,9 @@ Actor::Actor(char* filename, int tipus) {
 	this->materials = NULL;
 	this->cares = NULL;
 	this->punts = NULL;
+
+	m_Position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
 	switch (tipus) {
 		case 1: this->ModelDeOBJ(filename);
 			break;
@@ -286,54 +289,6 @@ D3DXVECTOR3 Actor::GetNormalsFace ( int nFace )
 	return this->GetFaceNormal(&this->cares[nFace]);
 }
 
-void Actor::Render ( void )
-{
-	int iPreviousMaterial = -1,i,j;
-	glPushAttrib(GL_TEXTURE_BIT);
-	this->CalcularNormalsVertex();
-
-	if (this->nombreMaterials == 0)
-	{
-		// Posa una textura nul·la
-		O3DMaterial material;
-		material.iTextureID = -1;
-		UseMaterial(material);
-	}
-
-	for (i=0; i < this->nombreCares; i++)
-	{
-		if (this->nombreMaterials != 0 && iPreviousMaterial != (int) this->cares[i].materialTextura)
-		{
-			iPreviousMaterial = this->cares[i].materialTextura;
-			UseMaterial(this->materials[iPreviousMaterial]);
-		}
-		glBegin(GL_TRIANGLES);
-
-		// Calculate and set face normal if no vertex normals are specified
-		//if (!this->teNormals) {
-			//D3DXVECTOR3 fNormal = GetFaceNormal(&this->cares[i]);
-			//glNormal3fv(fNormal);
-		//}
-		// Process all vertices
-		for (j=0; j < 3; j++)
-		{
-			//if (this->teNormals) {
-			//	glNormal3fv(this->cares[i].normals[j]);
-			glNormal3fv(this->cares[i].normals[j]);
-			//}
-
-			// Set texture coordinates (if any specified)
-			//if (this->cares[i].punts[j]->cordTex)
-			glTexCoord2f(this->cares[i].cordTex[j].x,this->cares[i].cordTex[j].y);
-
-			// Set vertex
-			glVertex3fv(this->cares[i].punts[j]->cordenades + this->cares[i].punts[j]->moviment);
-		}
-		glEnd();
-	}
-	glPopAttrib();
-}
-
 void Actor::resetMoviments()
 {
 	for (int i = 0; i < this->nombrePunts; i++) {
@@ -362,11 +317,17 @@ void Actor::CalcularNormalsVertex()
 ///////////////////////////////////////
 //// RENDER WITH DIRECTX //////////////
 ///////////////////////////////////////
-void Actor::Render(LPDIRECT3DDEVICE9 Device)
+void Actor::Render(LPDIRECT3DDEVICE9 Device, D3DXVECTOR3 pan)
 {
 	VOID* pMesh=NULL;
 	unsigned short* indexs=NULL;
 	CUSTOMVERTEXTEXTURA* text=NULL;
+
+	D3DXVECTOR3 pos = m_Position + pan;
+	D3DXMATRIX l_Matrix;
+	D3DXMatrixIdentity(&l_Matrix);
+	D3DXMatrixTranslation (&l_Matrix, pos.x, pos.y, pos.z);
+	Device->SetTransform(D3DTS_WORLD, &l_Matrix);
 
 	for(int cont = 0; cont < (int)vec_textures.size(); cont++)
 	{
