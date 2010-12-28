@@ -2286,14 +2286,9 @@ void CPracticaView::OnImportMuscles()
 
 	// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
 	char * nomfitx = (char *)(LPCTSTR)nom;
-
-	if (ObOBJ != NULL)
-	{
-		XMLReader* lector = new XMLReader(nomfitx, EManager, MManager, editor);
-		lector->Read();
-		delete lector;
-	}
-
+	std::string path = nomfitx;
+	MManager->Load(path);
+	
 	// Crida a OnPaint() per redibuixar l'escena
 	Invalidate();
 }
@@ -2601,12 +2596,8 @@ void CPracticaView::OnImportExpressions()
 
 	//Cridar al parsejador de fitxers XML per carregar les expressions.
 	// La variable nomfitx conté tot el path del fitxer.
-	if (ObOBJ != NULL)
-	{
-		XMLReader* lector = new XMLReader(nomfitx, EManager, MManager, editor);
-		lector->Read();
-		delete lector;
-	}
+	std::string  path = nomfitx;
+	EManager->Load(path);
 
 	// Crida a OnPaint() per redibuixar l'escena
 	Invalidate();

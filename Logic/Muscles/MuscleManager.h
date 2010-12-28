@@ -4,7 +4,7 @@
 #include <vector>
 #include "../../Models/Actor/Actor.h"
 #include "Muscle.h"
-#include "../../../include/expat/XMLParser.h"
+#include "../../Common/ParserXML/XMLParser.h"
 
 #define NMUSCLES 14
 //NONE és l'últim element ja que l'array arriba a l'element N-1.

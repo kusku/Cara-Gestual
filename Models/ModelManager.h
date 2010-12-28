@@ -5,7 +5,7 @@
 #include <map>
 #include "Actor/Actor.h"
 #include "Scenary/Scenary.h"
-#include "../../include/expat/XMLParser.h"
+#include "../Common/ParserXML/XMLParser.h"
 
 class ModelManager : public CXMLParser
 {

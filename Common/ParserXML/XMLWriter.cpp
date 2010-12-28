@@ -35,34 +35,29 @@ void XMLWriter::GuardarMuscles()	{
 	for (int i = 0; i < MManager->getNumMuscles(); i++)
 	{
 		nomMuscle = ConvertirMuscle(i);
-		fprintf_s(fitxer,"\t<muscle nom = \"%s\">\n", nomMuscle);		//no se com kullons printar el nom, suposo k printa un int
 		for (int j=0; j < MManager->getMuscleList()[i]->getNumVertexs(); j++)
-		{
-			fprintf_s(fitxer,"\t\t<param vertex = \"%d\" delta = \"%f\"/>\n", MManager->getMuscleList()[i]->getVertexIndex()[j], MManager->getMuscleList()[i]->getVertexDelta()[j]);		
-			//MManager->getMuscleList[i]->getVertexDelta[j];		//valor de la delta
-			//MManager->getMuscleList[i]->getVertexIndex[j];		//valor de lindex
-		}
-		fprintf_s(fitxer, "\t</muscle>\n");
+			fprintf_s(fitxer,"\t\t<%s vertex = \"%d\" delta = \"%f\"/>\n",nomMuscle, MManager->getMuscleList()[i]->getVertexIndex()[j], MManager->getMuscleList()[i]->getVertexDelta()[j]);		
+
+		fprintf_s(fitxer,"\n");
 	}
 	fprintf_s(fitxer,"</muscles>");
 }
 
 void XMLWriter::GuardarExpresions()	{
-	char *nomExpresio,*nomMuscle;
+	char *nomExpressio,*nomMuscle;
 	TypeMuscle t;
 	
 	fprintf_s(fitxer, "<expressions>\n");
 	for ( int i=0; i < EManager->getNumExpressions(); i++ )
 	{
-		nomExpresio = ConvertirExpression(i);
-		fprintf_s(fitxer, "\t<expressio nom = \"%s\">\n", nomExpresio);
-		for ( int j=0; j < MManager->getNumMuscles(); j++ )			//PROBLEMA EN EL CAS QUE NO HI HAGI UN VECTOR PER TOTS???
+		nomExpressio = ConvertirExpression(i);
+		for ( int j=0; j < MManager->getNumMuscles(); j++ )
 		{
 			nomMuscle = ConvertirMuscle(j);
 			t = ConvertirTypeMuscle(j);
-			fprintf_s(fitxer, "\t\t<muscle nom = \"%s\" vector = \"%f,%f,%f\"/>\n",nomMuscle, EManager->getExpressionList()[i]->getMovement(t).x, EManager->getExpressionList()[i]->getMovement(t).y, EManager->getExpressionList()[i]->getMovement(t).z);
+			fprintf_s(fitxer, "\t\t<%s muscle = \"%s\" posX = \"%f\" posY = \"%f\" posZ = \"%f\"/>\n",nomExpressio, nomMuscle, EManager->getExpressionList()[i]->getMovement(t).x, EManager->getExpressionList()[i]->getMovement(t).y, EManager->getExpressionList()[i]->getMovement(t).z);
 		}
-		fprintf_s(fitxer, "\t</expressio>\n");
+		fprintf_s(fitxer,"\n");
 	}
 	fprintf_s(fitxer, "</expressions>");
 }
@@ -83,6 +78,7 @@ char* XMLWriter::ConvertirMuscle(int i)	{		// TypeMuscle(0) retorna 0 i no pas E
 	else if (i==11)	return "LATDBOCA";
 	else if (i==12)	return "DENTDALT";
 	else if (i==13)	return "DENTBAIX";
+	return "NONE_MUSCLE";
 }
 
 TypeMuscle XMLWriter::ConvertirTypeMuscle(int i)	{		// TypeMuscle(0) retorna 0 i no pas ECELLA
@@ -101,6 +97,7 @@ TypeMuscle XMLWriter::ConvertirTypeMuscle(int i)	{		// TypeMuscle(0) retorna 0 i
 	else if (i==11)	return LATDBOCA;
 	else if (i==12)	return DENTDALT;
 	else if (i==13)	return DENTBAIX;
+	return NONE_MUSCLE;
 }
 
 char* XMLWriter::ConvertirExpression(int i)	
@@ -165,6 +162,11 @@ char* XMLWriter::ConvertirExpression(int i)
 	case 11:
 		{
 			return "NEUTRE";
+			break;
+		}
+	default:
+		{
+			return "NONE_EXPRESSION";
 			break;
 		}
 	}
@@ -232,6 +234,11 @@ TypeExpression XMLWriter::ConvertirTypeExpression(int i)	{
 	case 11:
 		{
 			return NEUTRE;
+			break;
+		}
+	default:
+		{
+			return NONE_EXPRESSION;
 			break;
 		}
 	}

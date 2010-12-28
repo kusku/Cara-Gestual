@@ -26,7 +26,6 @@
 
 // MUSCLES I EXPRESSIONS
 #include "PracticaDoc.h"
-#include "Common/ParserXML/XMLReader.h"
 #include "Common/ParserXML/XMLWriter.h"
 #include "Logic/Muscles/MuscleManager.h"
 #include "Logic/Expressions/ExpressionManager.h"

@@ -5,7 +5,7 @@
 #include "Expression.h"
 #include "../Muscles/MuscleManager.h"
 #include "../../Models/Actor/Actor.h"
-#include "../../../include/expat/XMLParser.h"
+#include "../../Common/ParserXML/XMLParser.h"
 
 #define NEXPRESSIONS 12
 //NONE és l'últim element ja que l'array arriba a l'element N-1.
