@@ -18,6 +18,7 @@ ExpressionManager::ExpressionManager(MuscleManager* MMan)
 ExpressionManager::~ExpressionManager()
 {
 	delete [] Expressions;
+	MManager = NULL;
 }
 
 void ExpressionManager::resetExpression( TypeExpression nameExpression )
@@ -76,9 +77,9 @@ void ExpressionManager::onStartElement(const std::string &elem, MKeyValue &atts)
 		std::string s_posZ = atts["posZ"];
 
 		D3DXVECTOR3 vector;
-		sscanf(s_posX.c_str(), "%f", &vector.x);
-		sscanf(s_posY.c_str(), "%f", &vector.y);
-		sscanf(s_posZ.c_str(), "%f", &vector.z);
+		sscanf_s(s_posX.c_str(), "%f", &vector.x);
+		sscanf_s(s_posY.c_str(), "%f", &vector.y);
+		sscanf_s(s_posZ.c_str(), "%f", &vector.z);
 
 		modifyMuscleExpression(searchExpression(elem),MManager->searchMuscle(s_muscle),vector);
 	}

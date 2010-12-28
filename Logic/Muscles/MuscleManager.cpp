@@ -69,8 +69,8 @@ void MuscleManager::onStartElement(const std::string &elem, MKeyValue &atts)
 		int n_vertex;
 		float n_delta;
 
-		sscanf(s_vertex.c_str(),"%d",&n_vertex);
-		sscanf(s_delta.c_str(),"%f",&n_delta);
+		sscanf_s(s_vertex.c_str(),"%d",&n_vertex);
+		sscanf_s(s_delta.c_str(),"%f",&n_delta);
 		addVertexMuscle(searchMuscle(elem),n_vertex, n_delta);
 	}
 }

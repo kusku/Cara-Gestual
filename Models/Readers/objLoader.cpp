@@ -77,17 +77,17 @@ bool _stdcall COBJModel::LoadModel(const char szFileName[],unsigned int iDisplay
 	Model.info = new OBJFileInfo;
 
 	// Get base path
-	strcpy(szBasePath, szFileName);
+	strcpy_s(szBasePath,_MAX_PATH, szFileName);
 	MakePath(szBasePath);
 
 	////////////////////////////////////////////////////////////////////////
 	// Open the OBJ file
 	////////////////////////////////////////////////////////////////////////
-
-	FILE *hFile = fopen(szFileName, "r");
+	FILE *hFile;
+	errno_t err = fopen_s(&hFile, szFileName, "r");
 	
 	// Success ?
-	if (!hFile)
+	if (err != 0)
 		return FALSE;
 
 	////////////////////////////////////////////////////////////////////////
@@ -133,7 +133,7 @@ bool _stdcall COBJModel::LoadModel(const char szFileName[],unsigned int iDisplay
 		if (!strncmp(szString, VERTEX_ID, sizeof(VERTEX_ID)))
 		{
 			// Read three floats out of the file
-			nScanReturn = fscanf(hFile, "%f %f %f",
+			nScanReturn = fscanf_s(hFile, "%f %f %f",
 				&Model.pVertices[CurrentIndex.iVertexCount].fX,
 				&Model.pVertices[CurrentIndex.iVertexCount].fY,
 				&Model.pVertices[CurrentIndex.iVertexCount].fZ);
@@ -145,7 +145,7 @@ bool _stdcall COBJModel::LoadModel(const char szFileName[],unsigned int iDisplay
 		if (!strncmp(szString, TEXCOORD_ID, sizeof(TEXCOORD_ID)))
 		{
 			// Read two floats out of the file
-			nScanReturn = fscanf(hFile, "%f %f",
+			nScanReturn = fscanf_s(hFile, "%f %f",
 				&Model.pTexCoords[CurrentIndex.iTexCoordCount].fX,
 				&Model.pTexCoords[CurrentIndex.iTexCoordCount].fY);
 			// Next texture coordinate
@@ -156,7 +156,7 @@ bool _stdcall COBJModel::LoadModel(const char szFileName[],unsigned int iDisplay
 		if (!strncmp(szString, NORMAL_ID, sizeof(NORMAL_ID)))
 		{
 			// Read three floats out of the file
-			nScanReturn = fscanf(hFile, "%f %f %f",
+			nScanReturn = fscanf_s(hFile, "%f %f %f",
 				&Model.pNormals[CurrentIndex.iNormalCount].fX,
 				&Model.pNormals[CurrentIndex.iNormalCount].fY,
 				&Model.pNormals[CurrentIndex.iNormalCount].fZ);
@@ -202,8 +202,8 @@ bool _stdcall COBJModel::LoadModel(const char szFileName[],unsigned int iDisplay
 				GetTokenParameter(szString, sizeof(szString), hFile);
 				// Append material library filename to the model's base path
 				char szLibraryFile[_MAX_PATH];
-				strcpy(szLibraryFile, szBasePath);
-				strcat(szLibraryFile, szString);
+				strcpy_s(szLibraryFile,_MAX_PATH, szBasePath);
+				strcat_s(szLibraryFile,_MAX_PATH, szString);
 				// Load the material library
 				LoadMaterialLib(szLibraryFile, Model.pMaterials, 
 					&CurrentIndex.iMaterialCount, szBasePath);
@@ -310,17 +310,17 @@ void _stdcall COBJModel::ParseFaceString(char szFaceString[], Face *FaceOut,
 		// Are vertices, normals and texture coordinates present ?
 		if (pNormals && pTexCoords)
 			// Yes
-			sscanf(pFaceString, "%i/%i/%i", 
+			sscanf_s(pFaceString, "%i/%i/%i", 
 				&iVertex, &iTextureCoord, &iNormal);
 		else if (pNormals && !pTexCoords)
 			// Vertices and normals but no texture coordinates
-			sscanf(pFaceString, "%i//%i", &iVertex, &iNormal);
+			sscanf_s(pFaceString, "%i//%i", &iVertex, &iNormal);
 		else if (pTexCoords && !pNormals)
 			// Vertices and texture coordinates but no normals
-			sscanf(pFaceString, "%i/%i", &iVertex, &iTextureCoord);
+			sscanf_s(pFaceString, "%i/%i", &iVertex, &iTextureCoord);
 		else
 			// Only vertices
-			sscanf(pFaceString, "%i", &iVertex);
+			sscanf_s(pFaceString, "%i", &iVertex);
 
 		// Copy vertex into the face. Also check for normals and texture 
 		// coordinates and copy them if present.
@@ -354,11 +354,11 @@ bool _stdcall COBJModel::LoadMaterialLib(const char szFileName[],
 	////////////////////////////////////////////////////////////////////////
 	// Open library file
 	////////////////////////////////////////////////////////////////////////
-
-	FILE *hFile = fopen(szFileName, "r");
+	FILE *hFile;
+	errno_t err = fopen_s(&hFile, szFileName, "r");
 
 	// Success ?
-	if (!hFile)
+	if (err != 0)
 		return FALSE;
 
 	////////////////////////////////////////////////////////////////////////
@@ -384,14 +384,14 @@ bool _stdcall COBJModel::LoadMaterialLib(const char szFileName[],
 			// Read material name
 			GetTokenParameter(szString, sizeof(szString), hFile);
 			// Store material name in the structure
-			strcpy(pMaterials[*iCurMaterialIndex].szName, szString);
+			strcpy_s(pMaterials[*iCurMaterialIndex].szName,1024, szString);
 		}
 
 		// Ambient material properties
 		if (!strncmp(szString, MTL_AMBIENT_ID, sizeof(MTL_AMBIENT_ID)))
 		{
 			// Read into current material
-			fscanf(hFile, "%f %f %f",
+			fscanf_s(hFile, "%f %f %f",
 				&pMaterials[*iCurMaterialIndex].fAmbient[0],
 				&pMaterials[*iCurMaterialIndex].fAmbient[1],
 				&pMaterials[*iCurMaterialIndex].fAmbient[2]);
@@ -401,7 +401,7 @@ bool _stdcall COBJModel::LoadMaterialLib(const char szFileName[],
 		if (!strncmp(szString, MTL_DIFFUSE_ID, sizeof(MTL_DIFFUSE_ID)))
 		{
 			// Read into current material
-			fscanf(hFile, "%f %f %f",
+			fscanf_s(hFile, "%f %f %f",
 				&pMaterials[*iCurMaterialIndex].fDiffuse[0],
 				&pMaterials[*iCurMaterialIndex].fDiffuse[1],
 				&pMaterials[*iCurMaterialIndex].fDiffuse[2]);
@@ -411,7 +411,7 @@ bool _stdcall COBJModel::LoadMaterialLib(const char szFileName[],
 		if (!strncmp(szString, MTL_SPECULAR_ID, sizeof(MTL_SPECULAR_ID)))
 		{
 			// Read into current material
-			fscanf(hFile, "%f %f %f",
+			fscanf_s(hFile, "%f %f %f",
 				&pMaterials[*iCurMaterialIndex].fSpecular[0],
 				&pMaterials[*iCurMaterialIndex].fSpecular[1],
 				&pMaterials[*iCurMaterialIndex].fSpecular[2]);
@@ -424,10 +424,10 @@ bool _stdcall COBJModel::LoadMaterialLib(const char szFileName[],
 			GetTokenParameter(szString, sizeof(szString), hFile);
 			// Append material library filename to the model's base path
 			char szTextureFile[_MAX_PATH];
-			strcpy(szTextureFile, szBasePath);
-			strcat(szTextureFile, szString);
+			strcpy_s(szTextureFile,_MAX_PATH, szBasePath);
+			strcat_s(szTextureFile,_MAX_PATH, szString);
 			// Store texture filename in the structure
-			strcpy(pMaterials[*iCurMaterialIndex].szTexture, szTextureFile);
+			strcpy_s(pMaterials[*iCurMaterialIndex].szTexture,_MAX_PATH, szTextureFile);
 			// Load texture and store its ID in the structure
 			pMaterials[*iCurMaterialIndex].iTextureID = LoadTexture(szTextureFile);
 		}
@@ -436,7 +436,7 @@ bool _stdcall COBJModel::LoadMaterialLib(const char szFileName[],
 		if (!strncmp(szString, MTL_SHININESS_ID, sizeof(MTL_SHININESS_ID)))
 		{
 			// Read into current material
-			fscanf(hFile, "%f",
+			fscanf_s(hFile, "%f",
 				&pMaterials[*iCurMaterialIndex].fShininess);
 			// OBJ files use a shininess from 0 to 1000; Scale for OpenGL
 			pMaterials[*iCurMaterialIndex].fShininess /= 1000.0f;
@@ -675,19 +675,20 @@ void _stdcall COBJModel::GetFileInfo(FILE *hStream, OBJFileInfo *Info,
 			// Read the filename of the library
 			GetTokenParameter(szString, sizeof(szString), hStream);
 			// Copy the model's base path into a none-constant string
-			strcpy(szBasePath, szConstBasePath);
+			strcpy_s(szBasePath,_MAX_PATH, szConstBasePath);
 			// Append material library filename to the model's base path
-			strcat(szBasePath, szString);
+			strcat_s(szBasePath,_MAX_PATH, szString);
 			// Open the library file
-			FILE *hMaterialLib = fopen(szBasePath, "r");
+			FILE *hMaterialLib;
+			errno_t err = fopen_s(&hMaterialLib, szBasePath, "r");
 			// Success ?
-			if (hMaterialLib)
+			if (err == 0)
 			{
 				// Quit reading when end of file has been reached
 				while (!feof(hMaterialLib))
 				{
 					// Read next string
-					fscanf(hMaterialLib, "%s" ,szString);
+					fscanf_s(hMaterialLib, "%s" ,szString, _countof(szString));
 					// Is it a "new material" identifier ?
 					if (!strncmp(szString, NEW_MTL_ID, sizeof(NEW_MTL_ID)))
 						// One more material defined
@@ -765,7 +766,7 @@ void _stdcall COBJModel::GetTokenParameter(char szString[],
 	fgets(szString, iStrSize, hFile);
 
 	// Remove space before the token			
-	strcpy(szString, &szString[1]);
+	strcpy_s(szString,iStrSize, &szString[1]);
 
 	// Remove newline character after the token
 	szString[strlen(szString) - 1] = char('\0');
