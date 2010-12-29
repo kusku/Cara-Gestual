@@ -2,25 +2,25 @@
 #include "ModelManager.h"
 #include "../Render/CDirectX.h"
 
-
 ModelManager::ModelManager()
 {
 	m_IsReadingScene = false;
-	m_Pan = D3DXVECTOR3(0.0f,0.0f,0.0f);
+	m_Actor = NULL;
 }
 
 ModelManager::~ModelManager()
 {
+	m_Actor = NULL;
 }
 
-void ModelManager::Render(LPDIRECT3DDEVICE9 Device)
+void ModelManager::Render(LPDIRECT3DDEVICE9 Device, const D3DXVECTOR3 pan )
 {
 	if (m_Actor != NULL)
-		m_Actor->Render(Device);
+		m_Actor->Render(Device, pan);
 
 	for(TScenaryIterator it = m_Scenary.begin(); it != m_Scenary.end(); ++it)
 	{
-		(*it->second).Render();	
+		(*it->second).Render(Device);	
 	}
 }
 
@@ -48,6 +48,10 @@ void ModelManager::onStartElement(const std::string &elem, MKeyValue &atts)
 			else if (s_path.find(".3ds") || s_path.find(".3DS"))
 			{
 				m_Actor = new Actor((char*)s_path.c_str(),TIPUS_3DS);
+			}
+			else if (s_path.find(".x") || s_path.find(".X"))
+			{
+				m_Actor = new Actor((char*)s_path.c_str(),TIPUS_X);
 			}
 		}
 

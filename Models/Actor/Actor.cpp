@@ -1,7 +1,5 @@
 #include "../../stdafx.h"
 #include "Actor.h"
-#include "../Readers/objLoader.h"
-#include "../Readers/Obj3DS.h"
 #include "../../Logic/Rigging/intersection.h"
 #include "../../defines.h"
 
@@ -16,9 +14,11 @@ Actor::Actor(char* filename, int tipus) {
 	m_Position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	switch (tipus) {
-		case 1: this->ModelDeOBJ(filename);
+		case TIPUS_OBJ: this->ModelDeOBJ(filename);
 			break;
-		case 2: this->ModelDe3DS(filename);
+		case TIPUS_3DS: this->ModelDe3DS(filename);
+			break;
+		case TIPUS_X: this->ModelDeX(filename);
 			break;
 		default: printf("Tipus invalid\n");
 	}
@@ -143,6 +143,63 @@ void Actor::ModelDe3DS(char* filename)
 
 	o->EliminarMemoria();
 	delete o;
+}
+
+void Actor::ModelDeX(char* filename)
+{
+	CObjX* reader  = new CObjX();
+	std::string file = filename;
+	reader->LoadModel(file);
+
+	//////////////////////////
+	//Creació dels materials//
+	//////////////////////////
+	{
+		D3DMATERIAL9* m_Materials = reader->GetMaterials();
+
+		if (m_Materials != NULL)
+		{
+			nombreMaterials = reader->GetNumMaterials();
+			materials = new O3DMaterial[nombreMaterials];
+		}
+		else
+		{
+			this->nombreMaterials = 0;
+			this->materials = NULL;
+		}
+		
+		for (int i=0; i<nombreMaterials; ++i)
+		{
+			strcpy_s(materials[i].szTexture, MAX_PATH_TEXTURE, const_cast <char *>( reader->GetTextureName().c_str()));
+			materials[i].fAmbient[0] = m_Materials->Ambient.r;
+			materials[i].fAmbient[1] = m_Materials->Ambient.g;
+			materials[i].fAmbient[2] = m_Materials->Ambient.b;
+
+			materials[i].fDiffuse[0] = m_Materials->Diffuse.r;
+			materials[i].fDiffuse[1] = m_Materials->Diffuse.g;
+			materials[i].fDiffuse[2] = m_Materials->Diffuse.b;
+
+			materials[i].fEmmissive[0] = m_Materials->Emissive.r;
+			materials[i].fEmmissive[1] = m_Materials->Emissive.g;
+			materials[i].fEmmissive[2] = m_Materials->Emissive.b;
+
+			materials[i].fSpecular[0] = m_Materials->Specular.r;
+			materials[i].fSpecular[1] = m_Materials->Specular.g;
+			materials[i].fSpecular[2] = m_Materials->Specular.b;
+
+			materials[i].fShininess = m_Materials->Power;
+		}
+	}
+	
+	///////////////////////
+	//Creació de la malla//
+	///////////////////////
+	{
+		LPD3DXMESH m_Mesh = reader->GetMesh();
+
+	}
+
+
 }
 
 int Actor::buscarPunt(D3DXVECTOR3 punt) {

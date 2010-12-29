@@ -3,6 +3,7 @@
 
 #define TIPUS_OBJ 1
 #define TIPUS_3DS 2
+#define TIPUS_X 3
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +16,8 @@
 
 #include "Windows.h"
 #include "../Readers/objLoader.h"
+#include "../Readers/Obj3DS.h"
+#include "../Readers/ObjX.h"
 #include "../../Logic/Rigging/intersection.h"
 #include "../../Render/CDirectX.h"
 #include "../TextureManager/TextureManager.h"
@@ -124,6 +127,7 @@ private:
 	
 		void		ModelDeOBJ			( char* filename );
 		void		ModelDe3DS			( char* filename );
+		void		ModelDeX			( char* filename );
 		void		UseMaterial				( O3DMaterial pMaterial );
 		void		CalcularNormalsVertex	( void );
 

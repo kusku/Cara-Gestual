@@ -39,7 +39,7 @@ void RenderBox (float x1, float y1, float x2, float y2)
 void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTOR3 tr, bool TR, 
 				 D3DXVECTOR3 VScl,D3DXVECTOR3 VTr, D3DXVECTOR3 VRot,bool oculta,bool testv,
 				 bool bck_ln,bool filferros,bool textur,bool ifix,bool eix,
-				 EditorManager* EdManager, Actor* ObOBJ, MuscleManager* MManager, bool flags,
+				 EditorManager* EdManager, ModelManager* ModelManager, MuscleManager* MManager, bool flags,
 				 CSubtitles* MSubtitles, bool subtitles, CParla* parla)
 {    
 	D3DXVECTOR3 cam,up;
@@ -120,8 +120,8 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 		l_DX->RenderAxis(8.0f);
 
 	//Dibuixa el model
-	if (ObOBJ != NULL)
-		ObOBJ->Render(Device,tr);
+	if (ModelManager != NULL)
+		ModelManager->Render(Device,tr);
 
 	renderSphereSelection(Device, l_DX, EdManager, muscle);
 

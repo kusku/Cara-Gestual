@@ -12,12 +12,19 @@ private:
 
 	D3DXVECTOR3 m_Position;
 
+	LPD3DXMESH m_Mesh;
+	D3DMATERIAL9* m_Materials;
+	LPDIRECT3DTEXTURE9* m_Textures;
+	int m_NumMaterials;
+
+	void	LoadModelX	();
+
 public:
 
 	Scenary( const std::string name = "", const std::string path = "" );
 	~Scenary();
 
-	void	Render		( );
+	void	Render		( LPDIRECT3DDEVICE9 Device, D3DXVECTOR3 pan = D3DXVECTOR3(0.f, 0.f, 0.f));
 
 	void	SetPath		( std::string path ) { m_Path = path; };
 	void	SetName		( std::string name ) { m_Name = name; };

@@ -1,0 +1,4 @@
+<Scene>	
+	<ACTOR posX="-5.0" posY="-5.0" posZ="-5.0" />
+	<SCENARY name="heavy" posX="10.0" posY="10.0" posZ="10.0" />
+</Scene>

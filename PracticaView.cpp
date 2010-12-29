@@ -466,8 +466,8 @@ void CPracticaView::OnDestroy()
 void CPracticaView::OnPaint() 
 {
 	Perspectiva(anglev,angleh,R,Vis_Polar,pan,tr_cpv,transf,
-				VScal,VTras,VRota,oculta,test_vis,back_line,filferros,textura,ifixe,eixos, editor, ObOBJ, MManager, editMuscle, 
-				MSubtitles, subtitles, parla);
+				VScal,VTras,VRota,oculta,test_vis,back_line,filferros,textura,ifixe,eixos, editor, m_ModelManager, MManager,
+				editMuscle, MSubtitles, subtitles, parla);
 }
 
 void CPracticaView::OnSize(UINT nType, int cx, int cy) 
@@ -1382,31 +1382,34 @@ void CPracticaView::OnCarregaAutomatica()
 	std::string m_musclePath = m_ModelManager->GetMusclePath();
 	std::string m_expressionPath = m_ModelManager->GetExpressionPath();
 
-	editor = new EditorManager(MManager,EManager,ObOBJ);
-	MManager->SetModel(ObOBJ);
-
-	// Eliminació de la memòria en Selection, Expressions i Muscles
+	if (ObOBJ != NULL)
 	{
-		//Reseteja la memòria de Selection
-		if (select != NULL)
-			select->SetFlagsTriangles();
+		editor = new EditorManager(MManager,EManager,ObOBJ);
+		MManager->SetModel(ObOBJ);
 
-		//Borrem els muscles i expressions que hi pugui haver
-		int expressions = EManager->getNumExpressions();
-		for (int i=0; i<expressions; ++i)
+		// Eliminació de la memòria en Selection, Expressions i Muscles
 		{
-			EManager->resetExpression((TypeExpression) i);
+			//Reseteja la memòria de Selection
+			if (select != NULL)
+				select->SetFlagsTriangles();
+
+			//Borrem els muscles i expressions que hi pugui haver
+			int expressions = EManager->getNumExpressions();
+			for (int i=0; i<expressions; ++i)
+			{
+				EManager->resetExpression((TypeExpression) i);
+			}
+			int muscles = MManager->getNumMuscles();
+			for (int i=0; i<muscles;++i)
+			{
+				MManager->ClearMuscle((TypeMuscle) i);
+			}
+			editor->ClearVertexs();
 		}
-		int muscles = MManager->getNumMuscles();
-		for (int i=0; i<muscles;++i)
-		{
-			MManager->ClearMuscle((TypeMuscle) i);
-		}
-		editor->ClearVertexs();
+		
+		MManager->Load(m_musclePath);
+		EManager->Load(m_expressionPath);
 	}
-	
-	MManager->Load(m_musclePath);
-	EManager->Load(m_expressionPath);
 
 	// Crida a OnPaint() per redibuixar l'escena
 	Invalidate();	

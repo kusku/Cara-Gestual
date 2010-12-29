@@ -1,0 +1,4 @@
+<Models>
+	<ACTOR path="./data/models/heavytriangles/heavyweapons.obj" muscles="./data/models/heavytriangles/muscles.xml" expressions="./data/models/heavytriangles/expressions.xml" />
+	<SCENARY name="heavy" path="./data/models/heavyX/heavyweapons.X" />
+</Models>

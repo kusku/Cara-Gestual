@@ -24,8 +24,6 @@ private:
 	std::string m_MusclePath;
 	std::string m_ExpressionPath;
 
-	D3DXVECTOR3 m_Pan;
-
 	void		onStartElement	( const std::string &elem, MKeyValue &atts );
 
 public:
@@ -35,7 +33,7 @@ public:
 
 	// Carrega els XML dels models
 	void		Load		(std::string xmlFile, bool IsScene = false );
-	void		Render		(LPDIRECT3DDEVICE9 Device);
+	void		Render		(LPDIRECT3DDEVICE9 Device, const D3DXVECTOR3 pan = D3DXVECTOR3(0.f, 0.f, 0.f));
 
 	Actor*		GetActor			() {return m_Actor; };
 	std::string GetMusclePath		() {return m_MusclePath; };
