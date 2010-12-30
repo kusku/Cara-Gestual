@@ -127,7 +127,7 @@ private:
 	
 		void		ModelDeOBJ			( char* filename );
 		void		ModelDe3DS			( char* filename );
-		void		ModelDeX			( char* filename );
+		HRESULT		ModelDeX			( char* filename );
 		void		UseMaterial				( O3DMaterial pMaterial );
 		void		CalcularNormalsVertex	( void );
 

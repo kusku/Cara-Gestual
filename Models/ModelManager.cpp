@@ -41,15 +41,15 @@ void ModelManager::onStartElement(const std::string &elem, MKeyValue &atts)
 			m_MusclePath = atts["muscles"];
 			m_ExpressionPath = atts["expressions"];
 
-			if (s_path.find(".obj") || s_path.find(".OBJ"))
+			if (s_path.find(".obj") != -1 || s_path.find(".OBJ") != -1)
 			{
 				m_Actor = new Actor((char*)s_path.c_str(),TIPUS_OBJ);
 			}
-			else if (s_path.find(".3ds") || s_path.find(".3DS"))
+			else if (s_path.find(".3ds") != -1 || s_path.find(".3DS") != -1)
 			{
 				m_Actor = new Actor((char*)s_path.c_str(),TIPUS_3DS);
 			}
-			else if (s_path.find(".x") || s_path.find(".X"))
+			else if (s_path.find(".x") != -1 || s_path.find(".X") != -1)
 			{
 				m_Actor = new Actor((char*)s_path.c_str(),TIPUS_X);
 			}

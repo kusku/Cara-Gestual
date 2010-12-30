@@ -41,10 +41,11 @@ void Scenary::LoadModelX()
 	CObjX* reader = new CObjX();
 	reader->LoadModel(m_Path);
 
+	m_NumMaterials = reader->GetNumMaterials();
 	m_Mesh = reader->GetMesh();
 	m_Materials = reader->GetMaterials();
 	m_Textures = reader->GetTextures();
-	m_NumMaterials = reader->GetNumMaterials();
+	
 
 	delete reader;
 }

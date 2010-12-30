@@ -143,9 +143,11 @@ void Actor::ModelDe3DS(char* filename)
 
 	o->EliminarMemoria();
 	delete o;
+
+	LoadInfoInVectors(CDirectX::GetInstance()->GetDevice());
 }
 
-void Actor::ModelDeX(char* filename)
+HRESULT Actor::ModelDeX(char* filename)
 {
 	CObjX* reader  = new CObjX();
 	std::string file = filename;
@@ -196,8 +198,47 @@ void Actor::ModelDeX(char* filename)
 	///////////////////////
 	{
 		LPD3DXMESH m_Mesh = reader->GetMesh();
+		IDirect3DIndexBuffer9 *ib;
+		IDirect3DVertexBuffer9 *vb;
 
+		nombrePunts = (int)m_Mesh->GetNumVertices();
+		nombreCares = (int)m_Mesh->GetNumFaces();
+		punts = new Punt[nombreCares*3];
+		cares = new Cara[nombreCares];
+
+		unsigned short* indices;
+		unsigned char* vertices;
+
+		m_Mesh->GetIndexBuffer(&ib);
+		m_Mesh->GetVertexBuffer(&vb);
+
+		ib->Lock(0,0,(void **)&indices,0);
+		vb->Lock(0,0,(void **)&vertices,0);
+
+		for (unsigned int i = 0; i < (unsigned int)nombreCares; ++i)
+		{
+			for (unsigned short j = 0; j < 3; ++j)
+			{
+				D3DXVECTOR3 *pVertex = (D3DXVECTOR3 *)&vertices[m_Mesh->GetNumBytesPerVertex()*indices[i*3 + j]];
+				punts[i*3 + j].cordenades = pVertex[0];
+				punts[i*3 + j].normal = pVertex[1];	
+				punts[i*3 + j].cordTex.x = pVertex[2].y; punts[i+j].cordTex.y = pVertex[2].z;
+
+				cares[i].punts[j] = &punts[i*3 + j];
+				cares[i].normals[j] = punts[i*3 + j].normal;
+				cares[i].cordTex[j].x = punts[i*3 + j].cordTex.x;
+				cares[i].cordTex[j].y = punts[i*3 + j].cordTex.y;
+			}
+		}
+
+		vb->Unlock();
+		ib->Unlock();
 	}
+
+	delete reader;
+
+	LoadInfoInVectors(CDirectX::GetInstance()->GetDevice());
+	return true;
 
 
 }

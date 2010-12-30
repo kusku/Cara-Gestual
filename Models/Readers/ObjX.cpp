@@ -12,9 +12,7 @@ CObjX::CObjX()
 
 CObjX::~CObjX()
 {
-	delete [] m_MeshMaterials;
-	delete [] m_MeshTextures;
-	delete m_Mesh;
+	delete [] m_MaterialMeshList;
 }
 
 void CObjX::LoadModel(std::string filename)
@@ -52,7 +50,7 @@ void CObjX::LoadModel(std::string filename)
 			}
 
 		}
-
+		ParserMaterialMeshList(filename);
 		materialBuffer->Release();
 	}
 }
@@ -65,4 +63,25 @@ std::string CObjX::CreateTexturePath(const std::string filename, std::string tex
 	file.replace(pos,file.length(),"/" + texturename);
 	
 	return file;
+}
+
+void CObjX::ParserMaterialMeshList(std::string filename)
+{
+	int numTextures;
+	int numFaces;
+	errno_t err;
+	FILE* fitxer;
+	char* seq;
+
+	err  = fopen_s(&fitxer,filename.c_str(),"r");
+	//TODO: Buscar la seqüència de carècters MeshMaterialList mtls i després llegir els valors
+	while (!feof(fitxer))
+	{
+		fscanf_s(fitxer, "%s", &seq);
+		if (strcmp(seq,"MeshMaterialList mtls {") == 0)
+		{
+
+		}
+	}
+
 }

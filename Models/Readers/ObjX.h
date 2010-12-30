@@ -27,7 +27,10 @@ private:
 	DWORD m_NumMaterials;
 	std::string m_TextureName;
 
-	std::string	CreateTexturePath	( const std::string filename, std::string texturename );
+	int* m_MaterialMeshList;
+
+	std::string	CreateTexturePath		( const std::string filename, std::string texturename );
+	void		ParserMaterialMeshList	( std::string filename);
 	
 };
 
