@@ -12,6 +12,8 @@ Actor::Actor(char* filename, int tipus) {
 	this->punts = NULL;
 
 	m_Position = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_Scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
+	m_Rotation = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	switch (tipus) {
 		case TIPUS_OBJ: this->ModelDeOBJ(filename);
@@ -158,7 +160,6 @@ HRESULT Actor::ModelDeX(char* filename)
 	//////////////////////////
 	{
 		D3DMATERIAL9* m_Materials = reader->GetMaterials();
-
 		if (m_Materials != NULL)
 		{
 			nombreMaterials = reader->GetNumMaterials();
@@ -170,9 +171,10 @@ HRESULT Actor::ModelDeX(char* filename)
 			this->materials = NULL;
 		}
 		
+		std::vector<std::string> nomTextures = reader->GetTextureName();
 		for (int i=0; i<nombreMaterials; ++i)
 		{
-			strcpy_s(materials[i].szTexture, MAX_PATH_TEXTURE, const_cast <char *>( reader->GetTextureName().c_str()));
+			strcpy_s(materials[i].szTexture, MAX_PATH_TEXTURE, const_cast <char *>(nomTextures[i].c_str()));
 			materials[i].fAmbient[0] = m_Materials->Ambient.r;
 			materials[i].fAmbient[1] = m_Materials->Ambient.g;
 			materials[i].fAmbient[2] = m_Materials->Ambient.b;
@@ -203,8 +205,12 @@ HRESULT Actor::ModelDeX(char* filename)
 
 		nombrePunts = (int)m_Mesh->GetNumVertices();
 		nombreCares = (int)m_Mesh->GetNumFaces();
-		punts = new Punt[nombreCares*3];
+
+		punts = new Punt[nombrePunts];
 		cares = new Cara[nombreCares];
+		cordTex = new Point2D[nombrePunts];
+
+		std::vector<int> MaterialMeshList = reader->GetMaterialMeshList();
 
 		unsigned short* indices;
 		unsigned char* vertices;
@@ -215,32 +221,41 @@ HRESULT Actor::ModelDeX(char* filename)
 		ib->Lock(0,0,(void **)&indices,0);
 		vb->Lock(0,0,(void **)&vertices,0);
 
+		for(unsigned int i=0; i<(unsigned int)nombrePunts; ++i)
+		{
+			D3DXVECTOR3 *pVertex = (D3DXVECTOR3 *)&vertices[m_Mesh->GetNumBytesPerVertex()*i];
+			punts[i].cordenades = pVertex[0];
+			punts[i].moviment = D3DXVECTOR3(0.f, 0.f, 0.f);
+			punts[i].normal = pVertex[1];
+			punts[i].cordTex.x = pVertex[2].y;
+			punts[i].cordTex.y = -pVertex[2].z;
+			cordTex[i].x = pVertex[2].y;
+			cordTex[i].y = -pVertex[2].z;
+		}
+
 		for (unsigned int i = 0; i < (unsigned int)nombreCares; ++i)
 		{
 			for (unsigned short j = 0; j < 3; ++j)
 			{
 				D3DXVECTOR3 *pVertex = (D3DXVECTOR3 *)&vertices[m_Mesh->GetNumBytesPerVertex()*indices[i*3 + j]];
-				punts[i*3 + j].cordenades = pVertex[0];
-				punts[i*3 + j].normal = pVertex[1];	
-				punts[i*3 + j].cordTex.x = pVertex[2].y; punts[i+j].cordTex.y = pVertex[2].z;
+				
+				int index = buscarPunt(pVertex[0]);
 
-				cares[i].punts[j] = &punts[i*3 + j];
-				cares[i].normals[j] = punts[i*3 + j].normal;
-				cares[i].cordTex[j].x = punts[i*3 + j].cordTex.x;
-				cares[i].cordTex[j].y = punts[i*3 + j].cordTex.y;
+				cares[i].punts[j] = &punts[index];
+				cares[i].normals[j] = punts[index].normal;
+				cares[i].cordTex[j].x = pVertex[2].y;
+				cares[i].cordTex[j].y = -pVertex[2].z;
 			}
+			cares[i].materialTextura = MaterialMeshList[i];
 		}
 
 		vb->Unlock();
 		ib->Unlock();
 	}
-
 	delete reader;
 
 	LoadInfoInVectors(CDirectX::GetInstance()->GetDevice());
 	return true;
-
-
 }
 
 int Actor::buscarPunt(D3DXVECTOR3 punt) {
@@ -422,9 +437,15 @@ void Actor::Render(LPDIRECT3DDEVICE9 Device, D3DXVECTOR3 pan)
 	CUSTOMVERTEXTEXTURA* text=NULL;
 
 	D3DXVECTOR3 pos = m_Position + pan;
-	D3DXMATRIX l_Matrix;
+	D3DXMATRIX l_MatrixT, l_Matrix;
+	D3DXMatrixIdentity(&l_MatrixT);
 	D3DXMatrixIdentity(&l_Matrix);
-	D3DXMatrixTranslation (&l_Matrix, pos.x, pos.y, pos.z);
+	D3DXMatrixScaling (&l_MatrixT,m_Scale.x, m_Scale.y, m_Scale.z);
+	l_Matrix *= l_MatrixT;
+	D3DXMatrixRotationYawPitchRoll(&l_MatrixT, DEG2RAD(m_Rotation.y), DEG2RAD(m_Rotation.x), DEG2RAD(m_Rotation.z));
+	l_Matrix *= l_MatrixT;
+	D3DXMatrixTranslation (&l_MatrixT, pos.x, pos.y, pos.z);
+	l_Matrix *= l_MatrixT;
 	Device->SetTransform(D3DTS_WORLD, &l_Matrix);
 
 	for(int cont = 0; cont < (int)vec_textures.size(); cont++)

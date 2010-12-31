@@ -76,7 +76,9 @@ class Actor {
 
 		void		Render				(LPDIRECT3DDEVICE9 Device, D3DXVECTOR3 pan = D3DXVECTOR3(0.0f,0.0f,0.0f));	
 
-		void		SetPosition			( D3DXVECTOR3 pos) { m_Position = pos; };
+		void		SetPosition			( D3DXVECTOR3 pos ) { m_Position = pos; };
+		void		SetScale			( D3DXVECTOR3 sca ) { m_Scale = sca; };
+		void		SetRotation			( D3DXVECTOR3 rot ) { m_Rotation = rot; };
 
 		// Mètodes GET
 		int			PuntMesProxim		( D3DXVECTOR3 );
@@ -105,6 +107,8 @@ private:
 		int nombreTexturesVertexs;
 
 		D3DXVECTOR3 m_Position;
+		D3DXVECTOR3 m_Scale;
+		D3DXVECTOR3 m_Rotation;
 
 		//VertexBuffer i IndexBuffer
 		LPDIRECT3DVERTEXBUFFER9				m_pVB;

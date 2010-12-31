@@ -69,16 +69,18 @@ void ModelManager::onStartElement(const std::string &elem, MKeyValue &atts)
 		{
 			if (m_Actor != NULL)
 			{
-				std::string posX = atts["posX"];
-				std::string posY = atts["posY"];
-				std::string posZ = atts["posZ"];
+				std::string pos = atts["position"];
+				std::string sca = atts["scale"];
+				std::string rot = atts["rotation"];
 
-				D3DXVECTOR3 position;
-				sscanf_s(posX.c_str(), "%f", &position.x);
-				sscanf_s(posY.c_str(), "%f", &position.y);
-				sscanf_s(posZ.c_str(), "%f", &position.z);
+				D3DXVECTOR3 position, rotation, scale;
+				sscanf_s(pos.c_str(), "%f %f %f", &position.x, &position.y, &position.z);
+				sscanf_s(sca.c_str(), "%f %f %f", &scale.x, &scale.y, &scale.z);
+				sscanf_s(rot.c_str(), "%f %f %f", &rotation.x, &rotation.y, &rotation.z);
 
 				m_Actor->SetPosition(position);
+				m_Actor->SetRotation(rotation);
+				m_Actor->SetScale(scale);
 			}
 		}
 
@@ -87,16 +89,18 @@ void ModelManager::onStartElement(const std::string &elem, MKeyValue &atts)
 			std::string name = atts["name"];
 			if (m_Scenary[name] != NULL)
 			{
-				std::string posX = atts["posX"];
-				std::string posY = atts["posY"];
-				std::string posZ = atts["posZ"];
+				std::string pos = atts["position"];
+				std::string sca = atts["scale"];
+				std::string rot = atts["rotation"];
 
-				D3DXVECTOR3 position;
-				sscanf_s(posX.c_str(), "%f", &position.x);
-				sscanf_s(posY.c_str(), "%f", &position.y);
-				sscanf_s(posZ.c_str(), "%f", &position.z);
+				D3DXVECTOR3 position, rotation, scale;
+				sscanf_s(pos.c_str(), "%f %f %f", &position.x, &position.y, &position.z);
+				sscanf_s(sca.c_str(), "%f %f %f", &scale.x, &scale.y, &scale.z);
+				sscanf_s(rot.c_str(), "%f %f %f", &rotation.x, &rotation.y, &rotation.z);
 
 				m_Scenary[name]->SetPosition(position);
+				m_Scenary[name]->SetRotation(rotation);
+				m_Scenary[name]->SetScale(scale);
 			}
 		}
 	}

@@ -11,6 +11,8 @@ private:
 	std::string m_Name;
 
 	D3DXVECTOR3 m_Position;
+	D3DXVECTOR3 m_Scale;
+	D3DXVECTOR3 m_Rotation;
 
 	LPD3DXMESH m_Mesh;
 	D3DMATERIAL9* m_Materials;
@@ -29,6 +31,8 @@ public:
 	void	SetPath		( std::string path ) { m_Path = path; };
 	void	SetName		( std::string name ) { m_Name = name; };
 	void	SetPosition	( D3DXVECTOR3 pos ) { m_Position = pos; };
+	void	SetScale	( D3DXVECTOR3 sca ) { m_Scale = sca; };
+	void	SetRotation	( D3DXVECTOR3 rot ) { m_Rotation = rot; };
 };
 
 #endif

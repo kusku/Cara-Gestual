@@ -8,15 +8,17 @@ CObjX::CObjX()
 	m_MeshTextures = NULL;
 	m_MeshMaterials = NULL;
 	m_Mesh = NULL;
+	m_NumVertices = 0;
+	m_NumFaces = 0;
 }
 
 CObjX::~CObjX()
 {
-	delete [] m_MaterialMeshList;
 }
 
 void CObjX::LoadModel(std::string filename)
 {
+	std::string nomTextura;
 	LPD3DXBUFFER materialBuffer;
 	LPDIRECT3DDEVICE9 Device = CDirectX::GetInstance()->GetDevice();
 
@@ -42,9 +44,10 @@ void CObjX::LoadModel(std::string filename)
 			m_MeshTextures[i] = NULL;
 			if (d3dxMaterials[i].pTextureFilename)
 			{
-				m_TextureName = d3dxMaterials[i].pTextureFilename;
-				m_TextureName = CreateTexturePath(filename, m_TextureName);
-				hr = D3DXCreateTextureFromFile(Device, m_TextureName.c_str(), &m_MeshTextures[i]);
+				nomTextura = d3dxMaterials[i].pTextureFilename;
+				nomTextura = CreateTexturePath(filename, nomTextura);
+				m_TextureName.push_back(nomTextura);
+				hr = D3DXCreateTextureFromFile(Device, nomTextura.c_str(), &m_MeshTextures[i]);
 				if (hr == D3DXERR_INVALIDDATA)
 					return;
 			}
@@ -67,21 +70,39 @@ std::string CObjX::CreateTexturePath(const std::string filename, std::string tex
 
 void CObjX::ParserMaterialMeshList(std::string filename)
 {
-	int numTextures;
-	int numFaces;
+	int numTextures = 0;
+	int numFaces = 0;
 	errno_t err;
 	FILE* fitxer;
-	char* seq;
+	char seq[200];
+	std::string MessageToCompare = "MeshMaterialList mtls {";
+	std::string MessageToRead;
 
 	err  = fopen_s(&fitxer,filename.c_str(),"r");
-	//TODO: Buscar la seqüència de carècters MeshMaterialList mtls i després llegir els valors
+	if (err != 0)
+		return;
+
 	while (!feof(fitxer))
 	{
-		fscanf_s(fitxer, "%s", &seq);
-		if (strcmp(seq,"MeshMaterialList mtls {") == 0)
+		fgets(seq,200,fitxer);
+		MessageToRead = seq;
+		//Mira si la línia del fitxer llegida és la de MessageToCompare.
+		//Si ho és, es comença a llegir les següents línies
+		if (MessageToRead.find(MessageToCompare) != -1)
 		{
+			fscanf_s(fitxer,"%d;\n",&numTextures);
+			fscanf_s(fitxer,"%d;\n",&numFaces);
 
+			//Llegeix tots els valors d'identificador de textura per a cada cara
+			int valor = 0;
+			for (int i=0; i<numFaces-1;++i)
+			{
+				fscanf_s(fitxer,"%d,\n",&valor);
+				m_MaterialMeshList.push_back(valor);
+			}
+			fscanf_s(fitxer,"%d;\n",&valor);
+			m_MaterialMeshList.push_back(valor);
 		}
 	}
-
+	fclose(fitxer);
 }
