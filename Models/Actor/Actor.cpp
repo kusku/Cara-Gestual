@@ -26,6 +26,31 @@ Actor::Actor(char* filename, int tipus) {
 	}
 }
 
+Actor::~Actor()
+{
+	delete [] punts;
+	delete [] materials;
+	delete [] cares;
+	delete [] cordTex;
+
+	listaTexturas.clear();
+	for(size_t cont = 0; cont < vec_textures.size(); cont++)
+	{
+		if(vec_numCaresByMat[cont] != 0)
+		{
+			CHECKED_RELEASE(vec_pVBGeomTexturaByMat[cont]);
+			CHECKED_RELEASE(vec_pIBMeshByMat[cont]);
+		}
+	}
+	vec_textures.clear();
+	vec_numCaresByMat.clear();
+	vec_materials.clear();
+	vec_VerticesMesh.clear();
+	vec_Geom.clear();
+	g_PuntsMap.clear();
+	CTextureManager::GetInstance()->CleanUp();
+}
+
 void Actor::ModelDeOBJ(char* filename) {
 	int numpunts,numcares,i,j;
 	Punt p;
@@ -287,39 +312,6 @@ int	Actor::buscarTex( Point2D tex )
 	return 3*j+i;
 }
 
-Actor::~Actor()
-{
-	delete [] punts;
-	delete [] materials;
-	delete [] cares;
-
-	/*for(size_t b=0;b<m_TextureList.size();++b)
-	{
-		m_TextureList[b]=NULL;
-	}
-	m_TextureList.clear();
-	CHECKED_RELEASE(m_pVB);
-	CHECKED_RELEASE(m_pIB);*/
-
-	listaTexturas.clear();
-	for(size_t cont = 0; cont < vec_textures.size(); cont++)
-	{
-		if(vec_numCaresByMat[cont] != 0)
-		{
-			CHECKED_RELEASE(vec_pVBGeomTexturaByMat[cont]);
-			// TODO:
-			// Eliminar los Index Buffer de vec_pIBMeshByMat y los Vertex Buffer de vec_pVBMeshByMat
-			CHECKED_RELEASE(vec_pIBMeshByMat[cont]);
-			//CHECKED_RELEASE(vec_pVBMeshByMat[cont]);
-		}
-	}
-	vec_textures.clear();
-	vec_numCaresByMat.clear();
-	vec_materials.clear();
-	vec_VerticesMesh.clear();
-	vec_Geom.clear();
-}
-
 int Actor::PuntMesProxim(D3DXVECTOR3 p)
 {
 	int millorPunt = 0;
@@ -507,8 +499,15 @@ HRESULT Actor::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 	
 	if (!vec_numCaresByMat.empty())
 	{
+		for(size_t cont = 0; cont < vec_textures.size(); cont++)
+		{
+			if(vec_numCaresByMat[cont] != 0)
+			{
+				CHECKED_RELEASE(vec_pVBGeomTexturaByMat[cont]);
+				CHECKED_RELEASE(vec_pIBMeshByMat[cont]);
+			}
+		}
 		vec_numCaresByMat.clear();
-//		vec_pVBMeshByMat.clear();
 		vec_pIBMeshByMat.clear();
 		vec_pVBGeomTexturaByMat.clear();
 		vec_textures.clear();

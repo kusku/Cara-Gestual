@@ -314,8 +314,9 @@ CPracticaView::CPracticaView()
 CPracticaView::~CPracticaView()
 {
 	// Eliminar estructures dinàmiques
-	if (ObOBJ!=NULL)
+	if (ObOBJ!=NULL) {
 		delete ObOBJ;
+	}
 	if (MManager != NULL)
 		delete MManager;
 	if (EManager != NULL)
@@ -332,6 +333,9 @@ CPracticaView::~CPracticaView()
 		delete MSubtitles;
 	if (m_ModelManager != NULL)
 		delete m_ModelManager;
+	Timer::GetInstance()->CleanUp();
+	CDirectX::GetInstance()->CleanUp();
+	_CrtDumpMemoryLeaks();
 }
 
 BOOL CPracticaView::PreCreateWindow(CREATESTRUCT& cs)
@@ -460,6 +464,7 @@ int CPracticaView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 void CPracticaView::OnDestroy() 
 {
 	CDirectX::GetInstance()->EndRenderDX();
+	CDirectX::GetInstance()->PresentDX();
 	 CView::OnDestroy();
 }
 

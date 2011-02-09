@@ -9,6 +9,9 @@ CDirectX::CDirectX()
 {
 	m_pD3D = NULL;
 	m_pD3DDevice = NULL;
+	m_RenderSurface = NULL;
+	m_RenderTexture = NULL;
+	m_MainSurface = NULL;
 	m_PaintSolid = true;
 	m_hWnd = NULL;
 	m_paintInfoGame = true;
@@ -23,8 +26,6 @@ CDirectX::CDirectX()
 
 CDirectX::~CDirectX()
 {
-	CHECKED_RELEASE(m_pD3D);
-	CHECKED_RELEASE(m_pD3DDevice);
 }
 
 CDirectX* CDirectX::m_CDirectX = NULL;
@@ -35,6 +36,16 @@ CDirectX* CDirectX::GetInstance()
 		m_CDirectX = new CDirectX();
 
 	return m_CDirectX;
+}
+
+void CDirectX::CleanUp()
+{
+	CHECKED_RELEASE(m_pD3D);
+	CHECKED_RELEASE(m_pD3DDevice);
+	CHECKED_RELEASE(m_RenderSurface);
+	CHECKED_RELEASE(m_RenderTexture);
+	CHECKED_RELEASE(m_MainSurface);
+	CHECKED_DELETE(m_CDirectX);
 }
 
 HRESULT CDirectX::InitDX ( HWND hWnd )
@@ -85,7 +96,6 @@ HRESULT CDirectX::InitDX ( HWND hWnd )
     // Turn off D3D lighting, since we are providing our own vertex colors
     m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
 
-	
     return S_OK;
 }
 
@@ -159,7 +169,22 @@ void CDirectX::EndRenderDX()
 {
 	m_pD3DDevice->EndScene();
     // Present the backbuffer contents to the display
+}
+
+void CDirectX::PresentDX()
+{
     m_pD3DDevice->Present( NULL, NULL, NULL, NULL );
+}
+
+void CDirectX::CreateTexDX(const int height, const int width)
+{
+	//Create our render target, making it the same size as the screen. Usually DX would resize it to a 2^x size, but
+	//we're creating it as a "D3DUSAGE_RENDERTARGET" so it can set it the same as the screen's size.
+	m_pD3DDevice->CreateTexture(height, width, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &m_RenderTexture, NULL);
+	//Here we grab a pointer to the surface so we can pass it to SetRenderTarget
+	m_RenderTexture->GetSurfaceLevel(0, &m_RenderSurface);
+	//And we grab a copy of the pointer to the backbuffer, again I haven't figured out how to keep from having to use this.
+	m_pD3DDevice->GetRenderTarget(0, &m_MainSurface);
 }
 
 void CDirectX::RenderAxis(float size)

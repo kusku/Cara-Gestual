@@ -24,7 +24,7 @@ Timer* Timer::GetInstance()
 
 void Timer::CleanUp()
 {
-	delete m_Timer;
+	CHECKED_DELETE(m_Timer);
 }
 
 float Timer::GetElapsedTime()

@@ -15,6 +15,10 @@ Scenary::Scenary(const std::string name, const std::string path)
 
 Scenary::~Scenary()
 {
+	m_Name.clear();
+	m_Path.clear();
+	delete m_Materials;
+	delete m_Textures;
 }
 
 void Scenary::Render(LPDIRECT3DDEVICE9 Device, D3DXVECTOR3 pan)
@@ -54,6 +58,5 @@ void Scenary::LoadModelX()
 	m_Materials = reader->GetMaterials();
 	m_Textures = reader->GetTextures();
 	
-
 	delete reader;
 }

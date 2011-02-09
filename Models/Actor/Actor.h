@@ -110,13 +110,7 @@ private:
 		D3DXVECTOR3 m_Scale;
 		D3DXVECTOR3 m_Rotation;
 
-		//VertexBuffer i IndexBuffer
-		LPDIRECT3DVERTEXBUFFER9				m_pVB;
-		LPDIRECT3DINDEXBUFFER9				m_pIB;
-		std::vector<LPDIRECT3DTEXTURE9>		m_TextureList;
-
 		//Dades per al RenderByAse
-		//std::vector< LPDIRECT3DVERTEXBUFFER9 >	vec_pVBMeshByMat;
 		std::vector< LPDIRECT3DINDEXBUFFER9 >	vec_pIBMeshByMat;
 		std::vector< LPDIRECT3DVERTEXBUFFER9 >	vec_pVBGeomTexturaByMat;
 		std::vector< LPDIRECT3DTEXTURE9 >		vec_textures;
@@ -125,7 +119,6 @@ private:
 		std::vector <std::string>				listaTexturas;
 		std::map<D3DXVECTOR3, int, D3DXVECTOR3_LessThan>			g_PuntsMap;
 
-		//std::vector<unsigned short*>				m_IndicesMesh;
 		std::vector < std::vector <CUSTOMVERTEX> >			vec_VerticesMesh;
 		std::vector < std::vector <CUSTOMVERTEXTEXTURA> >	vec_Geom;
 	

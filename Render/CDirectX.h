@@ -12,6 +12,9 @@ private:
 
 	LPDIRECT3D9             m_pD3D;
 	LPDIRECT3DDEVICE9       m_pD3DDevice;
+	LPDIRECT3DSURFACE9		m_RenderSurface;
+	LPDIRECT3DTEXTURE9		m_RenderTexture;
+	LPDIRECT3DSURFACE9		m_MainSurface;
 
 	D3DXVECTOR3 l_Eye;
 	D3DXVECTOR3 l_LookAt;
@@ -43,6 +46,10 @@ public:
 
 	//Finalitza la composició de l'escena amb Direct3D
 	void		EndRenderDX		( void );
+	void		PresentDX		( void );
+
+	//Crea una textura per a pintar-hi els subtítols
+	void		CreateTexDX		( const int height = 640, const int width = 480 );
 
 	//Render eixos
 	void		RenderAxis		( float size );
@@ -51,14 +58,19 @@ public:
 
 	void		PointLight		( D3DXVECTOR3 position, D3DXVECTOR3 direction );
 
-	void		SetEye			( D3DXVECTOR3 eye ){ l_Eye = eye; } ;
-	void		SetLookAt		( D3DXVECTOR3 lookAt ) { l_LookAt = lookAt; };
-	void		SetUpVector		( D3DXVECTOR3 upVector ) { l_VUP = upVector; } ;
-	void		SetZBuffer		( bool active ) { m_ZBuffer = active; };
-	void		SetPaintSolid	( bool solid ) { m_PaintSolid = solid; };
-	void		SetCullingFace	( bool cull ) { m_CullingFace = cull; };
+	void		SetEye			( D3DXVECTOR3 eye ){ l_Eye = eye; } 
+	void		SetLookAt		( D3DXVECTOR3 lookAt ) { l_LookAt = lookAt; }
+	void		SetUpVector		( D3DXVECTOR3 upVector ) { l_VUP = upVector; } 
+	void		SetZBuffer		( bool active ) { m_ZBuffer = active; }
+	void		SetPaintSolid	( bool solid ) { m_PaintSolid = solid; }
+	void		SetCullingFace	( bool cull ) { m_CullingFace = cull; }
 
-	LPDIRECT3DDEVICE9	GetDevice			() { return m_pD3DDevice; };
+	LPDIRECT3DSURFACE9	GetMainSurface	( void ) { return m_MainSurface; }
+	LPDIRECT3DSURFACE9	GetRenderSurface( void ) { return m_RenderSurface; }
+	LPDIRECT3DTEXTURE9	GetRenderTexture( ) { return m_RenderTexture; }
+
+	LPDIRECT3DDEVICE9	GetDevice			() { return m_pD3DDevice; }
+	
 };
 
 #endif

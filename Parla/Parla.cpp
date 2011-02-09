@@ -18,6 +18,8 @@ CParla::CParla(Animation* an)
 
 CParla::~CParla()
 {
+	animacio = NULL;
+	subtitols = NULL;
 }
 
 void CParla::SetTextToTalk(char *text)

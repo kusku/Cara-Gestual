@@ -100,20 +100,26 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 	else
 		l_DX->PointLight(cam, D3DXVECTOR3(0.f, 0.f, 0.f));
 
+	///////////////////////////
+	///RENDER DELS SUBTITOLS///
+	///////////////////////////
+	if (subtitles && parla->IsTalking())
+	{
+		MSubtitles->RenderSubtitles(Device);
+	}
+
 	//Activa el Render en DirectX
 	l_DX->BeginRenderDX();
 	l_DX->SetupMatrices();
 	
 	//Establim matrius de transformacions
-	{
-		D3DXMATRIX l_Matrix;
-		D3DXMatrixIdentity(&l_Matrix);
-				
-		if (pant)	//Fa una translació si el PAN està activat
-			D3DXMatrixTranslation (&l_Matrix, tr.x, tr.y, tr.z);
+	D3DXMATRIX l_Matrix;
+	D3DXMatrixIdentity(&l_Matrix);
+			
+	if (pant)	//Fa una translació si el PAN està activat
+		D3DXMatrixTranslation (&l_Matrix, tr.x, tr.y, tr.z);
 
-		l_DX->GetDevice()->SetTransform(D3DTS_WORLD, &l_Matrix);
-	}
+	l_DX->GetDevice()->SetTransform(D3DTS_WORLD, &l_Matrix);
 
 	//Dibuixa els eixos de coordenades
 	if (eix)
@@ -122,6 +128,9 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 	//Dibuixa el model
 	if (ModelManager != NULL)
 		ModelManager->Render(Device,tr);
+
+	D3DXMatrixIdentity(&l_Matrix);
+	l_DX->GetDevice()->SetTransform(D3DTS_WORLD, &l_Matrix);
 
 	renderSphereSelection(Device, l_DX, EdManager, muscle);
 
@@ -149,4 +158,5 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 //	}
 
 	CDirectX::GetInstance()->EndRenderDX();
+	CDirectX::GetInstance()->PresentDX();
 }

@@ -14,6 +14,8 @@ CObjX::CObjX()
 
 CObjX::~CObjX()
 {
+	m_MaterialMeshList.clear();
+	m_TextureName.clear();
 }
 
 void CObjX::LoadModel(std::string filename)
@@ -51,7 +53,6 @@ void CObjX::LoadModel(std::string filename)
 				if (hr == D3DXERR_INVALIDDATA)
 					return;
 			}
-
 		}
 		ParserMaterialMeshList(filename);
 		materialBuffer->Release();

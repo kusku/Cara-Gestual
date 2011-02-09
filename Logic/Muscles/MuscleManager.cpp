@@ -9,10 +9,12 @@ MuscleManager::MuscleManager()
 	{
 		muscles[i] = new Muscle();
 	}
+
 }
 MuscleManager::~MuscleManager()
 {
 	delete [] muscles;
+
 }
 
 void MuscleManager::addVertexMuscle(TypeMuscle numMuscle, unsigned int vertex, float delta)
