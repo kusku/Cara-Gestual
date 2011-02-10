@@ -65,11 +65,10 @@ public:
 	void		SetPaintSolid	( bool solid ) { m_PaintSolid = solid; }
 	void		SetCullingFace	( bool cull ) { m_CullingFace = cull; }
 
-	LPDIRECT3DSURFACE9	GetMainSurface	( void ) { return m_MainSurface; }
-	LPDIRECT3DSURFACE9	GetRenderSurface( void ) { return m_RenderSurface; }
-	LPDIRECT3DTEXTURE9	GetRenderTexture( ) { return m_RenderTexture; }
-
-	LPDIRECT3DDEVICE9	GetDevice			() { return m_pD3DDevice; }
+	LPDIRECT3DSURFACE9	GetMainSurface	() { return m_MainSurface; }
+	LPDIRECT3DSURFACE9	GetRenderSurface() { return m_RenderSurface; }
+	LPDIRECT3DTEXTURE9	GetRenderTexture() { return m_RenderTexture; }
+	LPDIRECT3DDEVICE9	GetDevice		() { return m_pD3DDevice; }
 	
 };
 

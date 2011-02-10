@@ -3,13 +3,11 @@
 
 #include "../Render/CDirectX.h"
 
-class ModelManager;
-
 class CSubtitles
 {
 private:
 
-	float red, green, blue, alpha;
+	int red, green, blue, alpha;
 	D3DXVECTOR2 position;
 	LPD3DXFONT m_font;
 	char* subtitle;
@@ -23,7 +21,7 @@ public:
 	CSubtitles();
 	~CSubtitles();
 
-	void		SetColor			( float r, float g, float b, float a );
+	void		SetColor			( int r, int g, int b, int a);
 	void		SetPosition			( D3DXVECTOR2 pos ) { position = pos; };
 	void		SetText				( char* text ) {subtitle = text; };
 

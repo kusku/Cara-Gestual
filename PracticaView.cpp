@@ -314,25 +314,16 @@ CPracticaView::CPracticaView()
 CPracticaView::~CPracticaView()
 {
 	// Eliminar estructures dinàmiques
-	if (ObOBJ!=NULL) {
-		delete ObOBJ;
-	}
-	if (MManager != NULL)
-		delete MManager;
-	if (EManager != NULL)
-		delete EManager;
-	if (editor != NULL)
-		delete editor;
-	if (deform != NULL)
-		delete deform;
-	if (animate != NULL)
-		delete animate;
-	if (parla != NULL)
-		delete parla;
-	if (MSubtitles != NULL)
-		delete MSubtitles;
-	if (m_ModelManager != NULL)
-		delete m_ModelManager;
+	CHECKED_DELETE(ObOBJ);
+	CHECKED_DELETE(MManager);
+	CHECKED_DELETE(EManager);
+	CHECKED_DELETE(editor);
+	CHECKED_DELETE(deform);
+	CHECKED_DELETE(animate);
+	CHECKED_DELETE(parla);
+	CHECKED_DELETE(MSubtitles);
+	CHECKED_DELETE(m_ModelManager);
+
 	Timer::GetInstance()->CleanUp();
 	CDirectX::GetInstance()->CleanUp();
 	_CrtDumpMemoryLeaks();

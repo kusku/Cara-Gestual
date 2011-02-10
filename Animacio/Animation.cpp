@@ -35,8 +35,6 @@ Animation::~Animation()
 	delete [] partialMovement;
 	delete [] portionMovement;
 	delete [] backMovement;
-	free(EManager);
-	free(MManager);
 }
 
 void Animation::SetTime(float transitionTime, float totalTime)

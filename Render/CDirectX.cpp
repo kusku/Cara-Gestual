@@ -19,7 +19,7 @@ CDirectX::CDirectX()
 	m_ZBuffer = true;
 	m_CullingFace = true;
 
-	l_Eye = D3DXVECTOR3(0.0f,5.0f,-5.0f);
+	l_Eye = D3DXVECTOR3(0.0f,50.0f,-50.0f);
 	l_LookAt = D3DXVECTOR3(0.0f,0.0f,0.0f);
 	l_VUP = D3DXVECTOR3(0.0f,1.0f,0.0f);
 }

@@ -841,7 +841,6 @@ HRESULT Actor::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 HRESULT Actor::LoadVertexsBuffers( LPDIRECT3DDEVICE9 g_pd3dDevice )
 {
 	VOID *pMesh;
-	//CUSTOMVERTEXTEXTURA textureVertice;
 	CUSTOMVERTEXTEXTURA *l_VTMesh=NULL;
 
 	int numFaces;
@@ -879,5 +878,6 @@ HRESULT Actor::LoadVertexsBuffers( LPDIRECT3DDEVICE9 g_pd3dDevice )
 		vec_pVBGeomTexturaByMat[mat]->Unlock();
 		}
 	}
+
 	return true;
 }

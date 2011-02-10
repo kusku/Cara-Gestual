@@ -100,6 +100,10 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 	else
 		l_DX->PointLight(cam, D3DXVECTOR3(0.f, 0.f, 0.f));
 
+	//Activa el Render en DirectX
+	l_DX->BeginRenderDX();
+	l_DX->SetupMatrices();
+
 	///////////////////////////
 	///RENDER DELS SUBTITOLS///
 	///////////////////////////
@@ -107,10 +111,6 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 	{
 		MSubtitles->RenderSubtitles(Device);
 	}
-
-	//Activa el Render en DirectX
-	l_DX->BeginRenderDX();
-	l_DX->SetupMatrices();
 	
 	//Establim matrius de transformacions
 	D3DXMATRIX l_Matrix;
