@@ -12,6 +12,7 @@ CSubtitles::CSubtitles()
 	alpha = 255;
 	position = D3DXVECTOR2(100.0f, 100.0f);
 	subtitle = "Com que no em puc menjar una mandarina, em compro un pressec.";
+	
 }
 
 CSubtitles::~CSubtitles()

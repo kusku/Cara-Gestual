@@ -8,8 +8,6 @@ class EditorManager
 {
 private:
 
-	MuscleManager*		MManager;
-	ExpressionManager*	EManager;
 	bool				*VertexList;
 	float				*DeltaList;
 	int					CurrentVertex;
@@ -22,7 +20,7 @@ private:
 
 public:
 
-	EditorManager(MuscleManager* MMan, ExpressionManager* EMan, Actor* objecte);
+	EditorManager(Actor* objecte);
 	~EditorManager();
 	
 	// Roger

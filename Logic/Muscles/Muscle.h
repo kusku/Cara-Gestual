@@ -24,9 +24,9 @@ public:
 	int				deleteVertex	( unsigned int vertex );
 	void			ClearMuscle		( void );
 
-	unsigned int*	getVertexIndex	( void );
-	float*			getVertexDelta	( void );
-	int				getNumVertexs	( void );
+	unsigned int*	getVertexIndex	( void ) { return vertexIndex; }
+	float*			getVertexDelta	( void ) {return vertexDelta; }
+	int				getNumVertexs	( void ) { return size; }
 };
 
 #endif

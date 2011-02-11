@@ -2,7 +2,7 @@
 #include "Animation.h"
 #include "../Models/Actor/Actor.h"
 
-Animation::Animation(ExpressionManager* manager, MuscleManager* muscle)
+Animation::Animation()
 {
 	step = 0;
 	transitionTime = 4;
@@ -12,10 +12,8 @@ Animation::Animation(ExpressionManager* manager, MuscleManager* muscle)
 	animationActive = false;
 
 	expression = NONE_EXPRESSION;
-	EManager = manager;
-	MManager = muscle;
-	
-	sizeExpression = MManager->getNumMuscles();
+
+	sizeExpression = MuscleManager::GetInstance()->getNumMuscles();
 	totalMovement = new D3DXVECTOR3 [sizeExpression];
 	partialMovement = new D3DXVECTOR3 [sizeExpression];
 	portionMovement = new D3DXVECTOR3[sizeExpression];
@@ -31,10 +29,26 @@ Animation::Animation(ExpressionManager* manager, MuscleManager* muscle)
 
 Animation::~Animation()
 {
+}
+
+Animation* Animation::m_Animation = NULL;
+
+Animation* Animation::GetInstance()
+{
+	if (m_Animation == NULL)
+		m_Animation = new Animation();
+
+	return m_Animation;
+}
+
+void Animation::CleanUp()
+{
 	delete [] totalMovement;
 	delete [] partialMovement;
 	delete [] portionMovement;
 	delete [] backMovement;
+
+	delete m_Animation;
 }
 
 void Animation::SetTime(float transitionTime, float totalTime)
@@ -53,8 +67,8 @@ void Animation::StartAnimation(TypeExpression expression, Actor* obj)
 		this->expression = expression;
 		for (int i=0; i < sizeExpression; ++i)
 		{
-			partialMovement[i] = EManager->getExpressionList()[expression]->getMovement( (TypeMuscle)i ) - totalMovement[i];
-			totalMovement[i] = EManager->getExpressionList()[expression]->getMovement( (TypeMuscle)i );
+			partialMovement[i] = ExpressionManager::GetInstance()->getExpressionList()[expression]->getMovement( (TypeMuscle)i ) - totalMovement[i];
+			totalMovement[i] = ExpressionManager::GetInstance()->getExpressionList()[expression]->getMovement( (TypeMuscle)i );
 
 			partialMovement[i] /= divisionTime;
 			portionMovement[i] = partialMovement[i];
@@ -102,7 +116,7 @@ void Animation::Render(Actor* obj)
 
 	if (divisionTime > (float) step)
 	{
-		EManager->ExternalRender(expression,actualMovement, obj);
+		ExpressionManager::GetInstance()->ExternalRender(expression,actualMovement, obj);
 	}
 	
 	delete []actualMovement;

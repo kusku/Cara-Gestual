@@ -4,21 +4,37 @@
 #include "Expression.h"
 #include "../../Render/CDirectX.h"
 
-ExpressionManager::ExpressionManager(MuscleManager* MMan)
+ExpressionManager::ExpressionManager()
 {
-	this->MManager = MMan;
-
 	Expressions = (Expression**) malloc (NEXPRESSIONS*sizeof(Expression));
 	for (int i=0; i<NEXPRESSIONS; ++i)
 	{
-		Expressions[i] = new Expression(MMan);
+		Expressions[i] = new Expression();
 	}
 }
 
 ExpressionManager::~ExpressionManager()
 {
+}
+
+ExpressionManager* ExpressionManager::m_ExpressionManager = NULL;
+
+ExpressionManager* ExpressionManager::GetInstance()
+{
+	if (m_ExpressionManager == NULL)
+		m_ExpressionManager = new ExpressionManager();
+
+	return m_ExpressionManager;
+}
+
+void ExpressionManager::CleanUp()
+{
+	for (short int i = 0; i < NEXPRESSIONS; ++i)
+		CHECKED_DELETE(Expressions[i]);
+
 	delete [] Expressions;
-	MManager = NULL;
+
+	delete m_ExpressionManager;
 }
 
 void ExpressionManager::resetExpression( TypeExpression nameExpression )
@@ -40,16 +56,6 @@ void ExpressionManager::RenderExpression( TypeExpression nameExpression, Actor* 
 		Expressions[nameExpression]->RenderExpression();
 		obj->LoadVertexsBuffers(CDirectX::GetInstance()->GetDevice());
 	}
-}
-
-Expression** ExpressionManager::getExpressionList(void)
-{
-	return Expressions;
-}
-
-int ExpressionManager::getNumExpressions ()
-{
-	return NEXPRESSIONS;
 }
 
 void ExpressionManager::ExternalRender(TypeExpression nameExpression, D3DXVECTOR3 *newMovements, Actor* obj)
@@ -81,7 +87,7 @@ void ExpressionManager::onStartElement(const std::string &elem, MKeyValue &atts)
 		sscanf_s(s_posY.c_str(), "%f", &vector.y);
 		sscanf_s(s_posZ.c_str(), "%f", &vector.z);
 
-		modifyMuscleExpression(searchExpression(elem),MManager->searchMuscle(s_muscle),vector);
+		modifyMuscleExpression(searchExpression(elem),MuscleManager::GetInstance()->searchMuscle(s_muscle),vector);
 	}
 }
 

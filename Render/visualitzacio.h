@@ -27,6 +27,6 @@ void SetRenderMuscle ( TypeMuscle numMuscle );
 void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTOR3 tr, bool TR,
 				 D3DXVECTOR3 VScl, D3DXVECTOR3 VTr, D3DXVECTOR3 VRot,bool oculta,bool testv,
 				 bool bck_ln,bool filferros,bool textur,bool ifix,bool eix,
-				 EditorManager* EdManager, ModelManager* ModelManager, MuscleManager* MManager, bool flags,
-				 CSubtitles* MSubtitles, bool subtitles, CParla* parla);
+				 EditorManager* EdManager, ModelManager* ModelManager, bool flags,
+				 bool subtitles);
 #endif

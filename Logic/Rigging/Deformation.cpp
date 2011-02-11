@@ -6,9 +6,8 @@
 #include "../Muscles/MuscleManager.h"
 
 
-Deformation::Deformation( ExpressionManager* manager, Actor* obj, EditorManager *editor )
+Deformation::Deformation( Actor* obj, EditorManager *editor )
 {
-	this->EManager = manager;
 	this->ObOBJ = obj;
 	this->muscle = NONE_MUSCLE;
 	this->editorM = editor;
@@ -16,7 +15,6 @@ Deformation::Deformation( ExpressionManager* manager, Actor* obj, EditorManager 
 
 Deformation::~Deformation()
 {
-	this->EManager = NULL;
 	this->ObOBJ = NULL;
 	this->editorM = NULL;
 }
@@ -40,7 +38,7 @@ void Deformation::ButtonDown(float mouseX, float mouseY, D3DXVECTOR3 opv)
 		{
 			vecDir = HitP - dominant;
 			editorM->DefineMovement(expression,muscle,vecDir);
-			EManager->RenderExpression(expression, ObOBJ);
+			ExpressionManager::GetInstance()->RenderExpression(expression, ObOBJ);
 		}
 		
 	}
@@ -66,7 +64,7 @@ void Deformation::ButtonMove(float mouseX, float mouseY)
 void Deformation::ButtonUp()
 {
 	editorM->DefineMovement(expression, muscle, vecDir);
-	EManager->RenderExpression(expression, ObOBJ);
+	ExpressionManager::GetInstance()->RenderExpression(expression, ObOBJ);
 }
 
 void Deformation::GetLine( D3DXVECTOR3 &L1, D3DXVECTOR3 &L2, float mouseX, float mouseY )

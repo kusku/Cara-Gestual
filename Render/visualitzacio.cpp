@@ -39,8 +39,8 @@ void RenderBox (float x1, float y1, float x2, float y2)
 void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTOR3 tr, bool TR, 
 				 D3DXVECTOR3 VScl,D3DXVECTOR3 VTr, D3DXVECTOR3 VRot,bool oculta,bool testv,
 				 bool bck_ln,bool filferros,bool textur,bool ifix,bool eix,
-				 EditorManager* EdManager, ModelManager* ModelManager, MuscleManager* MManager, bool flags,
-				 CSubtitles* MSubtitles, bool subtitles, CParla* parla)
+				 EditorManager* EdManager, ModelManager* ModelManager, bool flags,
+				 bool subtitles)
 {    
 	D3DXVECTOR3 cam,up;
 	CDirectX* l_DX = CDirectX::GetInstance();
@@ -107,9 +107,9 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 	///////////////////////////
 	///RENDER DELS SUBTITOLS///
 	///////////////////////////
-	if (subtitles && parla->IsTalking())
+	if (subtitles && CParla::GetInstance()->IsTalking())
 	{
-		MSubtitles->RenderSubtitles(Device);
+		CParla::GetInstance()->RenderSubs(Device);
 	}
 	
 	//Establim matrius de transformacions

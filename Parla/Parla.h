@@ -6,13 +6,16 @@
 #include "../Animacio/Animation.h"
 #include "../Logic/Expressions/Expression.h"
 #include "../Models/Actor/Actor.h"
+#include "../Render/CDirectX.h"
 
 class CParla
 {
 private:
 
-	CSubtitles*		subtitols;
+	static CParla*	m_Parla;
+
 	Animation*		animacio;
+	CSubtitles*		m_Subtitles;
 
 	char*			text;
 	bool			parlant;
@@ -27,16 +30,22 @@ private:
 
 public:
 
-	CParla( Animation* an );
+	CParla();
 	~CParla();
+
+	static CParla*	GetInstance();
+	void			CleanUp();
 
 	void		SetVelocity			( float transitionT, float totalT );
 	void		SetTextToTalk		( char* text );
+
 	void		StartTalk			(Actor* obj);
 	void		NextTalk			(Actor* obj);
 	void		FinalizeTalk		();
 	bool		IsTalking			();
 	void		TalkElapsed			(Actor* obj);
+	
+	void		RenderSubs			( LPDIRECT3DDEVICE9 Device );
 	
 };
 

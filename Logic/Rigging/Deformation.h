@@ -10,7 +10,6 @@ class Deformation
 {
 private:
 	Actor* ObOBJ;
-	ExpressionManager* EManager;
 	EditorManager* editorM;
 	TypeMuscle muscle;
 	TypeExpression expression;
@@ -21,7 +20,7 @@ private:
 	void		GetLine				( D3DXVECTOR3 &L1, D3DXVECTOR3 &L2, float mouseX, float mouseY );
 
 public:
-	Deformation( ExpressionManager* manager, Actor* obj, EditorManager *editor );
+	Deformation( Actor* obj, EditorManager *editor );
 	~Deformation();
 
 	void	ButtonDown			( float mouseX, float mouseY, D3DXVECTOR3 opv );

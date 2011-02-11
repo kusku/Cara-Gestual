@@ -162,7 +162,7 @@ BEGIN
             MENUITEM "Neutre",                      ID_LLETRES_NEUTRE, CHECKED
         END
     END
-    POPUP "Animació"
+    POPUP "A&nimació"
     BEGIN
         MENUITEM "Animació",                    ID_ANIMACIO, CHECKED
         MENUITEM SEPARATOR
@@ -176,7 +176,7 @@ BEGIN
             MENUITEM "Lent",                        ID_SLOW
             MENUITEM "Molt Lent",                   ID_VSLOW
         END
-        MENUITEM "Parla Bucle",                 ID_PARLABUCLE
+        MENUITEM "&Parla Bucle",                ID_PARLABUCLE
     END
     POPUP "V&eure"
     BEGIN

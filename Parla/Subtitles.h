@@ -22,8 +22,8 @@ public:
 	~CSubtitles();
 
 	void		SetColor			( int r, int g, int b, int a);
-	void		SetPosition			( D3DXVECTOR2 pos ) { position = pos; };
-	void		SetText				( char* text ) {subtitle = text; };
+	void		SetPosition			( D3DXVECTOR2 pos ) { position = pos; }
+	void		SetText				( char* text ) {subtitle = text; }
 
 	void		ParseSubtitles		( void );
 	void		RenderSubtitles		( LPDIRECT3DDEVICE9 Device );

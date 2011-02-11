@@ -11,15 +11,14 @@
 //NONE és l'últim element ja que l'array arriba a l'element N-1.
 //NONE és per definir una expressió quan no hi ha cap expressió seleccionada.
 
-
 enum TypeExpression {TRIST, ALEGRE, ENFADAT, SERIOS, SORPRES, A, E, I, O, U, BILABIAL, NEUTRE, NONE_EXPRESSION};
-
 
 class ExpressionManager : public CXMLParser
 {
 private:
 	
-	MuscleManager*	MManager;
+	static ExpressionManager* m_ExpressionManager;
+
 	Expression**	Expressions;
 	int				numExpressions;
 
@@ -28,8 +27,11 @@ private:
 
 public:
 	
-	ExpressionManager(MuscleManager* MMan);
+	ExpressionManager();
 	~ExpressionManager();
+
+	static ExpressionManager*	GetInstance ();
+	void						CleanUp		();
 	
 	//Posa tots els muscles de l'expressió sense moviment
 	void			resetExpression			( TypeExpression nameExpression );
@@ -44,8 +46,8 @@ public:
 	// Carrega el fitxer XML
 	void			Load				(std::string xmlFile );
 
-	Expression**	getExpressionList		( void );
-	int				getNumExpressions		( void );
+	Expression**	getExpressionList		( void ) { return Expressions; }
+	int				getNumExpressions		( void ) { return NEXPRESSIONS; }
 
 };
 

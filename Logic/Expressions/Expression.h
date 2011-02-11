@@ -7,12 +7,11 @@ class Expression
 {
 private:
 	
-	D3DXVECTOR3*			movements;
-	MuscleManager*		MManager;
+	D3DXVECTOR3*	movements;
 
 public:
 
-	Expression(MuscleManager* MMan);
+	Expression();
 	~Expression();
 
 	void		resetMuscles		( void );

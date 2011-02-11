@@ -13,8 +13,26 @@ MuscleManager::MuscleManager()
 }
 MuscleManager::~MuscleManager()
 {
+}
+
+MuscleManager* MuscleManager::m_MuscleManager = NULL;
+
+MuscleManager* MuscleManager::GetInstance()
+{
+	if (m_MuscleManager == NULL)
+			m_MuscleManager = new MuscleManager();
+
+	return m_MuscleManager;
+}
+
+void MuscleManager::CleanUp()
+{
+	for (short int i = 0; i < NMUSCLES; ++i)
+		CHECKED_DELETE(muscles[i]);
+
 	delete [] muscles;
 
+	delete m_MuscleManager;
 }
 
 void MuscleManager::addVertexMuscle(TypeMuscle numMuscle, unsigned int vertex, float delta)
@@ -33,16 +51,6 @@ void MuscleManager::deleteMuscle( TypeMuscle numMuscle )
 	{
 		muscles[numMuscle]->deleteVertex(i);
 	}
-}
-
-Muscle** MuscleManager::getMuscleList(void)
-{
-	return muscles;
-}
-
-int MuscleManager::getNumMuscles ()
-{
-	return NMUSCLES;
 }
 
 void MuscleManager::SetModel( Actor* ObOBJ )

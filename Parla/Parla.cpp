@@ -5,21 +5,37 @@
 #include "../Common/Timer/Timer.h"
 
 
-CParla::CParla(Animation* an)
+CParla::CParla()
 {
-	animacio = an;
 	text = "Com que no em puc menjar una mandarina, em compro un pressec.";
 	parlant = false;
 	index = 0;
 	transitionTime = 1.f;
 	totalTime = 0.01f;
 	lastExpression = NONE_EXPRESSION;
+
+	m_Subtitles = new CSubtitles();
 }
 
 CParla::~CParla()
 {
-	animacio = NULL;
-	subtitols = NULL;
+}
+
+CParla* CParla::m_Parla = NULL;
+
+CParla* CParla::GetInstance()
+{
+	if (m_Parla == NULL)
+		m_Parla = new CParla();
+
+	return m_Parla;
+}
+
+void CParla::CleanUp()
+{
+	CHECKED_DELETE(m_Subtitles);
+
+	delete m_Parla;
 }
 
 void CParla::SetTextToTalk(char *text)
@@ -42,9 +58,9 @@ void CParla::StartTalk(Actor* obj)
 	parlant = true;
 
 	//Posa una expressió inicial
-	animacio->SetTime(transitionTime, totalTime);
-	animacio->StartAnimation(NEUTRE, obj);
-	animacio->FinalizeAnimation();
+	Animation::GetInstance()->SetTime(transitionTime, totalTime);
+	Animation::GetInstance()->StartAnimation(NEUTRE, obj);
+	Animation::GetInstance()->FinalizeAnimation();
 
 	if (text != NULL)
 	{	
@@ -56,8 +72,8 @@ void CParla::StartTalk(Actor* obj)
 
 		if (text[index] != NULL)
 		{
-			animacio->SetTime(transitionTime, totalTime);
-			animacio->StartAnimation(expressio, obj);
+			Animation::GetInstance()->SetTime(transitionTime, totalTime);
+			Animation::GetInstance()->StartAnimation(expressio, obj);
 			lastExpression = expressio;
 		}
 	}
@@ -80,15 +96,15 @@ void CParla::NextTalk(Actor* obj)
 		{
 			if (lastExpression == expressio)
 			{
-				animacio->SetTime(transitionTime, totalTime);
-				animacio->StartAnimation(NEUTRE, obj);	//Si es repeteix una mateix lletra, es posa entremig la neutre.
+				Animation::GetInstance()->SetTime(transitionTime, totalTime);
+				Animation::GetInstance()->StartAnimation(NEUTRE, obj);	//Si es repeteix una mateix lletra, es posa entremig la neutre.
 				lastExpression = NONE_EXPRESSION;
 				--index;
 			}
 			else
 			{
-				animacio->SetTime(transitionTime, totalTime);
-				animacio->StartAnimation(expressio, obj);
+				Animation::GetInstance()->SetTime(transitionTime, totalTime);
+				Animation::GetInstance()->StartAnimation(expressio, obj);
 				lastExpression = expressio;
 			}
 		}
@@ -96,8 +112,8 @@ void CParla::NextTalk(Actor* obj)
 		{
 			if (text[index] == NULL && text[index -1] != NULL)
 			{
-				animacio->SetTime(transitionTime, totalTime);
-				animacio->StartAnimation(NEUTRE, obj);
+				Animation::GetInstance()->SetTime(transitionTime, totalTime);
+				Animation::GetInstance()->StartAnimation(NEUTRE, obj);
 			}
 			else
 			{
@@ -186,11 +202,11 @@ void CParla::TalkElapsed(Actor* obj)
 			if (text[index] != NULL)
 			{
 				if (StopTime > 0.2f)
-					animacio->SetTime(transitionTime, totalTime*2);
+					Animation::GetInstance()->SetTime(transitionTime, totalTime*2);
 				else
-					animacio->SetTime(transitionTime, totalTime);
+					Animation::GetInstance()->SetTime(transitionTime, totalTime);
 
-				animacio->StartAnimation(expressio, obj);
+				Animation::GetInstance()->StartAnimation(expressio, obj);
 			}
 			while (time < StopTime)
 			{
@@ -200,4 +216,9 @@ void CParla::TalkElapsed(Actor* obj)
 		}while (text[index] != NULL);
 	}
 	FinalizeTalk();
+}
+
+void CParla::RenderSubs(LPDIRECT3DDEVICE9 Device)
+{
+	m_Subtitles->RenderSubtitles(Device);
 }

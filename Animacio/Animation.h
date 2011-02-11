@@ -9,6 +9,8 @@ class Animation
 {
 private:
 
+	static Animation* m_Animation;
+
 	int sizeExpression;
 	float transitionTime;
 	float totalTime;
@@ -23,13 +25,13 @@ private:
 	D3DXVECTOR3* portionMovement;
 	D3DXVECTOR3* backMovement;
 
-	ExpressionManager* EManager;
-	MuscleManager* MManager;
-
 public:
 
-	Animation(ExpressionManager* manager, MuscleManager* muscle);
+	Animation();
 	~Animation();
+
+	static Animation*	GetInstance ();
+	void				CleanUp		();
 
 	void		SetTime				( float transitionTime, float totalTime );
 	bool		IsActiveAnimation	( void );

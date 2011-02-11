@@ -9,18 +9,16 @@
 
 class XMLWriter {
 public:
-	XMLWriter(char* path, ExpressionManager* EManager, MuscleManager* MManager, int i);
+	XMLWriter(char* path, int i);
 	~XMLWriter();
 	void	Guardar( void );
 
 private:
-	ExpressionManager*	EManager;
-	MuscleManager*		MManager;
 	FILE				*fitxer;
 	int					x;
+
 	TypeExpression ConvertirTypeExpression(int i);
 	TypeMuscle ConvertirTypeMuscle(int i);
-
 
 	void				GuardarMuscles		( void );
 	void				GuardarExpresions	( void );	

@@ -85,14 +85,6 @@ void Muscle::moveMuscle(Actor* obj3D, D3DXVECTOR3 vecDir)
 		obj3D->mourePunt(vertexIndex[i], vecDir*vertexDelta[i]);
 	}
 }
-float* Muscle::getVertexDelta(void)
-{
-	return vertexDelta;
-}
-unsigned int* Muscle::getVertexIndex(void)
-{
-	return vertexIndex;
-}
 
 int	Muscle::searchMuscle(unsigned int vertex)
 {
@@ -106,11 +98,6 @@ int	Muscle::searchMuscle(unsigned int vertex)
 		}
 	}
 	return -1;
-}
-
-int Muscle::getNumVertexs()
-{
-	return size;
 }
 
 void Muscle::ClearMuscle ()

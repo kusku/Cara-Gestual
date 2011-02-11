@@ -15,6 +15,8 @@ class MuscleManager : public CXMLParser
 {
 private:
 
+	static MuscleManager* m_MuscleManager;
+
 	Muscle**	muscles;
 	Actor* obj3D;
 
@@ -25,6 +27,9 @@ public:
 	MuscleManager();
 	~MuscleManager();
 
+	static MuscleManager*	GetInstance	();
+	void					CleanUp		();
+
 	void			addVertexMuscle		( TypeMuscle numMuscle, unsigned int vertex, float delta );
 	void			moveAMuscle			( TypeMuscle numMuscle, D3DXVECTOR3 vecDir );
 	void			deleteMuscle		( TypeMuscle numMuscle );
@@ -34,8 +39,8 @@ public:
 
 	TypeMuscle		searchMuscle		( std::string m );
 	
-	Muscle**		getMuscleList		( void );
-	int				getNumMuscles		( void );
+	Muscle**		getMuscleList		( void ) { return muscles; }
+	int				getNumMuscles		( void ) { return NMUSCLES; }
 	
 };
 

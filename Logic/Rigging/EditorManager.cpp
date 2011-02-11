@@ -5,10 +5,8 @@
 #include "../../Models/Actor/Actor.h"
 #include "intersection.h"
 
-EditorManager::EditorManager(MuscleManager* MMan, ExpressionManager* EMan, Actor* objecte)
+EditorManager::EditorManager(Actor* objecte)
 {
-	MManager = MMan;
-	EManager = EMan;
 	CurrentVertex = 0;
 	CurrentMuscle = NONE_MUSCLE;
 	this->objecte = objecte;
@@ -84,7 +82,7 @@ void EditorManager::DeleteVertex(D3DXVECTOR3 vertex)
 //Defineix el moviment del muscle per a una expressió
 void EditorManager::DefineMovement(TypeExpression expression, TypeMuscle muscle, D3DXVECTOR3 desplaçament)
 {
-	EManager->modifyMuscleExpression(expression,muscle,desplaçament);
+	ExpressionManager::GetInstance()->modifyMuscleExpression(expression,muscle,desplaçament);
 }
 
 void EditorManager::AddVertexFromTriangle(D3DXVECTOR3 colisio, D3DXVECTOR3* triangle)
@@ -114,7 +112,7 @@ void EditorManager::SetMuscle(TypeMuscle muscle)
 		while (CurrentVertex) {
 			if (VertexList[i]) {
 				// Afegir el vertex al muscle
-				MManager->addVertexMuscle(CurrentMuscle, (unsigned int) i, DeltaList[i]);
+				MuscleManager::GetInstance()->addVertexMuscle(CurrentMuscle, (unsigned int) i, DeltaList[i]);
 				// Eliminar el vertex ja guardat
 				VertexList[i] = false;
 				--CurrentVertex;
@@ -125,7 +123,7 @@ void EditorManager::SetMuscle(TypeMuscle muscle)
 	// Canviar el muscle que s'està editant
 	this->CurrentMuscle = muscle;
 	// Carregar les dades del nou muscle
-	m = MManager->getMuscleList()[muscle];
+	m = MuscleManager::GetInstance()->getMuscleList()[muscle];
 	llistatVertex = m->getVertexIndex();
 	llistatDelta = m->getVertexDelta();
 	CurrentVertex = m->getNumVertexs();
@@ -152,7 +150,7 @@ void EditorManager::SaveMuscle()
 		while (CurrentTemp) {
 			if (VertexList[i]) {
 				// Afegir el vertex al muscle
-				MManager->addVertexMuscle(CurrentMuscle, (unsigned int) i, DeltaList[i]);
+				MuscleManager::GetInstance()->addVertexMuscle(CurrentMuscle, (unsigned int) i, DeltaList[i]);
 				--CurrentTemp;
 			}
 			++i;

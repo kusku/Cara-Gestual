@@ -2,17 +2,15 @@
 #include "Expression.h"
 #include "../Muscles/MuscleManager.h"
 
-Expression::Expression(MuscleManager* MMan)
+Expression::Expression()
 {
-	MManager = MMan;
-	movements = (D3DXVECTOR3*) malloc (MManager->getNumMuscles()*sizeof(D3DXVECTOR3));
+	movements = (D3DXVECTOR3*) malloc (MuscleManager::GetInstance()->getNumMuscles()*sizeof(D3DXVECTOR3));
 	resetMuscles();
 }
 
 Expression::~Expression()
 {
 	delete[] movements;
-	MManager = NULL;
 }
 
 void Expression::modifyMuscle( TypeMuscle muscle, D3DXVECTOR3 movement )
@@ -27,7 +25,8 @@ D3DXVECTOR3 Expression::getMovement( TypeMuscle muscle )
 
 void Expression::resetMuscles( void )
 {
-	for (int i=0; i<MManager->getNumMuscles(); ++i)
+	int numMuscles = MuscleManager::GetInstance()->getNumMuscles();
+	for (int i=0; i<numMuscles; ++i)
 	{
 		movements[i] = D3DXVECTOR3(0.f,0.f,0.f);
 	}
@@ -35,16 +34,18 @@ void Expression::resetMuscles( void )
 
 void Expression::RenderExpression( void )
 {
-	for (int i=0; i<MManager->getNumMuscles(); ++i)
+	int numMuscles = MuscleManager::GetInstance()->getNumMuscles();
+	for (int i=0; i<numMuscles; ++i)
 	{
-		MManager->moveAMuscle((TypeMuscle)i, movements[i]);
+		MuscleManager::GetInstance()->moveAMuscle((TypeMuscle)i, movements[i]);
 	}
 }
 
 void Expression::ExternalRender(D3DXVECTOR3* newNovements)
 {
-	for (int i=0; i<MManager->getNumMuscles(); ++i)
+	int numMuscles = MuscleManager::GetInstance()->getNumMuscles();
+	for (int i=0; i<numMuscles; ++i)
 	{
-		MManager->moveAMuscle((TypeMuscle)i, newNovements[i]);
+		MuscleManager::GetInstance()->moveAMuscle((TypeMuscle)i, newNovements[i]);
 	}
 }

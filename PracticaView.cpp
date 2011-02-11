@@ -302,11 +302,6 @@ CPracticaView::CPracticaView()
 	select = NULL;
 	deform = NULL;
 
-	MManager = new MuscleManager();
-	EManager = new ExpressionManager(MManager);
-	animate = new Animation(EManager, MManager);
-	parla = new CParla(animate);
-	MSubtitles = new CSubtitles();
 	m_ModelManager = new ModelManager();
 	editor = NULL;
 }
@@ -315,17 +310,17 @@ CPracticaView::~CPracticaView()
 {
 	// Eliminar estructures dinàmiques
 	CHECKED_DELETE(ObOBJ);
-	CHECKED_DELETE(MManager);
-	CHECKED_DELETE(EManager);
 	CHECKED_DELETE(editor);
 	CHECKED_DELETE(deform);
-	CHECKED_DELETE(animate);
-	CHECKED_DELETE(parla);
-	CHECKED_DELETE(MSubtitles);
 	CHECKED_DELETE(m_ModelManager);
 
+	MuscleManager::GetInstance()->CleanUp();
+	ExpressionManager::GetInstance()->CleanUp();
+	Animation::GetInstance()->CleanUp();
+	CParla::GetInstance()->CleanUp();
 	Timer::GetInstance()->CleanUp();
 	CDirectX::GetInstance()->CleanUp();
+
 	_CrtDumpMemoryLeaks();
 }
 
@@ -462,8 +457,8 @@ void CPracticaView::OnDestroy()
 void CPracticaView::OnPaint() 
 {
 	Perspectiva(anglev,angleh,R,Vis_Polar,pan,tr_cpv,transf,
-				VScal,VTras,VRota,oculta,test_vis,back_line,filferros,textura,ifixe,eixos, editor, m_ModelManager, MManager,
-				editMuscle, MSubtitles, subtitles, parla);
+				VScal,VTras,VRota,oculta,test_vis,back_line,filferros,textura,ifixe,eixos, editor, m_ModelManager,
+				editMuscle, subtitles);
 }
 
 void CPracticaView::OnSize(UINT nType, int cx, int cy) 
@@ -506,7 +501,7 @@ void CPracticaView::OnLButtonDown(UINT nFlags, CPoint point)
 	if (editExpression && ObOBJ != NULL)
 	{
 		if (deform == NULL)
-			deform = new Deformation(EManager,ObOBJ,editor);
+			deform = new Deformation(ObOBJ,editor);
 
 		deform->SetExpression(selectedExpression);
 		deform->SetMuscle(selectedMuscle);
@@ -1298,24 +1293,24 @@ void CPracticaView::OnFileOpen3ds()
 	/* i carreguem */	
 	wglMakeCurrent(m_hDC,m_hRC);	// Activem contexte OpenGL
 	ObOBJ = new Actor(nomfitx,TIPUS_3DS);
-	editor = new EditorManager(MManager,EManager,ObOBJ);
+	editor = new EditorManager(ObOBJ);
 	wglMakeCurrent(m_hDC,NULL);	// Desactivem contexte OpenGL
 
-	MManager->SetModel(ObOBJ);
+	MuscleManager::GetInstance()->SetModel(ObOBJ);
 	//Resetejar la memòria de Selection
 	if (select != NULL)
 		select->SetFlagsTriangles();
 
 	//Borrem els muscles i expressions que hi pugui haver
-		int expressions = EManager->getNumExpressions();
+	int expressions = ExpressionManager::GetInstance()->getNumExpressions();
 		for (int i=0; i<expressions; ++i)
 		{
-			EManager->resetExpression((TypeExpression) i);
+			ExpressionManager::GetInstance()->resetExpression((TypeExpression) i);
 		}
-		int muscles = MManager->getNumMuscles();
+		int muscles = MuscleManager::GetInstance()->getNumMuscles();
 		for (int i=0; i<muscles;++i)
 		{
-			MManager->ClearMuscle((TypeMuscle) i);
+			MuscleManager::GetInstance()->ClearMuscle((TypeMuscle) i);
 		}
 		editor->ClearVertexs();
 
@@ -1343,23 +1338,23 @@ void CPracticaView::OnFileOpenObj()
 	/* i carreguem */	
 	wglMakeCurrent(m_hDC,m_hRC);	// Activem contexte OpenGL
 	ObOBJ = new Actor(nomfitx,TIPUS_OBJ);
-	editor = new EditorManager(MManager,EManager,ObOBJ);
+	editor = new EditorManager(ObOBJ);
 	wglMakeCurrent(m_hDC,NULL);	// Desactivem contexte OpenGL
 
-	MManager->SetModel(ObOBJ);
+	MuscleManager::GetInstance()->SetModel(ObOBJ);
 	//Resetejar la memòria de Selection
 	if (select != NULL)
 		select->SetFlagsTriangles();
 	//Borrem els muscles i expressions que hi pugui haver
-		int expressions = EManager->getNumExpressions();
+		int expressions = ExpressionManager::GetInstance()->getNumExpressions();
 		for (int i=0; i<expressions; ++i)
 		{
-			EManager->resetExpression((TypeExpression) i);
+			ExpressionManager::GetInstance()->resetExpression((TypeExpression) i);
 		}
-		int muscles = MManager->getNumMuscles();
+		int muscles = MuscleManager::GetInstance()->getNumMuscles();
 		for (int i=0; i<muscles;++i)
 		{
-			MManager->ClearMuscle((TypeMuscle) i);
+			MuscleManager::GetInstance()->ClearMuscle((TypeMuscle) i);
 		}
 		editor->ClearVertexs();
 
@@ -1380,8 +1375,8 @@ void CPracticaView::OnCarregaAutomatica()
 
 	if (ObOBJ != NULL)
 	{
-		editor = new EditorManager(MManager,EManager,ObOBJ);
-		MManager->SetModel(ObOBJ);
+		editor = new EditorManager(ObOBJ);
+		MuscleManager::GetInstance()->SetModel(ObOBJ);
 
 		// Eliminació de la memòria en Selection, Expressions i Muscles
 		{
@@ -1390,21 +1385,21 @@ void CPracticaView::OnCarregaAutomatica()
 				select->SetFlagsTriangles();
 
 			//Borrem els muscles i expressions que hi pugui haver
-			int expressions = EManager->getNumExpressions();
+			int expressions = ExpressionManager::GetInstance()->getNumExpressions();
 			for (int i=0; i<expressions; ++i)
 			{
-				EManager->resetExpression((TypeExpression) i);
+				ExpressionManager::GetInstance()->resetExpression((TypeExpression) i);
 			}
-			int muscles = MManager->getNumMuscles();
+			int muscles = MuscleManager::GetInstance()->getNumMuscles();
 			for (int i=0; i<muscles;++i)
 			{
-				MManager->ClearMuscle((TypeMuscle) i);
+				MuscleManager::GetInstance()->ClearMuscle((TypeMuscle) i);
 			}
 			editor->ClearVertexs();
 		}
 		
-		MManager->Load(m_musclePath);
-		EManager->Load(m_expressionPath);
+		MuscleManager::GetInstance()->Load(m_musclePath);
+		ExpressionManager::GetInstance()->Load(m_expressionPath);
 	}
 
 	// Crida a OnPaint() per redibuixar l'escena
@@ -2199,13 +2194,13 @@ void CPracticaView::OnTimer(UINT nIDEvent)
 			if (acumulativeTime < temporitzador)
 			{
 				anima = true;
-				animate->NextStepAnimation();
-				animate->Render(ObOBJ);
+				Animation::GetInstance()->NextStepAnimation();
+				Animation::GetInstance()->Render(ObOBJ);
 				acumulativeTime += 0.004;
 			}
 			else
 			{
-				animate->FinalizeAnimation();
+				Animation::GetInstance()->FinalizeAnimation();
 				KillTimer(WM_TIMER);
 				acumulativeTime = 0.f;
 				anima = false;
@@ -2217,27 +2212,27 @@ void CPracticaView::OnTimer(UINT nIDEvent)
 	}
 	else
 	{
-		if (parla->IsTalking())
+		if (CParla::GetInstance()->IsTalking())
 		{
 			if (acumulativeTime < tempsParla)
 			{
 				anima = true;
-				animate->NextStepAnimation();
-				animate->Render(ObOBJ);
+				Animation::GetInstance()->NextStepAnimation();
+				Animation::GetInstance()->Render(ObOBJ);
 				acumulativeTime += 0.004;
 			}
 			else
 			{
-				animate->FinalizeAnimation();
+				Animation::GetInstance()->FinalizeAnimation();
 				acumulativeTime = 0.f;
-				parla->NextTalk(ObOBJ);
+				CParla::GetInstance()->NextTalk(ObOBJ);
 			}
 		}
 		else
 		{
 				KillTimer(WM_TIMER);
 				acumulativeTime = 0.f;
-				animate->FinalizeAnimation();
+				Animation::GetInstance()->FinalizeAnimation();
 				anima = false;
 		}
 		Invalidate();
@@ -2287,7 +2282,7 @@ void CPracticaView::OnImportMuscles()
 	// Conversió de la variable CString nom a la variable char *nomfitx, compatible amb la funció carregar3DS
 	char * nomfitx = (char *)(LPCTSTR)nom;
 	std::string path = nomfitx;
-	MManager->Load(path);
+	MuscleManager::GetInstance()->Load(path);
 	
 	// Crida a OnPaint() per redibuixar l'escena
 	Invalidate();
@@ -2312,7 +2307,7 @@ void CPracticaView::OnExportMuscles()
 	// La variable nomfitx conté tot el path del fitxer.
 	if(ObOBJ != NULL)
 	{
-		XMLWriter* escriptura = new XMLWriter(nomfitx, EManager, MManager,1);
+		XMLWriter* escriptura = new XMLWriter(nomfitx,1);
 		escriptura->Guardar();
 		delete escriptura;
 	}
@@ -2597,7 +2592,7 @@ void CPracticaView::OnImportExpressions()
 	//Cridar al parsejador de fitxers XML per carregar les expressions.
 	// La variable nomfitx conté tot el path del fitxer.
 	std::string  path = nomfitx;
-	EManager->Load(path);
+	ExpressionManager::GetInstance()->Load(path);
 
 	// Crida a OnPaint() per redibuixar l'escena
 	Invalidate();
@@ -2622,7 +2617,7 @@ void CPracticaView::OnExportExpressions()
 	// La variable nomfitx conté tot el path del fitxer.
 	if (ObOBJ != NULL)
 	{
-		XMLWriter* escriptura = new XMLWriter(nomfitx, EManager, MManager,0);
+		XMLWriter* escriptura = new XMLWriter(nomfitx,0);
 		escriptura->Guardar();
 		delete escriptura;
 	}
@@ -2667,7 +2662,7 @@ void CPracticaView::SwitchExpression(TypeExpression e)
 			{
 				ChangeExpressionState(e);
 				if (!this->animacio)
-					EManager->RenderExpression(selectedExpression,ObOBJ);
+					ExpressionManager::GetInstance()->RenderExpression(selectedExpression,ObOBJ);
 				else
 					SetAndStartAnimation(selectedExpression);
 			}
@@ -2847,8 +2842,8 @@ void CPracticaView::ChangeExpressionState ( TypeExpression expression )
 
 void CPracticaView::SetAndStartAnimation( TypeExpression expression )
 {
-	animate->SetTime(4, temporitzador);
-	animate->StartAnimation(expression, ObOBJ);
+	Animation::GetInstance()->SetTime(4, temporitzador);
+	Animation::GetInstance()->StartAnimation(expression, ObOBJ);
 	SetTimer(WM_TIMER,4,NULL);	
 }
 
@@ -2872,7 +2867,7 @@ void CPracticaView::OnVFast()
 {
 	temporitzador = 0.05f;
 	tempsParla = 0.005f;
-	parla->SetVelocity(1.f, 0.005f);
+	CParla::GetInstance()->SetVelocity(1.f, 0.005f);
 }
 
 void CPracticaView::OnUpdateVFast(CCmdUI *pCmdUI)
@@ -2887,7 +2882,7 @@ void CPracticaView::OnFast()
 {
 	temporitzador = 0.1f;
 	tempsParla = 0.01f;
-	parla->SetVelocity(1.f, 0.007f);
+	CParla::GetInstance()->SetVelocity(1.f, 0.007f);
 }
 
 void CPracticaView::OnUpdateFast(CCmdUI *pCmdUI)
@@ -2903,7 +2898,7 @@ void CPracticaView::OnNormal()
 	temporitzador = 0.5f;
 	tempsParla = 0.02f;
 	tParlaBucle = 10.0f;
-	parla->SetVelocity(1.f, 0.01f);
+	CParla::GetInstance()->SetVelocity(1.f, 0.01f);
 }
 
 void CPracticaView::OnUpdateNormal(CCmdUI *pCmdUI)
@@ -2918,7 +2913,7 @@ void CPracticaView::OnSlow()
 {
 	temporitzador = 1.f;
 	tempsParla = 0.1f;
-	parla->SetVelocity(1.f, 0.03f);
+	CParla::GetInstance()->SetVelocity(1.f, 0.03f);
 }
 
 void CPracticaView::OnUpdateSlow(CCmdUI *pCmdUI)
@@ -2933,7 +2928,7 @@ void CPracticaView::OnVSlow()
 {
 	temporitzador = 3.f;
 	tempsParla = 0.3f;
-	parla->SetVelocity(1.f, 0.09f);
+	CParla::GetInstance()->SetVelocity(1.f, 0.09f);
 }
 
 void CPracticaView::OnUpdateVSlow(CCmdUI *pCmdUI)
@@ -2948,7 +2943,7 @@ void CPracticaView::OnParla()
 {
 	subtitles = true;
 	SetTimer(WM_TIMER,4,NULL);
-	parla->StartTalk(ObOBJ);
+	CParla::GetInstance()->StartTalk(ObOBJ);
 
 	// Crida el OnPaint() per a redibuixar l'escena
 	Invalidate();
@@ -2960,34 +2955,34 @@ void CPracticaView::OnParlaBucle()
 
 	subtitles = true;
 	/*parla->SetVelocity(8.f, 0.1f);*/
-	parla->SetVelocity(11.f, 0.04f);
-	parla->StartTalk(ObOBJ);
+	CParla::GetInstance()->SetVelocity(11.f, 0.04f);
+	CParla::GetInstance()->StartTalk(ObOBJ);
 
 	acumulativeTime = 0.f;
 	
 
-	while ( parla->IsTalking() )
+	while ( CParla::GetInstance()->IsTalking() )
 	{
 		if (acumulativeTime < 0.3f)
 		{
 			Timer::GetInstance()->ResetTimer();
 			anima = true;
-			animate->NextStepAnimation();
-			animate->Render(ObOBJ);
+			Animation::GetInstance()->NextStepAnimation();
+			Animation::GetInstance()->Render(ObOBJ);
 			acumulativeTime += Timer::GetInstance()->GetElapsedTime();
 		}
 		else
 		{
-			animate->FinalizeAnimation();
+			Animation::GetInstance()->FinalizeAnimation();
 			acumulativeTime = 0.f;
-			parla->NextTalk(ObOBJ);
+			CParla::GetInstance()->NextTalk(ObOBJ);
 		}
 
 		OnPaint();
 	}
 
 	acumulativeTime = 0.f;
-	animate->FinalizeAnimation();
+	Animation::GetInstance()->FinalizeAnimation();
 	anima = false;
 	subtitles = false;
 

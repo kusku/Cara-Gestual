@@ -56,12 +56,7 @@ private:
 
 	Selection* select;
 	EditorManager* editor;
-	MuscleManager* MManager;
-	ExpressionManager* EManager;
 	Deformation* deform;
-	Animation*	animate;
-	CParla*		parla;
-	CSubtitles* MSubtitles;
 	ModelManager* m_ModelManager;
 
 // Attributes
