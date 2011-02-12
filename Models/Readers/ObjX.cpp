@@ -14,6 +14,7 @@ CObjX::CObjX()
 
 CObjX::~CObjX()
 {
+	CHECKED_RELEASE(m_Mesh);
 	m_MaterialMeshList.clear();
 	m_TextureName.clear();
 }

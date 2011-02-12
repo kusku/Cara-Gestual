@@ -18,7 +18,6 @@ private:
 	static MuscleManager* m_MuscleManager;
 
 	Muscle**	muscles;
-	Actor* obj3D;
 
 	void onStartElement	( const std::string &elem, MKeyValue &atts );
 

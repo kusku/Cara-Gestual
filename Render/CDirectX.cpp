@@ -12,8 +12,9 @@ CDirectX::CDirectX()
 	m_RenderSurface = NULL;
 	m_RenderTexture = NULL;
 	m_MainSurface = NULL;
-	m_PaintSolid = true;
 	m_hWnd = NULL;
+
+	m_PaintSolid = true;
 	m_paintInfoGame = true;
 	m_paintInfoInput = false;
 	m_ZBuffer = true;
@@ -50,7 +51,7 @@ void CDirectX::CleanUp()
 
 HRESULT CDirectX::InitDX ( HWND hWnd )
 {
-// Create the D3D object.
+	// Create the D3D object.
     if( NULL == ( m_pD3D = Direct3DCreate9( D3D_SDK_VERSION ) ) )
         return E_FAIL;
 
@@ -168,7 +169,6 @@ void CDirectX::BeginRenderDX()
 void CDirectX::EndRenderDX()
 {
 	m_pD3DDevice->EndScene();
-    // Present the backbuffer contents to the display
 }
 
 void CDirectX::PresentDX()

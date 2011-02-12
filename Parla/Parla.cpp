@@ -7,7 +7,7 @@
 
 CParla::CParla()
 {
-	text = "Com que no em puc menjar una mandarina, em compro un pressec.";
+	text = NULL;
 	parlant = false;
 	index = 0;
 	transitionTime = 1.f;
@@ -38,9 +38,19 @@ void CParla::CleanUp()
 	delete m_Parla;
 }
 
-void CParla::SetTextToTalk(char *text)
+void CParla::SetTextToTalk(std::string filename)
 {
-	this->text = text;
+	FILE *fitxer;
+	errno_t err;
+	char textLlegit [100];
+
+	if( (err  = fopen_s(&fitxer,filename.c_str(),"r")) ==0 )
+	{
+		fscanf_s(fitxer,"%s", textLlegit, _countof(textLlegit));	
+		m_Subtitles->SetText(std::string(textLlegit));
+		text = textLlegit;
+	}
+	fclose(fitxer);
 }
 
 void CParla::SetVelocity(float transitionT, float totalT)
@@ -221,4 +231,9 @@ void CParla::TalkElapsed(Actor* obj)
 void CParla::RenderSubs(LPDIRECT3DDEVICE9 Device)
 {
 	m_Subtitles->RenderSubtitles(Device);
+}
+
+void CParla::PrepareFontSubs(std::string filename)
+{
+	m_Subtitles->CreateFont(filename);
 }

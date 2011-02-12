@@ -10,7 +10,28 @@ ModelManager::ModelManager()
 
 ModelManager::~ModelManager()
 {
-	m_Actor = NULL;
+}
+
+ModelManager* ModelManager::m_ModelManager = NULL;
+
+ModelManager* ModelManager::GetInstance()
+{
+	if (m_ModelManager == NULL)
+		m_ModelManager = new ModelManager();
+
+	return m_ModelManager;
+}
+
+void ModelManager::CleanUp()
+{
+	for(TScenaryIterator it = m_Scenary.begin(); it != m_Scenary.end(); ++it)
+	{
+		CHECKED_DELETE(it->second);
+	}
+	m_Scenary.clear();
+
+	CHECKED_DELETE(m_Actor);
+	delete m_ModelManager;
 }
 
 void ModelManager::Render(LPDIRECT3DDEVICE9 Device, const D3DXVECTOR3 pan )

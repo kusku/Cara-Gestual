@@ -4,7 +4,10 @@
 #include "stdafx.h"
 #include <math.h>
 
-#define TEXTURES_FOLDER		".\\Data\\Models\\heavytriangles\\maps\\"
+#define ACTORS_XML		".\\Data\\XML\\actors.xml"
+#define SCENE_XML		".\\Data\\XML\\scene.xml"
+#define FONT_XML		".\\Data\\XML\\font.xml"
+#define SUBTITLES		".\\Data\\Subtitles\\subtitles.txt"
 
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ|D3DFVF_DIFFUSE)
 #define D3DFVF_CUSTOMVERTEXTEXTURA (D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX2)

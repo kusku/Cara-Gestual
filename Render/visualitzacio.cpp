@@ -39,8 +39,7 @@ void RenderBox (float x1, float y1, float x2, float y2)
 void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTOR3 tr, bool TR, 
 				 D3DXVECTOR3 VScl,D3DXVECTOR3 VTr, D3DXVECTOR3 VRot,bool oculta,bool testv,
 				 bool bck_ln,bool filferros,bool textur,bool ifix,bool eix,
-				 EditorManager* EdManager, ModelManager* ModelManager, bool flags,
-				 bool subtitles)
+				 EditorManager* EdManager, bool flags, bool subtitles)
 {    
 	D3DXVECTOR3 cam,up;
 	CDirectX* l_DX = CDirectX::GetInstance();
@@ -126,8 +125,7 @@ void Perspectiva(float anglex,float angley,float R,char VPol,bool pant,D3DXVECTO
 		l_DX->RenderAxis(8.0f);
 
 	//Dibuixa el model
-	if (ModelManager != NULL)
-		ModelManager->Render(Device,tr);
+	ModelManager::GetInstance()->Render(Device,tr);
 
 	D3DXMatrixIdentity(&l_Matrix);
 	l_DX->GetDevice()->SetTransform(D3DTS_WORLD, &l_Matrix);

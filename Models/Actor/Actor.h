@@ -8,8 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <gl/gl.h>
-#include <gl/glu.h>
 #include <d3dx9.h>
 #include <vector>
 #include <map>

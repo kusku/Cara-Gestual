@@ -301,23 +301,21 @@ CPracticaView::CPracticaView()
 
 	select = NULL;
 	deform = NULL;
-
-	m_ModelManager = new ModelManager();
 	editor = NULL;
 }
 
 CPracticaView::~CPracticaView()
 {
 	// Eliminar estructures dinàmiques
-	CHECKED_DELETE(ObOBJ);
 	CHECKED_DELETE(editor);
 	CHECKED_DELETE(deform);
-	CHECKED_DELETE(m_ModelManager);
+	ObOBJ = NULL;
 
 	MuscleManager::GetInstance()->CleanUp();
 	ExpressionManager::GetInstance()->CleanUp();
 	Animation::GetInstance()->CleanUp();
 	CParla::GetInstance()->CleanUp();
+	ModelManager::GetInstance()->CleanUp();
 	Timer::GetInstance()->CleanUp();
 	CDirectX::GetInstance()->CleanUp();
 
@@ -457,7 +455,7 @@ void CPracticaView::OnDestroy()
 void CPracticaView::OnPaint() 
 {
 	Perspectiva(anglev,angleh,R,Vis_Polar,pan,tr_cpv,transf,
-				VScal,VTras,VRota,oculta,test_vis,back_line,filferros,textura,ifixe,eixos, editor, m_ModelManager,
+				VScal,VTras,VRota,oculta,test_vis,back_line,filferros,textura,ifixe,eixos, editor,
 				editMuscle, subtitles);
 }
 
@@ -1291,12 +1289,11 @@ void CPracticaView::OnFileOpen3ds()
 	char * nomfitx = (char *)(LPCTSTR)nom;
 
 	/* i carreguem */	
-	wglMakeCurrent(m_hDC,m_hRC);	// Activem contexte OpenGL
-	ObOBJ = new Actor(nomfitx,TIPUS_3DS);
-	editor = new EditorManager(ObOBJ);
-	wglMakeCurrent(m_hDC,NULL);	// Desactivem contexte OpenGL
+	ModelManager::GetInstance()->Load(std::string(nomfitx));
+	ObOBJ = ModelManager::GetInstance()->GetActor();
+	//ObOBJ = new Actor(nomfitx,TIPUS_3DS);
+	editor = new EditorManager();
 
-	MuscleManager::GetInstance()->SetModel(ObOBJ);
 	//Resetejar la memòria de Selection
 	if (select != NULL)
 		select->SetFlagsTriangles();
@@ -1336,12 +1333,11 @@ void CPracticaView::OnFileOpenObj()
 	char * nomfitx = (char *)(LPCTSTR)nom;
 
 	/* i carreguem */	
-	wglMakeCurrent(m_hDC,m_hRC);	// Activem contexte OpenGL
-	ObOBJ = new Actor(nomfitx,TIPUS_OBJ);
-	editor = new EditorManager(ObOBJ);
-	wglMakeCurrent(m_hDC,NULL);	// Desactivem contexte OpenGL
+	ModelManager::GetInstance()->Load(std::string(nomfitx));
+	ObOBJ = ModelManager::GetInstance()->GetActor();
+	//ObOBJ = new Actor(nomfitx,TIPUS_OBJ);
+	editor = new EditorManager();
 
-	MuscleManager::GetInstance()->SetModel(ObOBJ);
 	//Resetejar la memòria de Selection
 	if (select != NULL)
 		select->SetFlagsTriangles();
@@ -1364,19 +1360,18 @@ void CPracticaView::OnFileOpenObj()
 
 void CPracticaView::OnCarregaAutomatica()
 {
-	std::string actors = "./Data/XML/actors.xml";
-	std::string scene = "./Data/XML/scene.xml";
+	ModelManager::GetInstance()->Load(std::string(ACTORS_XML));
+	ModelManager::GetInstance()->Load(std::string(SCENE_XML),true);
+	CParla::GetInstance()->PrepareFontSubs(std::string(FONT_XML));
+	CParla::GetInstance()->SetTextToTalk(std::string(SUBTITLES));
 
-	m_ModelManager->Load(actors);
-	m_ModelManager->Load(scene,true);
-	ObOBJ = m_ModelManager->GetActor();
-	std::string m_musclePath = m_ModelManager->GetMusclePath();
-	std::string m_expressionPath = m_ModelManager->GetExpressionPath();
+	ObOBJ = ModelManager::GetInstance()->GetActor();
+	std::string m_musclePath = ModelManager::GetInstance()->GetMusclePath();
+	std::string m_expressionPath = ModelManager::GetInstance()->GetExpressionPath();
 
 	if (ObOBJ != NULL)
 	{
-		editor = new EditorManager(ObOBJ);
-		MuscleManager::GetInstance()->SetModel(ObOBJ);
+		editor = new EditorManager();
 
 		// Eliminació de la memòria en Selection, Expressions i Muscles
 		{

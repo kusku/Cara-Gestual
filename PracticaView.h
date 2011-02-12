@@ -57,7 +57,6 @@ private:
 	Selection* select;
 	EditorManager* editor;
 	Deformation* deform;
-	ModelManager* m_ModelManager;
 
 // Attributes
 public:

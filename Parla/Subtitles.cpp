@@ -11,13 +11,21 @@ CSubtitles::CSubtitles()
 	blue = 0;
 	alpha = 255;
 	position = D3DXVECTOR2(100.0f, 100.0f);
-	subtitle = "Com que no em puc menjar una mandarina, em compro un pressec.";
-	
+	subtitle = "Com que no em puc menjar una mandarina, em compro un pressec.";	
 }
 
 CSubtitles::~CSubtitles()
 {
 	CHECKED_RELEASE(m_font);
+}
+
+void CSubtitles::CreateFont(std::string filename)
+{
+	LPDIRECT3DDEVICE9 Device = CDirectX::GetInstance()->GetDevice();
+	
+	// Create a D3DX font object
+	D3DXCreateFont(Device, 100, 0, FW_BOLD, 0, false, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, 
+					DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, TEXT("Arial"), &m_font );
 }
 
 void CSubtitles::SetColor(int r, int g, int b, int a)
@@ -37,10 +45,6 @@ void CSubtitles::ParseSubtitles()
 
 void CSubtitles::RenderSubtitles(LPDIRECT3DDEVICE9 Device)
 {
-	// Create a D3DX font object
-	D3DXCreateFont( Device, 100, 0, FW_BOLD, 0, true, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, 
-					DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, TEXT("Arial"), &m_font );
-
 	//Render Subtitles 
 	PreRender(Device);
 	Render(Device);
@@ -78,7 +82,7 @@ void CSubtitles::Render(LPDIRECT3DDEVICE9 Device)
 	rct.bottom=512;
 
 	// Draw some text
-	m_font->DrawText(NULL, "Hello World", -1, &rct, 0, fontColor );
+	m_font->DrawText(NULL, subtitle.c_str(), -1, &rct, 0, fontColor );
 }
 
 void CSubtitles::PostRender(LPDIRECT3DDEVICE9 Device)

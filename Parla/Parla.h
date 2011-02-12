@@ -37,7 +37,7 @@ public:
 	void			CleanUp();
 
 	void		SetVelocity			( float transitionT, float totalT );
-	void		SetTextToTalk		( char* text );
+	void		SetTextToTalk		( std::string filename );
 
 	void		StartTalk			(Actor* obj);
 	void		NextTalk			(Actor* obj);
@@ -45,6 +45,7 @@ public:
 	bool		IsTalking			();
 	void		TalkElapsed			(Actor* obj);
 	
+	void		PrepareFontSubs		( std::string filename );
 	void		RenderSubs			( LPDIRECT3DDEVICE9 Device );
 	
 };

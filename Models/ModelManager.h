@@ -13,6 +13,8 @@ class ModelManager : public CXMLParser
 
 private:
 	
+	static ModelManager* m_ModelManager;
+
 	bool m_IsReadingScene; //Identifica si s'està llegint una escena o models en XML
 
 	Actor* m_Actor;
@@ -30,6 +32,9 @@ public:
 
 	ModelManager();
 	~ModelManager();
+
+	static ModelManager*	GetInstance	();
+	void					CleanUp		();
 
 	// Carrega els XML dels models
 	void		Load		(std::string xmlFile, bool IsScene = false );

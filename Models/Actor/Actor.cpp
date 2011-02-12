@@ -28,13 +28,19 @@ Actor::Actor(char* filename, int tipus) {
 
 Actor::~Actor()
 {
-	delete [] punts;
-	delete [] materials;
-	delete [] cares;
 	delete [] cordTex;
+	delete [] materials;
+	delete [] punts;
+	delete [] cares;
+
+	cordTex = NULL;
+	materials = NULL;
+	punts = NULL;
+	cares = NULL;
+	
 
 	listaTexturas.clear();
-	for(size_t cont = 0; cont < vec_textures.size(); cont++)
+	for(size_t cont = 0; cont < vec_textures.size(); ++cont)
 	{
 		if(vec_numCaresByMat[cont] != 0)
 		{
@@ -42,6 +48,7 @@ Actor::~Actor()
 			CHECKED_RELEASE(vec_pIBMeshByMat[cont]);
 		}
 	}
+
 	vec_textures.clear();
 	vec_numCaresByMat.clear();
 	vec_materials.clear();
@@ -81,7 +88,7 @@ void Actor::ModelDeOBJ(char* filename) {
 
 	for (i = 0; i < numcares; ++i) {
 		for (j = 0; j < 3; ++j) {
-			this->cares[i].punts[j] = &(this->punts[this->buscarPunt(D3DXVECTOR3(ob.pFaces[i].pVertices[j].fX,ob.pFaces[i].pVertices[j].fY,ob.pFaces[i].pVertices[j].fZ))]);
+			this->cares[i].punts[j] = &(punts[buscarPunt(D3DXVECTOR3(ob.pFaces[i].pVertices[j].fX,ob.pFaces[i].pVertices[j].fY,ob.pFaces[i].pVertices[j].fZ))]);
 			if (ob.pNormals != NULL)
 			{
 				this->cares[i].normals[j] = D3DXVECTOR3(ob.pFaces[i].pNormals[j].fX,ob.pFaces[i].pNormals[j].fY,ob.pFaces[i].pNormals[j].fZ);
@@ -183,101 +190,99 @@ HRESULT Actor::ModelDeX(char* filename)
 	//////////////////////////
 	//Creació dels materials//
 	//////////////////////////
+	D3DMATERIAL9* m_Materials = reader->GetMaterials();
+	if (m_Materials != NULL)
 	{
-		D3DMATERIAL9* m_Materials = reader->GetMaterials();
-		if (m_Materials != NULL)
-		{
-			nombreMaterials = reader->GetNumMaterials();
-			materials = new O3DMaterial[nombreMaterials];
-		}
-		else
-		{
-			this->nombreMaterials = 0;
-			this->materials = NULL;
-		}
-		
-		std::vector<std::string> nomTextures = reader->GetTextureName();
-		for (int i=0; i<nombreMaterials; ++i)
-		{
-			strcpy_s(materials[i].szTexture, MAX_PATH_TEXTURE, const_cast <char *>(nomTextures[i].c_str()));
-			materials[i].fAmbient[0] = m_Materials->Ambient.r;
-			materials[i].fAmbient[1] = m_Materials->Ambient.g;
-			materials[i].fAmbient[2] = m_Materials->Ambient.b;
+		nombreMaterials = reader->GetNumMaterials();
+		materials = new O3DMaterial[nombreMaterials];
+	}
+	else
+	{
+		this->nombreMaterials = 0;
+		this->materials = NULL;
+	}
+	
+	std::vector<std::string> nomTextures = reader->GetTextureName();
+	for (int i=0; i<nombreMaterials; ++i)
+	{
+		strcpy_s(materials[i].szTexture, MAX_PATH_TEXTURE, const_cast <char *>(nomTextures[i].c_str()));
+		materials[i].fAmbient[0] = m_Materials->Ambient.r;
+		materials[i].fAmbient[1] = m_Materials->Ambient.g;
+		materials[i].fAmbient[2] = m_Materials->Ambient.b;
 
-			materials[i].fDiffuse[0] = m_Materials->Diffuse.r;
-			materials[i].fDiffuse[1] = m_Materials->Diffuse.g;
-			materials[i].fDiffuse[2] = m_Materials->Diffuse.b;
+		materials[i].fDiffuse[0] = m_Materials->Diffuse.r;
+		materials[i].fDiffuse[1] = m_Materials->Diffuse.g;
+		materials[i].fDiffuse[2] = m_Materials->Diffuse.b;
 
-			materials[i].fEmmissive[0] = m_Materials->Emissive.r;
-			materials[i].fEmmissive[1] = m_Materials->Emissive.g;
-			materials[i].fEmmissive[2] = m_Materials->Emissive.b;
+		materials[i].fEmmissive[0] = m_Materials->Emissive.r;
+		materials[i].fEmmissive[1] = m_Materials->Emissive.g;
+		materials[i].fEmmissive[2] = m_Materials->Emissive.b;
 
-			materials[i].fSpecular[0] = m_Materials->Specular.r;
-			materials[i].fSpecular[1] = m_Materials->Specular.g;
-			materials[i].fSpecular[2] = m_Materials->Specular.b;
+		materials[i].fSpecular[0] = m_Materials->Specular.r;
+		materials[i].fSpecular[1] = m_Materials->Specular.g;
+		materials[i].fSpecular[2] = m_Materials->Specular.b;
 
-			materials[i].fShininess = m_Materials->Power;
-		}
+		materials[i].fShininess = m_Materials->Power;
 	}
 	
 	///////////////////////
 	//Creació de la malla//
 	///////////////////////
+	LPD3DXMESH m_Mesh = reader->GetMesh();
+	IDirect3DIndexBuffer9 *ib;
+	IDirect3DVertexBuffer9 *vb;
+
+	nombrePunts = (int)m_Mesh->GetNumVertices();
+	nombreCares = (int)m_Mesh->GetNumFaces();
+
+	punts = new Punt[nombrePunts];
+	cares = new Cara[nombreCares];
+	cordTex = new Point2D[nombrePunts];
+
+	std::vector<int> MaterialMeshList = reader->GetMaterialMeshList();
+
+	unsigned short* indices;
+	unsigned char* vertices;
+
+	m_Mesh->GetIndexBuffer(&ib);
+	m_Mesh->GetVertexBuffer(&vb);
+
+	ib->Lock(0,0,(void **)&indices,0);
+	vb->Lock(0,0,(void **)&vertices,0);
+
+	for(unsigned int i=0; i<(unsigned int)nombrePunts; ++i)
 	{
-		LPD3DXMESH m_Mesh = reader->GetMesh();
-		IDirect3DIndexBuffer9 *ib;
-		IDirect3DVertexBuffer9 *vb;
-
-		nombrePunts = (int)m_Mesh->GetNumVertices();
-		nombreCares = (int)m_Mesh->GetNumFaces();
-
-		punts = new Punt[nombrePunts];
-		cares = new Cara[nombreCares];
-		cordTex = new Point2D[nombrePunts];
-
-		std::vector<int> MaterialMeshList = reader->GetMaterialMeshList();
-
-		unsigned short* indices;
-		unsigned char* vertices;
-
-		m_Mesh->GetIndexBuffer(&ib);
-		m_Mesh->GetVertexBuffer(&vb);
-
-		ib->Lock(0,0,(void **)&indices,0);
-		vb->Lock(0,0,(void **)&vertices,0);
-
-		for(unsigned int i=0; i<(unsigned int)nombrePunts; ++i)
-		{
-			D3DXVECTOR3 *pVertex = (D3DXVECTOR3 *)&vertices[m_Mesh->GetNumBytesPerVertex()*i];
-			punts[i].cordenades = pVertex[0];
-			punts[i].moviment = D3DXVECTOR3(0.f, 0.f, 0.f);
-			punts[i].normal = pVertex[1];
-			punts[i].cordTex.x = pVertex[2].y;
-			punts[i].cordTex.y = -pVertex[2].z;
-			cordTex[i].x = pVertex[2].y;
-			cordTex[i].y = -pVertex[2].z;
-		}
-
-		for (unsigned int i = 0; i < (unsigned int)nombreCares; ++i)
-		{
-			for (unsigned short j = 0; j < 3; ++j)
-			{
-				D3DXVECTOR3 *pVertex = (D3DXVECTOR3 *)&vertices[m_Mesh->GetNumBytesPerVertex()*indices[i*3 + j]];
-				
-				int index = buscarPunt(pVertex[0]);
-
-				cares[i].punts[j] = &punts[index];
-				cares[i].normals[j] = punts[index].normal;
-				cares[i].cordTex[j].x = pVertex[2].y;
-				cares[i].cordTex[j].y = -pVertex[2].z;
-			}
-			cares[i].materialTextura = MaterialMeshList[i];
-		}
-
-		vb->Unlock();
-		ib->Unlock();
+		D3DXVECTOR3 *pVertex = (D3DXVECTOR3 *)&vertices[m_Mesh->GetNumBytesPerVertex()*i];
+		punts[i].cordenades = pVertex[0];
+		punts[i].moviment = D3DXVECTOR3(0.f, 0.f, 0.f);
+		punts[i].normal = pVertex[1];
+		punts[i].cordTex.x = pVertex[2].y;
+		punts[i].cordTex.y = -pVertex[2].z;
+		cordTex[i].x = pVertex[2].y;
+		cordTex[i].y = -pVertex[2].z;
 	}
+
+	for (unsigned int i = 0; i < (unsigned int)nombreCares; ++i)
+	{
+		for (unsigned short j = 0; j < 3; ++j)
+		{
+			D3DXVECTOR3 *pVertex = (D3DXVECTOR3 *)&vertices[m_Mesh->GetNumBytesPerVertex()*indices[i*3 + j]];
+			
+			int index = buscarPunt(pVertex[0]);
+
+			cares[i].punts[j] = &punts[index];
+			cares[i].normals[j] = punts[index].normal;
+			cares[i].cordTex[j].x = pVertex[2].y;
+			cares[i].cordTex[j].y = -pVertex[2].z;
+		}
+		cares[i].materialTextura = MaterialMeshList[i];
+	}
+
+	vb->Unlock();
+	ib->Unlock();
+
 	delete reader;
+	delete m_Materials;
 
 	LoadInfoInVectors(CDirectX::GetInstance()->GetDevice());
 	return true;
@@ -475,7 +480,6 @@ HRESULT Actor::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 	CoordsText *g_VerticesTextura=NULL;
 	VOID *pMesh, *pMeshIndices;
 	unsigned long numBytes;
-
 
 	CUSTOMVERTEX *g_VerticesMesh;
 	CUSTOMVERTEXTEXTURA *Geom;
@@ -829,11 +833,13 @@ HRESULT Actor::LoadInfoInVectors( LPDIRECT3DDEVICE9 g_pd3dDevice  )
 		vec_pVBGeomTexturaByMat.push_back(pVBGeomTextura);
 	}
 
-	delete g_IndicesMesh;
-	delete g_VerticesMesh;
-	delete g_TIndicesMesh;
-	delete g_VerticesTextura;
-	delete Geom;
+	delete [] g_IndicesMesh;
+	delete [] g_VerticesMesh;
+	delete [] g_TIndicesMesh;
+	delete [] g_VerticesTextura;
+	delete [] Geom;
+	VertexIndexOldNew.clear();
+	CVertexIndexOldNew.clear();
 
 	return true;
 }
@@ -859,16 +865,6 @@ HRESULT Actor::LoadVertexsBuffers( LPDIRECT3DDEVICE9 g_pd3dDevice )
 
 			for(int i=0; i <numFaces; ++i)
 			{
-				//textureVertice = vec_Geom[mat][i];
-				//
-				////num = buscarPunt(D3DXVECTOR3(textureVertice.x, textureVertice.y, textureVertice.z));
-				//num = g_PuntsMap[D3DXVECTOR3(textureVertice.x, textureVertice.y, textureVertice.z)];
-				//textureVertice.x += punts[num].moviment.x;
-				//textureVertice.y += punts[num].moviment.y;
-				//textureVertice.z += punts[num].moviment.z;
-
-				//l_VTMesh[i] = textureVertice;
-
 				l_VTMesh[i] =vec_Geom[mat][i]; 
 				num = g_PuntsMap[D3DXVECTOR3(l_VTMesh[i].x, l_VTMesh[i].y, l_VTMesh[i].z)];
 				l_VTMesh[i].x += punts[num].moviment.x;

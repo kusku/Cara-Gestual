@@ -2,14 +2,15 @@
 #include "EditorManager.h"
 #include "../Muscles/MuscleManager.h"
 #include "../Expressions/ExpressionManager.h"
+#include "../../Models/ModelManager.h"
 #include "../../Models/Actor/Actor.h"
 #include "intersection.h"
 
-EditorManager::EditorManager(Actor* objecte)
+EditorManager::EditorManager()
 {
 	CurrentVertex = 0;
 	CurrentMuscle = NONE_MUSCLE;
-	this->objecte = objecte;
+	objecte = ModelManager::GetInstance()->GetActor();
 	int nVertex = objecte->GetNumVertexs();
 	VertexList = new bool[nVertex];
 	DeltaList = new float[nVertex];
@@ -23,6 +24,7 @@ EditorManager::~EditorManager()
 {
 	delete [] VertexList;
 	delete [] DeltaList;
+	objecte = NULL;
 }
 
 //Afegeix un vèrtex al muscle definit

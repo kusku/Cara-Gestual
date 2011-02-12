@@ -42,7 +42,7 @@ void MuscleManager::addVertexMuscle(TypeMuscle numMuscle, unsigned int vertex, f
 
 void MuscleManager::moveAMuscle( TypeMuscle numMuscle, D3DXVECTOR3 vecDir )
 {
-	muscles[numMuscle]->moveMuscle(obj3D,vecDir);
+	muscles[numMuscle]->moveMuscle(vecDir);
 }
 
 void MuscleManager::deleteMuscle( TypeMuscle numMuscle )
@@ -51,11 +51,6 @@ void MuscleManager::deleteMuscle( TypeMuscle numMuscle )
 	{
 		muscles[numMuscle]->deleteVertex(i);
 	}
-}
-
-void MuscleManager::SetModel( Actor* ObOBJ )
-{
-	this->obj3D = ObOBJ;
 }
 
 void MuscleManager::ClearMuscle( TypeMuscle numMuscle )

@@ -1,5 +1,6 @@
 #include "../../stdafx.h"
 #include "Muscle.h"
+#include "../../Models/ModelManager.h"
 #include "../../Models/Actor/Actor.h"
 
 Muscle::Muscle()
@@ -77,10 +78,11 @@ int Muscle::deleteVertex(unsigned int vertex)
 		return -1;
 	}
 }
-void Muscle::moveMuscle(Actor* obj3D, D3DXVECTOR3 vecDir)
+void Muscle::moveMuscle(D3DXVECTOR3 vecDir)
 {
-	unsigned short i;
-	for(i=0; i<size; i++)
+	Actor* obj3D = ModelManager::GetInstance()->GetActor();
+	
+	for(unsigned short i=0; i<size; ++i)
 	{
 		obj3D->mourePunt(vertexIndex[i], vecDir*vertexDelta[i]);
 	}

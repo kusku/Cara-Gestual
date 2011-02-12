@@ -20,7 +20,7 @@ private:
 
 public:
 
-	EditorManager(Actor* objecte);
+	EditorManager();
 	~EditorManager();
 	
 	// Roger
