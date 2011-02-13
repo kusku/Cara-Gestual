@@ -7,6 +7,7 @@
 #include "../Logic/Expressions/Expression.h"
 #include "../Models/Actor/Actor.h"
 #include "../Render/CDirectX.h"
+#include <vector>
 
 class CParla
 {
@@ -17,7 +18,8 @@ private:
 	Animation*		animacio;
 	CSubtitles*		m_Subtitles;
 
-	char*			text;
+	//char*			text;
+	std::string		text;
 	bool			parlant;
 	int				index;
 	TypeExpression	lastExpression;

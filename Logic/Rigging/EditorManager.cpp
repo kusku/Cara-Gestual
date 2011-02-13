@@ -63,8 +63,8 @@ void EditorManager::CalculateDelta()
 	int numVertex;
 	numVertex = objecte->GetNumVertexs();
 	for (int i = 0; i < numVertex; i++) {
-		if (this->VertexList[i]) {
-			this->DeltaList[i] = (float) 1/(1 + (float)Distance(objecte->GetPoint(i),objecte->GetPoint(DominantVertex)));
+		if (VertexList[i]) {
+			DeltaList[i] = (float) 1/(1 + (float)Distance(objecte->GetPoint(i),objecte->GetPoint(DominantVertex)));
 		}
 	}
 }
@@ -73,8 +73,8 @@ void EditorManager::CalculateDelta()
 void EditorManager::DeleteVertex(D3DXVECTOR3 vertex)
 {
 	int v = objecte->buscarPunt(vertex);
-	if(this->VertexList[v]) {
-		this->VertexList[v] = false;
+	if(VertexList[v]) {
+		VertexList[v] = false;
 		--CurrentVertex;
 		if (v == DominantVertex)
 			for (DominantVertex = 0; !VertexList[DominantVertex]; ++DominantVertex);
@@ -90,22 +90,22 @@ void EditorManager::DefineMovement(TypeExpression expression, TypeMuscle muscle,
 void EditorManager::AddVertexFromTriangle(D3DXVECTOR3 colisio, D3DXVECTOR3* triangle)
 {
 	D3DXVECTOR3 puntFinal;
-	puntFinal = this->PuntMesProximTriangle(colisio,triangle);
-	this->AddVertex(puntFinal);
+	puntFinal = PuntMesProximTriangle(colisio,triangle);
+	AddVertex(puntFinal);
 }
 
 void EditorManager::DeleteVertexFromTriangle(D3DXVECTOR3 colisio, D3DXVECTOR3* triangle)
 {
 	D3DXVECTOR3 puntFinal;
-	puntFinal = this->PuntMesProximTriangle(colisio,triangle);
-	this->DeleteVertex(puntFinal);
+	puntFinal = PuntMesProximTriangle(colisio,triangle);
+	DeleteVertex(puntFinal);
 }
 
 void EditorManager::SetMuscle(TypeMuscle muscle)
 {
 	int i = 0,index, maxVertex;
-	unsigned int *llistatVertex;
-	float *llistatDelta;
+	unsigned int *llistatVertex = NULL;
+	float *llistatDelta = NULL;
 	Muscle *m;
 
 	maxVertex = objecte->GetNumVertexs();

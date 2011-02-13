@@ -55,13 +55,10 @@ static UINT indicators[] =
 CMainFrame::CMainFrame()
 {
 	// TODO: add member initialization code here
-	_CrtMemDumpAllObjectsSince(NULL);	
 }
 
 CMainFrame::~CMainFrame()
 {
-	 _CrtDumpMemoryLeaks();
-
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)

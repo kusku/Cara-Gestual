@@ -15,7 +15,7 @@
 void renderSphereSelection (LPDIRECT3DDEVICE9 Device, CDirectX* DX, EditorManager* EdManager, TypeMuscle muscle)
 {
 	int tamany, dominant;
-	D3DXVECTOR3* llista;
+	D3DXVECTOR3* llista = NULL;
 
 	if (EdManager != NULL && muscle != NONE_MUSCLE)
 	{

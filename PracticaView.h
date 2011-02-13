@@ -80,9 +80,6 @@ public:
 
 //-------------- GC2: Variables globals de CPractivaView
 public:
-    HGLRC m_hRC;       // Contexte de generació OpenGL
-    HDC m_hDC;         // Contexte de dispositiu OpenGL
-
 // GC2: Variables de control per Menú Veure->Pantalla Completa 
 	bool fullscreen;	// Opció booleana per Pantalla Completal [0:NO,1:SI]
 
@@ -143,7 +140,7 @@ public:
 	char Vis_Polar;			// Variable que controla orientació dels eixos en Visualització Interactiva (POLARZ,POLARY,POLARX)
 
 // GC2: Objecte 3DS:
-	Obj_3DS* Ob3DS;			// Variable d'objecte 3D Studio (*.3DS)
+	//Obj_3DS* Ob3DS;			// Variable d'objecte 3D Studio (*.3DS)
 
 // GC2: Objecte OBJ:
 	//TODO: Canviar nom i demes

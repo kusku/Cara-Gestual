@@ -3,11 +3,11 @@
 #include "Subtitles.h"
 #include "../PracticaView.h"
 #include "../Common/Timer/Timer.h"
-
+#include <iostream>
+#include <fstream>
 
 CParla::CParla()
 {
-	text = NULL;
 	parlant = false;
 	index = 0;
 	transitionTime = 1.f;
@@ -40,17 +40,31 @@ void CParla::CleanUp()
 
 void CParla::SetTextToTalk(std::string filename)
 {
-	FILE *fitxer;
-	errno_t err;
-	char textLlegit [100];
+	char textLlegit[1024];
+	filebuf fb;
+	
+	fb.open(filename.c_str(),ios::in);
+	istream is(&fb);
+	is.getline(textLlegit,1024);
+	text = std::string(textLlegit);
+	m_Subtitles->SetText(text);
+	
+	fb.close();
 
-	if( (err  = fopen_s(&fitxer,filename.c_str(),"r")) ==0 )
-	{
-		fscanf_s(fitxer,"%s", textLlegit, _countof(textLlegit));	
-		m_Subtitles->SetText(std::string(textLlegit));
-		text = textLlegit;
-	}
-	fclose(fitxer);
+
+	//FILE *fitxer;
+	//errno_t err;
+	//char textLlegit[100];
+
+	//if( (err  = fopen_s(&fitxer,filename.c_str(),"r")) ==0 )
+	//{
+	//	fscanf_s(fitxer,"%s", textLlegit, _countof(textLlegit));	
+	//	
+
+	//	m_Subtitles->SetText(std::string(textLlegit));
+	//	text = textLlegit;
+	//}
+	//fclose(fitxer);
 }
 
 void CParla::SetVelocity(float transitionT, float totalT)
@@ -72,7 +86,7 @@ void CParla::StartTalk(Actor* obj)
 	Animation::GetInstance()->StartAnimation(NEUTRE, obj);
 	Animation::GetInstance()->FinalizeAnimation();
 
-	if (text != NULL)
+	if (text.empty() != true)
 	{	
 		do
 		{
@@ -195,7 +209,7 @@ void CParla::TalkElapsed(Actor* obj)
 	float StopTime;
 
 	parlant = true;
-	if (text != NULL)
+	if (text.empty() != true)
 	{	
 		do
 		{

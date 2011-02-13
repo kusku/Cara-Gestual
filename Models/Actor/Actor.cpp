@@ -38,7 +38,6 @@ Actor::~Actor()
 	punts = NULL;
 	cares = NULL;
 	
-
 	listaTexturas.clear();
 	for(size_t cont = 0; cont < vec_textures.size(); ++cont)
 	{
