@@ -2905,37 +2905,45 @@ void CPracticaView::OnParla()
 void CPracticaView::OnParlaBucle()
 {
 	//Fa parlar el personatge SENSE fer ús del Timer.
+	int numSubs = CParla::GetInstance()->GetNumSubs();
+	int actSub = 0;
 
-	subtitles = true;
-	/*parla->SetVelocity(8.f, 0.1f);*/
-	CParla::GetInstance()->SetVelocity(11.f, 0.04f);
-	CParla::GetInstance()->StartTalk(ObOBJ);
-
-	acumulativeTime = 0.f;
-	
-
-	while ( CParla::GetInstance()->IsTalking() )
+	while ( numSubs > actSub )
 	{
-		if (acumulativeTime < 0.3f)
+		subtitles = true;
+		/*parla->SetVelocity(8.f, 0.1f);*/
+		CParla::GetInstance()->SetVelocity(11.f, 0.04f);
+		CParla::GetInstance()->StartTalk(ObOBJ);
+
+		acumulativeTime = 0.f;
+		
+
+		while ( CParla::GetInstance()->IsTalking() )
 		{
-			Timer::GetInstance()->ResetTimer();
-			anima = true;
-			Animation::GetInstance()->NextStepAnimation();
-			Animation::GetInstance()->Render(ObOBJ);
-			acumulativeTime += Timer::GetInstance()->GetElapsedTime();
-		}
-		else
-		{
-			Animation::GetInstance()->FinalizeAnimation();
-			acumulativeTime = 0.f;
-			CParla::GetInstance()->NextTalk(ObOBJ);
+			if (acumulativeTime < 0.3f)
+			{
+				Timer::GetInstance()->ResetTimer();
+				anima = true;
+				Animation::GetInstance()->NextStepAnimation();
+				Animation::GetInstance()->Render(ObOBJ);
+				acumulativeTime += Timer::GetInstance()->GetElapsedTime();
+			}
+			else
+			{
+				Animation::GetInstance()->StopAnimation();
+				acumulativeTime = 0.f;
+				CParla::GetInstance()->NextTalk(ObOBJ);
+			}
+
+			OnPaint();
 		}
 
-		OnPaint();
+		acumulativeTime = 0.f;
+		Animation::GetInstance()->StopAnimation();
+		++ actSub;
 	}
-
-	acumulativeTime = 0.f;
 	Animation::GetInstance()->FinalizeAnimation();
+	CParla::GetInstance()->ResetSubs();
 	anima = false;
 	subtitles = false;
 

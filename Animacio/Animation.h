@@ -39,6 +39,7 @@ public:
 	void		StartAnimation		( TypeExpression expression, Actor* obj );
 	void		NextStepAnimation	( void );
 	void		FinalizeAnimation	( void );
+	void		StopAnimation		( void );
 
 	void		Render				( Actor* obj );
 };

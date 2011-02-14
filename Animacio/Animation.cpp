@@ -91,12 +91,16 @@ void Animation::NextStepAnimation()
 
 void Animation::FinalizeAnimation()
 {
+	animationActive = false;
+	step = 0;
+}
+
+void Animation::StopAnimation()
+{
 	for (int i=0; i<sizeExpression; ++i)
 	{
 		backMovement[i] = totalMovement[i];
 	}
-
-	animationActive = false;
 	step = 0;
 }
 

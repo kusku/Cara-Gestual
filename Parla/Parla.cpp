@@ -8,6 +8,7 @@
 
 CParla::CParla()
 {
+	m_FraseActual = -1;
 	parlant = false;
 	index = 0;
 	transitionTime = 1.f;
@@ -34,6 +35,7 @@ CParla* CParla::GetInstance()
 void CParla::CleanUp()
 {
 	CHECKED_DELETE(m_Subtitles);
+	m_Text.clear();
 
 	delete m_Parla;
 }
@@ -45,12 +47,13 @@ void CParla::SetTextToTalk(std::string filename)
 	
 	fb.open(filename.c_str(),ios::in);
 	istream is(&fb);
-	is.getline(textLlegit,1024);
-	text = std::string(textLlegit);
-	m_Subtitles->SetText(text);
+	while (!is.eof())
+	{
+		is.getline(textLlegit,1024);
+		m_Text.push_back(std::string(textLlegit));
+	}
 	
 	fb.close();
-
 
 	//FILE *fitxer;
 	//errno_t err;
@@ -81,20 +84,26 @@ void CParla::StartTalk(Actor* obj)
 	lastExpression = NONE_EXPRESSION;
 	parlant = true;
 
+	if ( !m_Text.empty() )
+	{
+		++m_FraseActual;
+		m_Subtitles->SetText(m_Text[m_FraseActual]);
+	}
+
 	//Posa una expressió inicial
 	Animation::GetInstance()->SetTime(transitionTime, totalTime);
 	Animation::GetInstance()->StartAnimation(NEUTRE, obj);
 	Animation::GetInstance()->FinalizeAnimation();
 
-	if (text.empty() != true)
+	if (m_Text.empty() != true)
 	{	
 		do
 		{
-			expressio = ParseCharacter(text[index]);
+			expressio = ParseCharacter(m_Text[m_FraseActual][index]);
 			++index;
-		}while (expressio == NONE_EXPRESSION && text[index] != NULL);
+		}while (expressio == NONE_EXPRESSION && m_Text[m_FraseActual][index] != NULL);
 
-		if (text[index] != NULL)
+		if (m_Text[m_FraseActual][index] != NULL)
 		{
 			Animation::GetInstance()->SetTime(transitionTime, totalTime);
 			Animation::GetInstance()->StartAnimation(expressio, obj);
@@ -108,15 +117,15 @@ void CParla::NextTalk(Actor* obj)
 	TypeExpression expressio;
 
 	parlant = true;
-	if (text[index] != NULL)
+	if (m_Text[m_FraseActual][index] != NULL)
 	{	
 		do
 		{
-			expressio = ParseCharacter(text[index]);
+			expressio = ParseCharacter(m_Text[m_FraseActual][index]);
 			++index;
-		}while (expressio == NONE_EXPRESSION && text[index] != NULL);
+		}while (expressio == NONE_EXPRESSION && m_Text[m_FraseActual][index] != NULL);
 
-		if (text[index] != NULL)
+		if (m_Text[m_FraseActual][index] != NULL)
 		{
 			if (lastExpression == expressio)
 			{
@@ -134,7 +143,7 @@ void CParla::NextTalk(Actor* obj)
 		}
 		else
 		{
-			if (text[index] == NULL && text[index -1] != NULL)
+			if (m_Text[m_FraseActual][index] == NULL && m_Text[m_FraseActual][index -1] != NULL)
 			{
 				Animation::GetInstance()->SetTime(transitionTime, totalTime);
 				Animation::GetInstance()->StartAnimation(NEUTRE, obj);
@@ -209,7 +218,7 @@ void CParla::TalkElapsed(Actor* obj)
 	float StopTime;
 
 	parlant = true;
-	if (text.empty() != true)
+	if (m_Text.empty() != true)
 	{	
 		do
 		{
@@ -218,12 +227,12 @@ void CParla::TalkElapsed(Actor* obj)
 			Timer::GetInstance()->ResetTimer();
 			do
 			{
-				expressio = ParseCharacter(text[index]);
+				expressio = ParseCharacter(m_Text[m_FraseActual][index]);
 				++index;
 				StopTime += 0.2f;
-			}while (expressio == NONE_EXPRESSION && text[index] != NULL);
+			}while (expressio == NONE_EXPRESSION && m_Text[m_FraseActual][index] != NULL);
 
-			if (text[index] != NULL)
+			if (m_Text[m_FraseActual][index] != NULL)
 			{
 				if (StopTime > 0.2f)
 					Animation::GetInstance()->SetTime(transitionTime, totalTime*2);
@@ -237,7 +246,7 @@ void CParla::TalkElapsed(Actor* obj)
 				time += Timer::GetInstance()->GetElapsedTime();
 			}
 			
-		}while (text[index] != NULL);
+		}while (m_Text[m_FraseActual][index] != NULL);
 	}
 	FinalizeTalk();
 }

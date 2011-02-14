@@ -19,7 +19,9 @@ private:
 	CSubtitles*		m_Subtitles;
 
 	//char*			text;
-	std::string		text;
+	std::vector<std::string> m_Text;
+	int				m_FraseActual;
+
 	bool			parlant;
 	int				index;
 	TypeExpression	lastExpression;
@@ -40,6 +42,9 @@ public:
 
 	void		SetVelocity			( float transitionT, float totalT );
 	void		SetTextToTalk		( std::string filename );
+	
+	int			GetNumSubs			() { return m_Text.size(); }
+	void		ResetSubs			() { m_FraseActual = -1; }
 
 	void		StartTalk			(Actor* obj);
 	void		NextTalk			(Actor* obj);
