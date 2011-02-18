@@ -7,9 +7,10 @@
 #include "../Logic/Expressions/Expression.h"
 #include "../Models/Actor/Actor.h"
 #include "../Render/CDirectX.h"
+#include "../Common/ParserXML/XMLParser.h"
 #include <vector>
 
-class CParla
+class CParla : public CXMLParser
 {
 private:
 
@@ -30,7 +31,8 @@ private:
 	float			transitionTime;
 	float			totalTime;
 
-	TypeExpression		ParseCharacter	( const char c );
+	TypeExpression	ParseCharacter	( const char c );
+	void	onStartElement	( const std::string &elem, MKeyValue &atts );
 
 public:
 
@@ -40,10 +42,12 @@ public:
 	static CParla*	GetInstance();
 	void			CleanUp();
 
+	void		LoadXML		( std::string filename );
+
 	void		SetVelocity			( float transitionT, float totalT );
-	void		SetTextToTalk		( std::string filename );
+	void		SetTextToTalk		( std::string xmlFile );
 	
-	int			GetNumSubs			() { return m_Text.size(); }
+	int			GetNumSubs			() { return (int)m_Text.size(); }
 	void		ResetSubs			() { m_FraseActual = -1; }
 
 	void		StartTalk			(Actor* obj);

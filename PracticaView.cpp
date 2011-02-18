@@ -1321,6 +1321,7 @@ void CPracticaView::OnCarregaAutomatica()
 	ModelManager::GetInstance()->Load(std::string(ACTORS_XML));
 	ModelManager::GetInstance()->Load(std::string(SCENE_XML),true);
 	CParla::GetInstance()->PrepareFontSubs(std::string(FONT_XML));
+	CParla::GetInstance()->LoadXML(std::string(SCENE_XML));
 	CParla::GetInstance()->SetTextToTalk(std::string(SUBTITLES));
 
 	ObOBJ = ModelManager::GetInstance()->GetActor();

@@ -260,3 +260,27 @@ void CParla::PrepareFontSubs(std::string filename)
 {
 	m_Subtitles->CreateFont(filename);
 }
+
+void CParla::LoadXML(std::string xmlFile)
+{
+	xmlParseFile(xmlFile);
+}
+
+void CParla::onStartElement(const std::string &elem, MKeyValue &atts)
+{
+	if (elem == "SUBTITLES")
+	{
+		std::string pos = atts["position"];
+		std::string sca = atts["scale"];
+		std::string rot = atts["rotation"];
+
+		D3DXVECTOR3 position, rotation, scale;
+		sscanf_s(pos.c_str(), "%f %f %f", &position.x, &position.y, &position.z);
+		sscanf_s(sca.c_str(), "%f %f %f", &scale.x, &scale.y, &scale.z);
+		sscanf_s(rot.c_str(), "%f %f %f", &rotation.x, &rotation.y, &rotation.z);
+
+		m_Subtitles->SetPosition(position);
+		m_Subtitles->SetRotation(rotation);
+		m_Subtitles->SetScale(scale);
+	}
+}

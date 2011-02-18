@@ -11,7 +11,7 @@ class CSubtitles
 private:
 
 	int red, green, blue, alpha;
-	D3DXVECTOR2 position;
+	D3DXVECTOR3 m_Position, m_Scale, m_Rotation;
 	LPD3DXFONT m_font;
 	std::string subtitle;
 
@@ -27,7 +27,9 @@ public:
 	void		CreateFont			( std::string filename );
 
 	void		SetColor			( int r, int g, int b, int a);
-	void		SetPosition			( D3DXVECTOR2 pos ) { position = pos; }
+	void		SetPosition			( D3DXVECTOR3 pos ) { m_Position = pos; }
+	void		SetRotation			( D3DXVECTOR3 rot ) { m_Rotation = rot; }
+	void		SetScale			( D3DXVECTOR3 sca ) { m_Scale = sca; }
 	void		SetText				( std::string text ) {subtitle = text; }
 
 	void		ParseSubtitles		( void );

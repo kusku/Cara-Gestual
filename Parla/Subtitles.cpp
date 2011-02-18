@@ -10,7 +10,9 @@ CSubtitles::CSubtitles()
 	green = 0;
 	blue = 0;
 	alpha = 255;
-	position = D3DXVECTOR2(100.0f, 100.0f);
+	m_Position = D3DXVECTOR3(0.f,0.f,0.f);
+	m_Scale = D3DXVECTOR3(1.f, 1.f, 1.f);
+	m_Rotation = D3DXVECTOR3(0.f,0.f,0.f);
 	subtitle = "Com que no em puc menjar una mandarina, em compro un pressec.";	
 }
 
@@ -103,6 +105,17 @@ void CSubtitles::PostRender(LPDIRECT3DDEVICE9 Device)
 		{20.f, 5.f, -5.f, 0xffffffff, 0.f, 1.f},
 		{20.f, 0.f, -5.f, 0xffffffff, 1.f, 1.f}
 	};
+
+	D3DXMATRIX l_MatrixT, l_Matrix;
+	D3DXMatrixIdentity(&l_MatrixT);
+	D3DXMatrixIdentity(&l_Matrix);
+	D3DXMatrixScaling (&l_MatrixT,m_Scale.x, m_Scale.y, m_Scale.z);
+	l_Matrix *= l_MatrixT;
+	D3DXMatrixRotationYawPitchRoll(&l_MatrixT, DEG2RAD(m_Rotation.y), DEG2RAD(m_Rotation.x), DEG2RAD(m_Rotation.z));
+	l_Matrix *= l_MatrixT;
+	D3DXMatrixTranslation (&l_MatrixT, m_Position.x, m_Position.y, m_Position.z);
+	l_Matrix *= l_MatrixT;
+	Device->SetTransform(D3DTS_WORLD, &l_Matrix);
 
 	Device->SetTexture(0, CDirectX::GetInstance()->GetRenderTexture());
 	Device->DrawPrimitiveUP(D3DPT_TRIANGLELIST, 2, &Vertices, sizeof(CUSTOMVERTEXTEXTURA));
